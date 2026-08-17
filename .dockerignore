@@ -1,0 +1,17 @@
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+.mypy_cache
+.venv
+node_modules
+.git
+.gitignore
+*.md
+samples/
+tests/expected/*.txt
+reconciliation_cache.json
+ocr_cache/
+.pcb_ocr_cache/
+*.log
+logs/

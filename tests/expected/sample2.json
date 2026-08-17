@@ -1,0 +1,132 @@
+{
+  "part_number": null,
+  "manufacturer": "Printed Circuit Board",
+  "drawing_title": "PRINTED CIRCUIT BOARD, NIRC2 PREAMP",
+  "is_itar": false,
+  "ipc_class": "Class 2",
+  "ipc_specs": [
+    "IPC-A-600"
+  ],
+  "layer_count": 5,
+  "layer_stackup": [
+    {
+      "number": 1,
+      "function": "TOP"
+    },
+    {
+      "number": 2,
+      "function": "MID1"
+    },
+    {
+      "number": 3,
+      "function": "GNDA"
+    },
+    {
+      "number": 4,
+      "function": "MID2"
+    },
+    {
+      "number": 5,
+      "function": "BOTTOM"
+    }
+  ],
+  "material": "FR4",
+  "board_thickness": {
+    "nominal": 0.062,
+    "plus_tol": 0.005,
+    "minus_tol": 0.005,
+    "unit": "in",
+    "raw": ".062 +/- .005"
+  },
+  "copper_weights": {
+    "signal_layers_oz": 1.0,
+    "plane_layers_oz": null,
+    "external_finished_oz": 2.0
+  },
+  "surface_finish": "ENIG",
+  "solder_mask": {
+    "present": true,
+    "type": "photo imageable",
+    "color": "Green",
+    "spec": null,
+    "sides": "both"
+  },
+  "silkscreen": {
+    "present": true,
+    "color": "White",
+    "ink": "non-conductive epoxy",
+    "sides": "both"
+  },
+  "impedance_control": {
+    "controlled": true,
+    "single_ended": {
+      "min": 90.0,
+      "max": 90.0,
+      "unit": "ohm",
+      "raw": "90 OHMS"
+    },
+    "trace_width_mils": 11.0,
+    "layers": [
+      2,
+      5
+    ]
+  },
+  "drill_table": [
+    {
+      "size_mils": 18.0,
+      "qty": 270,
+      "symbol": "+",
+      "plated": true
+    },
+    {
+      "size_mils": 28.0,
+      "qty": 3,
+      "symbol": "X",
+      "plated": true
+    },
+    {
+      "size_mils": 36.0,
+      "qty": 204,
+      "symbol": "O",
+      "plated": true
+    },
+    {
+      "size_mils": 46.0,
+      "qty": 12,
+      "symbol": "T",
+      "plated": true
+    },
+    {
+      "size_mils": 63.0,
+      "qty": 89,
+      "symbol": "diamond",
+      "plated": true
+    },
+    {
+      "size_mils": 91.0,
+      "qty": 10,
+      "symbol": "M",
+      "plated": true
+    },
+    {
+      "size_mils": 124.0,
+      "qty": 2,
+      "symbol": "square",
+      "plated": true
+    },
+    {
+      "size_mils": 125.0,
+      "qty": 2,
+      "symbol": "pentagon",
+      "plated": false
+    },
+    {
+      "size_mils": 144.0,
+      "qty": 8,
+      "symbol": "hexagon",
+      "plated": false
+    }
+  ],
+  "fabrication_notes": "NOTES (UNLESS OTHERWISE SPECIFIED):\n\n1. FABRICATE PER IPC-A-600, CLASS 2.\n\n2. MATERIAL:\n   1 OZ. CU INTERNAL\n   1 OZ. CU EXTERNAL, 2 OZ. AFTER PLATING\n   BASE LAMINATE FR4\n\n3. TOTAL THICKNESS OF PCB AFTER PLATING\n   SHALL BE .062 +/- .005\n\n4. SOLDERMASK BOTH SIDES USING PHOTO\n   IMAGEABLE PROCESS. SOLDER MASK OVER\n   BARE COPPER. SOLDER MASK SHALL BE\n   BETWEEN FINE PITCH PADS. COLOR TRANSPARENT\n   GREEN.\n\n5. SILKSCREEN BOTH SIDES OF PCB USING\n   NON-CONDUCTIVE EPOXY INK, COLOR\n   WHITE. NO INK SHALL BE ON EXPOSED PADS.\n\n6. GERBER ARTWORK PROVIDED. NO ALTERATIONS\n   TO GERBER FILES WITHOUT PRIOR CONSENT\n   FROM THE CALIFORNIA ASSOC. FOR RESEARCH\n   IN ASTRONOMY.\n\n7. ALL DIMENSIONS ARE IN INCHES. TOLERANCES\n   ARE AS FOLLOWS:\n\n      .XX   +/- .010\n      .XXX  +/- .005\n\n8. ALL HOLES TO BE +/- .003 IN. DIA. UNLESS\n   OTHERWISE SPECIFIED. HOLE SIZES GIVEN ARE\n   AFTER PLATING. PLATED THRU HOLES SHALL\n   HAVE A MINIMUM OF .001 COPPER.\n\n9. IT IS THE FABRICATORS RESPONSIBILITY TO\n   SELECT THE BASE MATERIAL TO YIELD THE\n   SPECIFIED IMPEDANCE CHARACTERISTICS TO\n   WITHIN +/- 10% TOLERANCE.\n\n10. ALL HOLES SHALL BE LOCATED WITHIN .003\n    DIA. OF TRUE POSITION.\n\n11. CONDUCTOR WIDTHS AND SPACING SHALL BE\n    WITHIN +/- 20% OF PHOTPLOT ORIGINALS.\n\n12. WARP OR TWIST OF BOARD SHALL NOT\n    EXCEED .010 INCH PER INCH.\n\n13. REMOVE ALL BURRS AND BREAK SHARP EDGES\n    .015 MAX.\n\n14. PLATED THRU HOLES AND EXPOSED PADS SHALL\n    BE TIN/LEAD PLATED .0003 TO .0005 THK.",
+  "ocr_raw_text": null
+}

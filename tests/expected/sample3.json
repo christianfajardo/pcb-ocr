@@ -1,0 +1,148 @@
+{
+  "part_number": null,
+  "manufacturer": "Company Name",
+  "drawing_title": null,
+  "is_itar": false,
+  "ipc_class": "Class 2",
+  "ipc_specs": [
+    "IPC-6012"
+  ],
+  "layer_count": 8,
+  "layer_stackup": [
+    {
+      "number": 1,
+      "function": "TOP SIDE"
+    },
+    {
+      "number": 2,
+      "function": "GROUND PLANE"
+    },
+    {
+      "number": 3,
+      "function": "SIGNAL LAYER"
+    },
+    {
+      "number": 4,
+      "function": "POWER PLANE"
+    },
+    {
+      "number": 5,
+      "function": "POWER PLANE"
+    },
+    {
+      "number": 6,
+      "function": "SIGNAL LAYER"
+    },
+    {
+      "number": 7,
+      "function": "POWER PLANE"
+    },
+    {
+      "number": 8,
+      "function": "BOTTOM SIDE"
+    }
+  ],
+  "material": "370HR",
+  "board_thickness": {
+    "nominal": 0.062,
+    "plus_tol": 0.007,
+    "minus_tol": 0.007,
+    "unit": "in",
+    "raw": ".062 +/- .007"
+  },
+  "copper_weights": {
+    "signal_layers_oz": 1.0,
+    "plane_layers_oz": null,
+    "external_finished_oz": null
+  },
+  "surface_finish": "ENIG",
+  "solder_mask": {
+    "present": true,
+    "type": null,
+    "color": "Green",
+    "spec": null,
+    "sides": "both"
+  },
+  "silkscreen": {
+    "present": true,
+    "color": "White",
+    "ink": "non-conductive epoxy",
+    "sides": "both"
+  },
+  "impedance_control": {
+    "controlled": false,
+    "single_ended": null,
+    "trace_width_mils": null,
+    "layers": []
+  },
+  "drill_table": [
+    {
+      "size_mils": 8.0,
+      "qty": 3,
+      "symbol": "circle",
+      "plated": true
+    },
+    {
+      "size_mils": 12.0,
+      "qty": 40,
+      "symbol": "diamond",
+      "plated": true
+    },
+    {
+      "size_mils": 10.0,
+      "qty": 3,
+      "symbol": "+",
+      "plated": true
+    },
+    {
+      "size_mils": 29.0,
+      "qty": 1,
+      "symbol": "triangle",
+      "plated": false
+    },
+    {
+      "size_mils": 50.0,
+      "qty": 1,
+      "symbol": "square",
+      "plated": false
+    },
+    {
+      "size_mils": 40.0,
+      "qty": 4,
+      "symbol": "pentagon",
+      "plated": true
+    },
+    {
+      "size_mils": 71.0,
+      "qty": 3,
+      "symbol": "M",
+      "plated": true
+    },
+    {
+      "size_mils": 48.16,
+      "qty": 4,
+      "symbol": "hexagon",
+      "plated": true
+    },
+    {
+      "size_mils": 32.3,
+      "qty": 3,
+      "symbol": "star",
+      "plated": true
+    },
+    {
+      "size_mils": 86.61,
+      "qty": 2,
+      "symbol": "octagon",
+      "plated": true
+    },
+    {
+      "size_mils": 100.0,
+      "qty": 4,
+      "symbol": "cross",
+      "plated": false
+    }
+  ],
+  "fabrication_notes": "NOTES:  UNLESS OTHERWISE SPECIFIED\n\n1.  MATERIAL: 370HR OR EQUIVALENT\n\n2.  OVERALL BOARD THICKNESS TO BE .062 +/- .007\n\n3.  APPLY SOLDERMASK OVER BARE COPPER. COLOR: GREEN.\n\n4.  ALL EXPOSED CONDUCTIVE SURFACES TO BE ENIG\n\n5.  SILKSCREEN TOP AND BOTTOM SIDE USING NON-CONDUCTIVE WHITE EPOXY INK.\n\n6.  FABRICATE IN ACCORDANCE WITH IPC-6012 CLASS 2.\n\n7.  COPPER WEIGHT SHALL BE 1 OZ. COPPER",
+  "ocr_raw_text": null
+}

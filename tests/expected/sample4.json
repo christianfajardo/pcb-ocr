@@ -1,0 +1,93 @@
+{
+  "part_number": "123456",
+  "manufacturer": "PCB Prime",
+  "drawing_title": "PCB Prime Sample Fabrication Drawing",
+  "is_itar": false,
+  "ipc_class": "Class 2",
+  "ipc_specs": [
+    "IPC-6012",
+    "IPC-A-600",
+    "IPC-SM-840",
+    "J-STD-609",
+    "IPC-1066"
+  ],
+  "layer_count": 10,
+  "layer_stackup": [
+    {
+      "number": 1,
+      "function": "PRIMARY SIDE"
+    },
+    {
+      "number": 2,
+      "function": "PLANE LAYER"
+    },
+    {
+      "number": 3,
+      "function": "TRACE LAYER"
+    },
+    {
+      "number": 4,
+      "function": "PLANE LAYER"
+    },
+    {
+      "number": 5,
+      "function": "PLANE LAYER"
+    },
+    {
+      "number": 6,
+      "function": "PLANE LAYER"
+    },
+    {
+      "number": 7,
+      "function": "PLANE LAYER"
+    },
+    {
+      "number": 8,
+      "function": "TRACE LAYER"
+    },
+    {
+      "number": 9,
+      "function": "PLANE LAYER"
+    },
+    {
+      "number": 10,
+      "function": "SECONDARY SIDE"
+    }
+  ],
+  "material": "FR4",
+  "board_thickness": {
+    "nominal": 0.093,
+    "plus_tol": null,
+    "minus_tol": null,
+    "unit": "in",
+    "raw": "0.093\" +/- 10%"
+  },
+  "copper_weights": {
+    "signal_layers_oz": 0.5,
+    "plane_layers_oz": 1.0,
+    "external_finished_oz": 1.0
+  },
+  "surface_finish": "ENIG",
+  "solder_mask": {
+    "present": true,
+    "type": null,
+    "color": null,
+    "spec": "IPC-SM-840 Class 2",
+    "sides": "both"
+  },
+  "silkscreen": {
+    "present": true,
+    "color": "White",
+    "ink": "non-conducting",
+    "sides": "both"
+  },
+  "impedance_control": {
+    "controlled": true,
+    "single_ended": null,
+    "trace_width_mils": 5.0,
+    "layers": []
+  },
+  "drill_table": [],
+  "fabrication_notes": "PCB FABRICATION NOTES (UNLESS OTHERWISE SPECIFIED)\n\n1.  PRIMARY SIDE SHOWN.\n\n2.  TEN LAYER PCB.\n\n3.  FABRICATE PER IPC-6012, CLASS 2, CURRENT REV.\n\n4.  DETERMINE ACCEPTABILITY PER IPC-A-600, CURRENT REV.\n    25% BREAKOUT PERMITTED ON VIAS IF INTERFACE\n    BETWEEN CONDUCTOR AND TERMINAL AREA OF PAD IS 100%.\n    BOARDS TO BE 100% ELECTRICALLY TESTED FOR CONTINUITY\n    (OPENS AND SHORTS).\n    CERTIFICATION OF THIS TEST REQUIRED\n    WITH EACH SHIPMENT FOR EACH DATE CODE SUPPLIED. CERTIFICATION TO\n    INCLUDE   P.O. #, P/N, AND QUANTITY OF EACH DATE CODE.\n\n5.  PCBs SHALL BE RoHS COMPLIANT. MATERIAL TO BE 170 Tg FR4 OR FR406.\n    BOARD TO BE 0.093\" +/- 10%, MEASURED OUTER METAL-TO-METAL THICKNESS.\n    BOARD FINISH TO BE LEAD FREE HASL OR ENIG. PCB SHALL BE MARKED PER\n    J-STD-609 PARA 7.2 (FINAL FINISH DESIGNATOR), OR PER IPC-1066.\n\n6.  PLATE TO 1.0 OZ COPPER NOMINAL ON SURFACE LAYERS, 1.0 OZ\n    COPPER NOMINAL IN HOLES AND INTERNAL PLANE LAYERS, 0.5 OZ INTERNAL\n    TRACE LAYERS.\n\n7.  TOOLING HOLES OF DIAMETER UP TO 0.126\" ARE NON-PLATED AND MAY\n    OR MAY NOT BE PRESENT IN DESIGN AS PER SUPPLIED ARTWORK.\n    IF PRESENT IN DESIGN THEY SHALL BE MARKED \"T\". ALL OTHER HOLES\n    SHALL BE PLATED OR NON-PLATED ACCORDING TO HOLE CHART.\n\n8.  HOLE SIZES GIVEN ARE FINISHED DIMENSIONS.\n\n9.  SOLDERMASK BOTH SIDES OVER BARE COPPER PER IPC-SM-840,\n    CLASS 2, CURRENT REV, AND MANUFACTURERS SPECIFICATIONS.\n    NO BARF COPPER ALLOWED. NO SOLDER MASK\n    PERMISSIBLE ON COMPONENT PADS AS PER SUPPLIED ARTWORK.\n\n10. DATE CODE, UL RECOGNIZED VENDOR MARK, AND UL94V-0 MARK REQUIRED.\n    DATE CODE SHALL USE FOUR NUMERALS, GIVING WORK WEEK\n    AND YEAR, EG. 2818 STANDS FOR THE 28TH WEEK OF 2018.\n    THESE MARKS SHALL BE MADE IN COPPER AND SHALL BE LOCATED\n    ON THE SECONDARY SIDE OF THE PCB.\n\n11. SCREEN COMPONENT ID WITH NON-CONDUCTING WHITE INK.\n    COMPONENT ID REGISTRATION TO BE WITHIN +/- 0.005\" OF ITS\n    RESPECTIVE COMPONENT LAYER.\n    NO SILKSCREEN INK PERMISSIBLE ON COMPONENT PADS\n    OR IN PADS AS PER SUPPLIED ARTWORK.\n\n12. ETCH TOLERANCE +0.001\" - 0.002\". TOTAL TRACE REDUCTION\n    CANNOT EXCEED 20%.\n\n13. FRONT-TO-BACK REGISTRATION TO BE WITHIN +/-0.003\".\n\n14. BOARD WARP TO BE NO GREATER THAN 1.2%.\n\n15. CONTROLLED IMPEDANCE AT 10% TOLERANCE. TRACE WIDTH MAY\n    BE ADJUSTED TO MEET IMPEDANCE REQUIREMENTS, BUT NOT BELOW\n    0.0045\" IN WIDTH OR CLEARANCE:\n    0.005\" TRACES ON ALL LAYERS ARE 100 OHM DIFFERENTIAL\n\n16. LAYER CONFIGURATION DIAGRAM:\n        PRIMARY SIDE COMPONENT I.D.\n        PRIMARY SIDE SOLDER MASK\n        CIRCUIT LAYER #1 (PRIMARY SIDE)\n        CIRCUIT LAYER #2 - PLANE LAYER\n        CIRCUIT LAYER #3 - TRACE LAYER\n        CIRCUIT LAYER #4 - PLANE LAYER\n        CIRCUIT LAYER #5 - PLANE LAYER\n        CIRCUIT LAYER #6 - PLANE LAYER\n        CIRCUIT LAYER #7 - PLANE LAYER\n        CIRCUIT LAYER #8 - TRACE LAYER\n        CIRCUIT LAYER #9 - PLANE LAYER\n        CIRCUIT LAYER #10 (SECONDARY SIDE)\n        SECONDARY SIDE SOLDER MASK\n        SECONDARY SIDE COMPONENT I.D.",
+  "ocr_raw_text": null
+}

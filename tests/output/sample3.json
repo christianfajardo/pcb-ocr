@@ -1,0 +1,187 @@
+{
+  "part_number": null,
+  "manufacturer": "Company Name",
+  "drawing_title": null,
+  "is_itar": false,
+  "ipc_class": "Class 2",
+  "ipc_specs": [
+    "IPC-6012"
+  ],
+  "layer_count": 8,
+  "layer_stackup": [
+    {
+      "number": 1,
+      "function": "TOP SIDE"
+    },
+    {
+      "number": 2,
+      "function": "GROUND PLANE"
+    },
+    {
+      "number": 3,
+      "function": "SIGNAL LAYER"
+    },
+    {
+      "number": 4,
+      "function": "POWER PLANE"
+    },
+    {
+      "number": 5,
+      "function": "SIGNAL LAYER"
+    },
+    {
+      "number": 6,
+      "function": "POWER PLANE"
+    },
+    {
+      "number": 7,
+      "function": "BOTTOM SIDE"
+    }
+  ],
+  "material": "370HR",
+  "board_thickness": {
+    "nominal": 0.062,
+    "plus_tol": 0.007,
+    "minus_tol": 0.007,
+    "unit": "in",
+    "raw": ".062 +/- .007"
+  },
+  "copper_weights": {
+    "signal_layers_oz": 1.0,
+    "plane_layers_oz": 1.0,
+    "external_finished_oz": 1.0
+  },
+  "surface_finish": "ENIG",
+  "solder_mask": {
+    "present": true,
+    "type": "LPI",
+    "color": "GREEN",
+    "spec": "IPC-SM-840",
+    "sides": "TOP AND BOTTOM"
+  },
+  "silkscreen": {
+    "present": true,
+    "color": "WHITE",
+    "ink": "EPOXY",
+    "sides": "TOP AND BOTTOM"
+  },
+  "impedance_control": {
+    "controlled": false,
+    "single_ended": {
+      "min": null,
+      "max": null,
+      "unit": "ohm",
+      "raw": null
+    },
+    "trace_width_mils": null,
+    "layers": []
+  },
+  "drill_table": [
+    {
+      "size_mils": 8.0,
+      "qty": 9,
+      "symbol": "\u25c7",
+      "plated": true
+    },
+    {
+      "size_mils": 12.0,
+      "qty": 40,
+      "symbol": "\u25a1",
+      "plated": true
+    },
+    {
+      "size_mils": 15.0,
+      "qty": 3,
+      "symbol": "\uff0b",
+      "plated": true
+    },
+    {
+      "size_mils": 28.0,
+      "qty": 1,
+      "symbol": "\uff0b",
+      "plated": false
+    },
+    {
+      "size_mils": 36.0,
+      "qty": 4,
+      "symbol": "\uff0b",
+      "plated": true
+    },
+    {
+      "size_mils": 40.16,
+      "qty": 4,
+      "symbol": "\uff0b",
+      "plated": true
+    },
+    {
+      "size_mils": 31.5,
+      "qty": 5,
+      "symbol": "\uff0b",
+      "plated": true
+    },
+    {
+      "size_mils": 94.49,
+      "qty": 2,
+      "symbol": "\uff0b",
+      "plated": true
+    },
+    {
+      "size_mils": 106.0,
+      "qty": 4,
+      "symbol": "\uff0b",
+      "plated": false
+    }
+  ],
+  "fabrication_notes": "1. MATERIAL: 370HR OR EQUIVALENT\n2. OVERALL BOARD THICKNESS TO BE .062 +/- .007\n3. APPLY SOLDERMASK OVER BARE COPPER. COLOR: GREEN.\n4. ALL EXPOSED CONDUCTIVE SURFACES TO BE ENIG\n5. SILKSCREEN TOP AND BOTTOM SIDE USING NON-CONDUCTIVE WHITE EPOXY INK.\n6. FABRICATE IN ACCORDANCE WITH IPC-6012 CLASS 2.\n7. COPPER WEIGHT SHALL BE 1 OZ. COPPER",
+  "ocr_raw_text": null,
+  "reconciliation_log": [
+    "[part_number] value=None, conf=0.00, reason=No engine detected this field",
+    "[manufacturer] value=Company Name, conf=0.29, reason=Only source (tesseract), confidence penalized to 0.8x",
+    "[drawing_title] value=None, conf=0.00, reason=No engine detected this field",
+    "[is_itar] value=False, conf=0.99, reason=All 3 engines agree, confidence boosted to 0.99",
+    "[ipc_class] value=IPCClass.CLASS_2, conf=0.94, reason=All 2 engines agree, confidence boosted to 0.94",
+    "[ipc_specs] value=['IPC-6012'], conf=0.94, reason=All 2 engines agree, confidence boosted to 0.94",
+    "[layer_count] value=8, conf=0.94, reason=All 2 engines agree, confidence boosted to 0.94",
+    "[layer_stackup] value=[LayerSpec(number=1, function='TOP SIDE'), LayerSpec(number=2, function='GROUND PLANE'), LayerSpec(number=3, function='SIGNAL LAYER'), LayerSpec(number=4, function='POWER PLANE'), LayerSpec(number=5, function='SIGNAL LAYER'), LayerSpec(number=6, function='POWER PLANE'), LayerSpec(number=7, function='BOTTOM SIDE')], conf=0.90, reason=Engines disagree (2 candidates), picked highest confidence (qwen-vl)",
+    "[material] value=370HR, conf=0.94, reason=All 2 engines agree, confidence boosted to 0.94",
+    "[board_thickness] value=nominal=0.062 plus_tol=0.007 minus_tol=0.007 unit='in' raw='.062 +/- .007', conf=0.96, reason=All 2 engines agree, confidence boosted to 0.96",
+    "[copper_weights] value=signal_layers_oz=1.0 plane_layers_oz=1.0 external_finished_oz=1.0, conf=0.87, reason=Engines disagree (2 candidates), picked highest confidence (qwen-vl)",
+    "[surface_finish] value=ENIG, conf=0.94, reason=All 2 engines agree, confidence boosted to 0.94",
+    "[solder_mask] value=present=True type='LPI' color='GREEN' spec='IPC-SM-840' sides='TOP AND BOTTOM', conf=0.85, reason=Engines disagree (2 candidates), picked highest confidence (qwen-vl)",
+    "[silkscreen] value=present=True color='WHITE' ink='EPOXY' sides='TOP AND BOTTOM', conf=0.85, reason=Engines disagree (2 candidates), picked highest confidence (qwen-vl)",
+    "[impedance_control] value=controlled=False single_ended=ImpedanceRange(min=None, max=None, unit='ohm', raw=None) trace_width_mils=None layers=[], conf=0.90, reason=Engines disagree (2 candidates), picked highest confidence (qwen-vl)",
+    "[drill_table] value=[DrillRow(size_mils=8.0, qty=9, symbol='\u25c7', plated=True), DrillRow(size_mils=12.0, qty=40, symbol='\u25a1', plated=True), DrillRow(size_mils=15.0, qty=3, symbol='\uff0b', plated=True), DrillRow(size_mils=28.0, qty=1, symbol='\uff0b', plated=False), DrillRow(size_mils=36.0, qty=4, symbol='\uff0b', plated=True), DrillRow(size_mils=40.16, qty=4, symbol='\uff0b', plated=True), DrillRow(size_mils=31.5, qty=5, symbol='\uff0b', plated=True), DrillRow(size_mils=94.49, qty=2, symbol='\uff0b', plated=True), DrillRow(size_mils=106.0, qty=4, symbol='\uff0b', plated=False)], conf=0.72, reason=Only source (qwen-vl), confidence penalized to 0.8x",
+    "[fabrication_notes] value=1. MATERIAL: 370HR OR EQUIVALENT\n2. OVERALL BOARD THICKNESS TO BE .062 +/- .007\n3. APPLY SOLDERMASK OVER BARE COPPER. COLOR: GREEN.\n4. ALL EXPOSED CONDUCTIVE SURFACES TO BE ENIG\n5. SILKSCREEN TOP AND BOTTOM SIDE USING NON-CONDUCTIVE WHITE EPOXY INK.\n6. FABRICATE IN ACCORDANCE WITH IPC-6012 CLASS 2.\n7. COPPER WEIGHT SHALL BE 1 OZ. COPPER, conf=0.75, reason=Engines disagree (2 candidates), picked highest confidence (qwen-vl)",
+    "[ocr_raw_text] value=None, conf=0.00, reason=No engine detected this field",
+    "[ipc_specs] Union of all engines: ['IPC-6012']",
+    "[fabrication_notes] Used longest value (338 chars)"
+  ],
+  "errors": [],
+  "engine_durations_sec": [
+    {
+      "engine": "tesseract",
+      "duration_sec": 3.007,
+      "start_time": "2026-08-17T11:39:53.056341-07:00",
+      "end_time": "2026-08-17T11:39:56.063021-07:00"
+    },
+    {
+      "engine": "glm-ocr",
+      "duration_sec": 12.565,
+      "start_time": "2026-08-17T11:39:53.040342-07:00",
+      "end_time": "2026-08-17T11:40:05.605062-07:00"
+    },
+    {
+      "engine": "qwen-vl",
+      "duration_sec": 81.216,
+      "start_time": "2026-08-17T11:39:53.052134-07:00",
+      "end_time": "2026-08-17T11:41:14.267821-07:00"
+    },
+    {
+      "engine": "pymupdf",
+      "duration_sec": 0.008,
+      "start_time": "2026-08-17T11:39:53.043894-07:00",
+      "end_time": "2026-08-17T11:39:53.052003-07:00"
+    }
+  ],
+  "total_duration_sec": 81.848
+}

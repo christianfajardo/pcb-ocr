@@ -1,0 +1,176 @@
+version: "3.8"
+
+networks:
+  pcb-ocr-net:
+    driver: bridge
+
+volumes:
+  hf-cache:
+    driver: local
+
+services:
+  # ── vLLM: GLM-OCR ─────────────────────────────────────────────────
+  vllm-glm-ocr:
+    image: vllm/vllm-openai:latest
+    container_name: vllm-glm-ocr
+    ports:
+      - "8010:8010"
+    environment:
+      - HUGGING_FACE_HUB_TOKEN=${HF_TOKEN:-}
+    command: >
+      --model zai-org/GLM-OCR
+      --port 8010
+      --host 0.0.0.0
+      --max-model-len 16384
+      --gpu-memory-utilization 0.25
+      --trust-remote-code
+      --dtype auto
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - pcb-ocr-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8010/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 120s
+    restart: unless-stopped
+
+  # ── vLLM: Qwen3-VL ────────────────────────────────────────────────
+  vllm-qwen-vl:
+    image: vllm/vllm-openai:latest
+    container_name: vllm-qwen-vl
+    ports:
+      - "8011:8011"
+    environment:
+      - HUGGING_FACE_HUB_TOKEN=${HF_TOKEN:-}
+    command: >
+      --model Qwen/Qwen3-VL-8B-Instruct
+      --port 8011
+      --host 0.0.0.0
+      --max-model-len 32768
+      --gpu-memory-utilization 0.55
+      --trust-remote-code
+      --dtype auto
+      --limit-mm-per-prompt '{"image": 10}'
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - pcb-ocr-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8011/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 40
+      start_period: 180s
+    restart: unless-stopped
+
+  # ── Tesseract OCR Service ─────────────────────────────────────────
+  tesseract-ocr:
+    build:
+      context: .
+      dockerfile: services/tesseract/Dockerfile
+    container_name: tesseract-ocr
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./logs:/logs
+    environment:
+      - OCR_DPI=${OCR_DPI:-300}
+    networks:
+      - pcb-ocr-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  # ── GLM-OCR API Service ───────────────────────────────────────────
+  glm-ocr-api:
+    build:
+      context: .
+      dockerfile: services/glm_ocr/Dockerfile
+    container_name: glm-ocr-api
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./logs:/logs
+    environment:
+      - OCR_DPI=${OCR_DPI:-300}
+      - GLM_OCR_VLLM_URL=http://vllm-glm-ocr:8010/v1
+      - GLM_OCR_MODEL=zai-org/GLM-OCR
+    networks:
+      - pcb-ocr-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      - vllm-glm-ocr
+    restart: unless-stopped
+
+  # ── Qwen-VL API Service ───────────────────────────────────────────
+  qwen-vl-api:
+    build:
+      context: .
+      dockerfile: services/qwen_vl/Dockerfile
+    container_name: qwen-vl-api
+    ports:
+      - "8003:8003"
+    volumes:
+      - ./logs:/logs
+    environment:
+      - OCR_DPI=${OCR_DPI:-300}
+      - QWEN_VL_VLLM_URL=http://vllm-qwen-vl:8011/v1
+      - QWEN_VL_MODEL=Qwen/Qwen3-VL-8B-Instruct
+    networks:
+      - pcb-ocr-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      - vllm-qwen-vl
+    restart: unless-stopped
+
+  # ── Supervisor (LangGraph Orchestrator) ───────────────────────────
+  supervisor:
+    build:
+      context: .
+      dockerfile: services/supervisor/Dockerfile
+    container_name: supervisor
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./logs:/logs
+    environment:
+      - OCR_DPI=${OCR_DPI:-300}
+      - TESSERACT_URL=http://tesseract-ocr:8001/extract
+      - GLM_OCR_URL=http://glm-ocr-api:8002/extract
+      - QWEN_VL_URL=http://qwen-vl-api:8003/extract
+    networks:
+      - pcb-ocr-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      - tesseract-ocr
+      - glm-ocr-api
+      - qwen-vl-api
+    restart: unless-stopped

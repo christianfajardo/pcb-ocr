@@ -1,0 +1,253 @@
+{
+  "part_number": "123456",
+  "manufacturer": "PCB Prime",
+  "drawing_title": "Really Big Board With Tab Routing",
+  "is_itar": false,
+  "ipc_class": "Class 2",
+  "ipc_specs": [
+    "IPC-6012",
+    "IPC-A-600",
+    "IPC-SM-840",
+    "J-STD-609",
+    "IPC-1066",
+    "IPC spec references found",
+    "IPC-7711/7721"
+  ],
+  "layer_count": 10,
+  "layer_stackup": [
+    {
+      "number": 1,
+      "function": "signal"
+    },
+    {
+      "number": 2,
+      "function": "plane"
+    },
+    {
+      "number": 3,
+      "function": "trace"
+    },
+    {
+      "number": 4,
+      "function": "plane"
+    },
+    {
+      "number": 5,
+      "function": "plane"
+    },
+    {
+      "number": 6,
+      "function": "plane"
+    },
+    {
+      "number": 7,
+      "function": "plane"
+    },
+    {
+      "number": 8,
+      "function": "trace"
+    },
+    {
+      "number": 9,
+      "function": "plane"
+    },
+    {
+      "number": 10,
+      "function": "signal"
+    }
+  ],
+  "material": "FR4",
+  "board_thickness": {
+    "nominal": 0.093,
+    "plus_tol": 0.01,
+    "minus_tol": 0.01,
+    "unit": "in",
+    "raw": "0.093\" +/- 10%"
+  },
+  "copper_weights": {
+    "signal_layers_oz": 1.0,
+    "plane_layers_oz": 0.5,
+    "external_finished_oz": 1.0
+  },
+  "surface_finish": "ENIG",
+  "solder_mask": {
+    "present": true,
+    "type": "LPI",
+    "color": "green",
+    "spec": "IPC-SM-840",
+    "sides": "both"
+  },
+  "silkscreen": {
+    "present": true,
+    "color": "white",
+    "ink": "non-conducting",
+    "sides": "primary side"
+  },
+  "impedance_control": {
+    "controlled": true,
+    "single_ended": {
+      "min": 100.0,
+      "max": 100.0,
+      "unit": "ohm",
+      "raw": null
+    },
+    "trace_width_mils": 0.005,
+    "layers": []
+  },
+  "drill_table": [
+    {
+      "size_mils": 10.0,
+      "qty": 256,
+      "symbol": "X",
+      "plated": true
+    },
+    {
+      "size_mils": 12.0,
+      "qty": 3229,
+      "symbol": "X",
+      "plated": true
+    },
+    {
+      "size_mils": 24.0,
+      "qty": 132,
+      "symbol": "\u25c7",
+      "plated": true
+    },
+    {
+      "size_mils": 25.0,
+      "qty": 82,
+      "symbol": "\u25a1",
+      "plated": true
+    },
+    {
+      "size_mils": 28.0,
+      "qty": 4,
+      "symbol": "\u25a1",
+      "plated": true
+    },
+    {
+      "size_mils": 33.0,
+      "qty": 253,
+      "symbol": "\u25a1",
+      "plated": true
+    },
+    {
+      "size_mils": 35.0,
+      "qty": 2,
+      "symbol": "\u25a1",
+      "plated": true
+    },
+    {
+      "size_mils": 40.0,
+      "qty": 23,
+      "symbol": "\u25a1",
+      "plated": true
+    },
+    {
+      "size_mils": 52.0,
+      "qty": 13,
+      "symbol": "\u25a1",
+      "plated": true
+    },
+    {
+      "size_mils": 65.0,
+      "qty": 22,
+      "symbol": "\u25a1",
+      "plated": true
+    },
+    {
+      "size_mils": 70.0,
+      "qty": 62,
+      "symbol": "\u25a1",
+      "plated": true
+    },
+    {
+      "size_mils": 79.0,
+      "qty": 2,
+      "symbol": "\u25a1",
+      "plated": true
+    },
+    {
+      "size_mils": 100.0,
+      "qty": 4,
+      "symbol": "\u25a1",
+      "plated": true
+    },
+    {
+      "size_mils": 118.0,
+      "qty": 7,
+      "symbol": "\u25a1",
+      "plated": true
+    },
+    {
+      "size_mils": 125.0,
+      "qty": 19,
+      "symbol": "\u25a1",
+      "plated": true
+    },
+    {
+      "size_mils": 126.0,
+      "qty": 5,
+      "symbol": "\u25a1",
+      "plated": true
+    },
+    {
+      "size_mils": 137.8,
+      "qty": 12,
+      "symbol": "\u25c7",
+      "plated": true
+    }
+  ],
+  "fabrication_notes": "NOTES (UNLESS OTHERWISE SPECIFIED) 7 ee e ee es 38 as gee 9 85\n2m 8 Ee PE 3s a as ae a\n1. PRINARY SIDE SHOWN, oa ae + zi 3 .\nz = 4.523\ninne = Ls\n3. FABRICATE, PER IPC-6012, CLASS 2, CURRENT REV. Ct CN = ae ee\n-F--- oo\n4, DETERMINE ACCEPTABILITY PER IPC-A-600, CURRENT REV. Special Note _ ox a | 13875 TOOLNG HOLE\n25% BREAKOUT PERMITTED ON IAS IF INTERFACE eee Xx gt x eo y pny .\nBETWEEN CONDUCTOR AND TERMINAL AREA OF PAD IS 100%. ood . PEE 5 com omy yy oo oxy? py? * fet < offs\nBOARDS TO BE 100% ELECTRICALLY TESTED FOR CONTINUITY x = #4 7 id ae\n(OPENS AND SHORTS). \u2018x Ascae \u00b0 42 gfees\nCERTIFICATION OF THIS TEST REQUIRED 7 a8\nWITH EACH SHIPMENT FOR EACH DATE CODE SUPPLIED. CERTIFICATION TO : . ia\nINCLUDE P.O. #. P/N, AND QUANTITY OF EACH DATE CODE. pad oo ond an :\nax\n5, PCBs SHALL BE RofS COMPLIANT. WATERIAL TO BE FR4 OR FR406. oom oom oem g +?\nBOARD TO BE 0.093\" +/- 10% MEASURED OUTER METAL-TO-HETAL, THICKNESS. g ge * 8 one? g oa? ap\nBOARD FINGH TO BE LEAD FREE HASL OR ENIG. PCB SHALL BE MARKED PER mn: t-oe aro Bo s\n{-STD-609 PARA 7-2 (FINAL FINSH DESIGNATOR), OR PER (PC-1068. to: 22%, 3 tes ease nie Soh 8 an wo ay ost\n6. PLATE TO 10 OZ COPPER NOMINAL ON SURFACE LAYERS, 10 0Z x Vet 8 x F set \u00ae x ake x -: : ae\nCOPPER NOMINAL IN HOLES AND INTERNAL PLANE LAYERS, 0.5 0Z INTERNAL ie zg # oo 4 oo Bye + Dex, F xXye \u00a3 o verso\nTRACE LAYERS. * ety | \u00ae eatin} iy gt + Boge + foes \u00e9 | | ane\nJ. TOOLING HOLES OF DIAMETER UP TO 0.126\" ARE NON=PLATED AND WAY oo 2 # conn hE me 7 of c# ak peso, + 22 SES\nOR WAY HOT BE PRESENT IN DESIGN AS PER SUPPLIED ARTWORK. Soma? sami, RE pee e Ebel 2 as\nIF PRESENT IN DESIGN THEY SHALL GE MARKED \"T\u00ae. ALL OTHER HOLES 8 sua oy gee B+ eth rs aes E+ He\nSHALL BE PLATED OR NON-PLATED ACCORDING TO HOLE CHART. an . . a . = . . a % CEP # a\noe + i\n8 HOLE SIZES GIVEN ARE FINISHED DIMENSIONS. e e 924 vad ' * \u2019 * \u20184 * on # oy Pee a a Bl 7]\n9, SOLDERMASK BOTH SIDES OVER BARE COPPER PER IPC-SM-840, Oe Fomg ge% Pee : x tem + xf Sa, on Nee inks # ef\nCLASS 2, CURRENT REV, AND MANUFACTURERS SPECIFICATIONS. * Sty ox riety f x sok io 5 Afni : a Seborig + :\nNO BARE COPPER ALLOWED. No SOLDER MASK XB een. ak ye pot My Px \u201cBE hen * t offs\nPERMISSIBLE ON COMPONENT PADS AS PER SUPPLIED ARTWORK. Bo x Beem age nc Siem age \u2019 wh = + . \u2019 a\nAES e x x 2K\nDATE CODE, UL RECOGNIZED VENDOR WARK, AND ULO4V-0 WARK REQUIRED. ees oh oee $ sa oe 4 $e 4 yx ea e\nDATE CODE\u2019 SHALL USE FOUR NUMERALS, GIVING WORK WEEK es ee * vi 3 . : yonseks # ale\nAND YEAR, EG. 2818 STANDS FOR THE 28TH WEEK OF 2018. \u00a5 % x e *. . at rau\nTHESE MARKS SHALL BE WADE IN COPPER AND SHALL BE LOCATED 5 PE +, +e mn . \u2018 +a + oa ne .\nON THE SECONDARY SIDE OF THE PCB. 3 Ea -e aes eee oy my ey Age. got 2 fe\n1L SCREEN COMPONENT 1D WITH NON-CONDUCTING WHITE INK. \u00a5 & KR 2220 \u00a7 4 oes 4 HE, een + oka gs \u00a3 & \u00b0\nCOMPONENT ID REGISTRATION TO BE WiTHN +/- 0.005\u00b0 OF ITS . \u2018ee 4 ee 4 \u00b0 ef x\nRESPECTIVE COMPONENT LAYER. % % foie 4 caw) eI R5 3 .\nNO SILKSCREEN INK PERMISSIBLE ON COMPONENT PADS 4 oie x : oo \u00bb 2 2B a\nOR IN PADS AS PER SUPPLIED ARTWORK. x 5K + x SK \u00a5 Af td > % . x x x x x x x .\n12, ETCH TOLERANCE 40.001\" - 0.002\", TOTAL TRACE REDUCTION \u00ae % has te OR ge Pe te Fe te x : Drill Chart\nCANNOT EXCEED 20%. vm + 0\u00b0 z\u00b0 oe 8 Re ge monte Chay Pong Ds Grae Easy ans Mr\n10-4 WITHIN +/-0.003\". on eo Hoe SH SOCORRO py ORK py HH py HHH py HO\n13. FRONT=TO-BACK REGISTRATION TO BE WITHN +/ = pte fog pty 2 ec cnte 8 g 388 x Fc ON Oa nO OK TRO, eae rd\nTe ee eee cence a scams orale e s tamir + ve joie ge ge a, Me EH a ac TET\n15, CONTROLLED WPEDANCE AT 10% TOLERANCE. TRACE WIDTH MAY g x Bog Boo 0oo 8 PraeeNt se stresses ses [aoa [ours >< Tres | woenr-n0e\nBE ADJUSTED TO MEET IMPEDANCE REQUIREMENTS, BUT NOT BELOW % ax Boo oe ke gx bok maa Focal fam [ [ves | voaey-a0n]\n0.0045\" IN WIDTH OR CLEARANCE: Dex Pe xe x Eien ae ee . fons [we [O|rcs_ | woo |\n0.005\" TRACES ON ALL LAYERS ARE 100 OHM DIFFERENTIAL + eae eK i) ieceaaal xx Fe Hl jes fe | fe fran\nfoxes |\n16. LAYER CONFIGURATION DIAGRAM: 2 onee aeeae w 7 - Pie hg peace ca]\nPeuaky SE SOLDER WSK era ara eee: . X x EE x Speirs |\nPRIMARY SIDE SOLDER WA x sgh eX x ty eae x* eS * [yous |\nCIRCUIT LAYER #1 (PRIMARY SIDE) nnd Vo a a \u201cfe be Be ae ek ot as i RM ee te eed a i. js Te feb 2a\nCIRCUIT LAYER $2 - PLANE LAYER MINIMUM INNER LAYER of pe eee Pas PORE x a mt, x RE z Kmienitig eye k Sbooondl fee ee\nCIRCUIT LAYER #3 - TRACE LAYER SPACING IS 0.005\" Phy xpos ig eam *B fap 85 XB xu x woe FE EREERX. a aS Le [lm | vos |\nCIRCUIT LAYER {4 - PLANE LAYER MEASURED BETWEEN ANY \" % Box 0G 9 es x RRO TEER OWA S eyed fos __Te Te i\nCIRCUIT LAYER #5 - PLANE LAYER JWO COPPER LAYERS. + e008 ke Bhesoc i RK, i ES CS A ES | Teose [+ [P [ves | oz-n00s |\nCIRCUIT LAYER 46 - PLANE LAYER ; ness 9 y Tear eee himag A weal E | a [os core Po] oar |\nCIRCUIT LAYER 47 - PLANE LAYER o* eco Sse ee ae ae aL A rr ce es eB feos bw ttm | oon]\nCRT TER fe eR EATER +. Teme wat \u00a2 | a re asegh tb 1h, Ee iy eB Juas [a [oa es [ora\nCIRCUIT LAYER $9 - PLANE LAYER $ 0% the OOO 5g Se Fk soRROU o ten x ees mei tere \u00a5 See ete es | eas _|\nSe TE PO eK 4 Xe ae\" yuk soe ae ye ae a form Le fe | ran\nLayer Stack Up f #of, oo * x mess a i ae Be ou Board Origi LH ozrD\n3 5 oe Jens | [wo | sr-a00r |\ntet e wand \u00a2 7 * : Bas BS & ewe Hon WOLES, 2 pe\nweet - . ae fee Le 0 es 1 a\nLe re pg re inn SaLoER OR PLATING\nvers Tom ononerea TOT con oO y a\" PLUG ACCEPTABLE 1M\none } \u00a7 U 1 i) aut od pese HOLES UP TO 0.021\nge ra gece aoe 38 gS a8 ge 28 $3 a8 as aug 28 & Beas\nwee G08\" Osonri FRE 170 BS ee a\u00a2 ia 7 iT ; ? g 3\nue\noe crc angen brut nner np i Title Block\nis ------ povida Ave Sule Are\nOL PRS OEE EEF son a ome sci\n_ * bs \u2018 D 1 \u00a9 ss Fa DMRNSHRS BES Really Big Board With Tab Routing\nPcB) PRiM= PCB Prime Sample Fabrication Drawing See ae OEE\nSe aT ISIS 7m\nCo RT SA\npeers [to ee) ESS\n& Se --- Le",
+  "ocr_raw_text": null,
+  "reconciliation_log": [
+    "[part_number] value=123456, conf=0.94, reason=All 2 engines agree, confidence boosted to 0.94",
+    "[manufacturer] value=PCB Prime, conf=0.58, reason=2/3 engines agree",
+    "[drawing_title] value=Really Big Board With Tab Routing, conf=0.85, reason=Engines disagree (2 candidates), picked highest confidence (qwen-vl)",
+    "[is_itar] value=False, conf=0.99, reason=All 3 engines agree, confidence boosted to 0.99",
+    "[ipc_class] value=IPCClass.CLASS_2, conf=0.94, reason=All 2 engines agree, confidence boosted to 0.94",
+    "[ipc_specs] value=['IPC-A-600', 'IPC-6012', 'IPC-SM-840', 'IPC-7711/7721'], conf=0.85, reason=Engines disagree (3 candidates), picked highest confidence (qwen-vl)",
+    "[layer_count] value=10, conf=0.94, reason=All 3 engines agree, confidence boosted to 0.94",
+    "[layer_stackup] value=[LayerSpec(number=1, function='signal'), LayerSpec(number=2, function='plane'), LayerSpec(number=3, function='trace'), LayerSpec(number=4, function='plane'), LayerSpec(number=5, function='plane'), LayerSpec(number=6, function='plane'), LayerSpec(number=7, function='plane'), LayerSpec(number=8, function='trace'), LayerSpec(number=9, function='plane'), LayerSpec(number=10, function='signal')], conf=0.90, reason=Engines disagree (3 candidates), picked highest confidence (qwen-vl)",
+    "[material] value=FR4, conf=0.57, reason=2/3 engines agree",
+    "[board_thickness] value=nominal=0.093 plus_tol=0.01 minus_tol=0.01 unit='in' raw='0.093\" +/- 10%', conf=0.87, reason=Engines disagree (3 candidates), picked highest confidence (qwen-vl)",
+    "[copper_weights] value=signal_layers_oz=1.0 plane_layers_oz=0.5 external_finished_oz=1.0, conf=0.87, reason=Engines disagree (3 candidates), picked highest confidence (qwen-vl)",
+    "[surface_finish] value=ENIG, conf=0.94, reason=All 3 engines agree, confidence boosted to 0.94",
+    "[solder_mask] value=present=True type='LPI' color='green' spec='IPC-SM-840' sides='both', conf=0.85, reason=Engines disagree (3 candidates), picked highest confidence (qwen-vl)",
+    "[silkscreen] value=present=True color='white' ink='non-conducting' sides='primary side', conf=0.85, reason=Engines disagree (3 candidates), picked highest confidence (qwen-vl)",
+    "[impedance_control] value=controlled=True single_ended=ImpedanceRange(min=100.0, max=100.0, unit='ohm', raw=None) trace_width_mils=0.005 layers=[], conf=0.90, reason=Engines disagree (3 candidates), picked highest confidence (qwen-vl)",
+    "[drill_table] value=[DrillRow(size_mils=10.0, qty=256, symbol='X', plated=True), DrillRow(size_mils=12.0, qty=3229, symbol='X', plated=True), DrillRow(size_mils=24.0, qty=132, symbol='\u25c7', plated=True), DrillRow(size_mils=25.0, qty=82, symbol='\u25a1', plated=True), DrillRow(size_mils=28.0, qty=4, symbol='\u25a1', plated=True), DrillRow(size_mils=33.0, qty=253, symbol='\u25a1', plated=True), DrillRow(size_mils=35.0, qty=2, symbol='\u25a1', plated=True), DrillRow(size_mils=40.0, qty=23, symbol='\u25a1', plated=True), DrillRow(size_mils=52.0, qty=13, symbol='\u25a1', plated=True), DrillRow(size_mils=65.0, qty=22, symbol='\u25a1', plated=True), DrillRow(size_mils=70.0, qty=62, symbol='\u25a1', plated=True), DrillRow(size_mils=79.0, qty=2, symbol='\u25a1', plated=True), DrillRow(size_mils=100.0, qty=4, symbol='\u25a1', plated=True), DrillRow(size_mils=118.0, qty=7, symbol='\u25a1', plated=True), DrillRow(size_mils=125.0, qty=19, symbol='\u25a1', plated=True), DrillRow(size_mils=126.0, qty=5, symbol='\u25a1', plated=True), DrillRow(size_mils=137.8, qty=12, symbol='\u25c7', plated=True)], conf=0.72, reason=Only source (qwen-vl), confidence penalized to 0.8x",
+    "[fabrication_notes] value=ALL DRAFTING PRACTICES BASED ON ANSI DRAFTING STANDARDS ALL DIMENSIONS ARE IN INDEXES., conf=0.80, reason=Engines disagree (3 candidates), picked highest confidence (glm-ocr)",
+    "[ocr_raw_text] value=None, conf=0.00, reason=No engine detected this field",
+    "[ipc_specs] Union of all engines: ['IPC-6012', 'IPC-A-600', 'IPC-SM-840', 'J-STD-609', 'IPC-1066', 'IPC spec references found', 'IPC-7711/7721']",
+    "[fabrication_notes] Used longest value (5774 chars)"
+  ],
+  "errors": [],
+  "engine_durations_sec": [
+    {
+      "engine": "tesseract",
+      "duration_sec": 11.481,
+      "start_time": "2026-08-17T11:41:15.989447-07:00",
+      "end_time": "2026-08-17T11:41:27.470625-07:00"
+    },
+    {
+      "engine": "glm-ocr",
+      "duration_sec": 44.364,
+      "start_time": "2026-08-17T11:41:15.982104-07:00",
+      "end_time": "2026-08-17T11:42:00.345719-07:00"
+    },
+    {
+      "engine": "qwen-vl",
+      "duration_sec": 195.658,
+      "start_time": "2026-08-17T11:41:15.986481-07:00",
+      "end_time": "2026-08-17T11:44:31.644134-07:00"
+    },
+    {
+      "engine": "pymupdf",
+      "duration_sec": 0.001,
+      "start_time": "2026-08-17T11:41:15.985411-07:00",
+      "end_time": "2026-08-17T11:41:15.986346-07:00"
+    }
+  ],
+  "total_duration_sec": 197.332
+}

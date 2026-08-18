@@ -7,8 +7,9 @@ import io
 import structlog
 import time
 
-from fastapi import APIRouter, File, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 
+from shared.auth import require_api_key
 from shared.confidence import build_confidence_map
 from shared.logging_config import bind_pdf_filename
 from shared.pcb_parser import parse_pcb_text_with_provenance
@@ -25,7 +26,7 @@ DPI = int(__import__("os").environ.get("OCR_DPI", "300"))
 glm_client = GLMOCRClient()
 
 
-@router.post("")
+@router.post("", dependencies=[Depends(require_api_key)])
 async def extract(file: UploadFile = File(...)) -> dict:
     """Extract PCB data using GLM-OCR.
 

@@ -11,6 +11,7 @@ from zoneinfo import ZoneInfo
 
 import httpx
 
+from shared.auth import API_KEY
 from shared.confidence import build_confidence_map, merge_with_attribution
 from shared.pcb_parser import parse_pcb_text_with_provenance
 from shared.pdf_text import extract_pdf_text_layer, has_substantial_text_layer
@@ -23,6 +24,11 @@ logger = structlog.get_logger(__name__)
 TESSERACT_URL = os.environ.get("TESSERACT_URL", "http://tesseract-ocr:8001/extract")
 GLM_OCR_URL = os.environ.get("GLM_OCR_URL", "http://glm-ocr-api:8002/extract")
 QWEN_VL_URL = os.environ.get("QWEN_VL_URL", "http://qwen-vl-api:8003/extract")
+
+# Downstream engines require the same API_KEY the supervisor itself does —
+# forwarded as a Bearer token on every outbound call. A no-op header when
+# API_KEY isn't configured (see shared/auth.py).
+_AUTH_HEADERS = {"Authorization": f"Bearer {API_KEY}"} if API_KEY else {}
 
 DPI = int(os.environ.get("OCR_DPI", "300"))
 PDF_TEXT_LAYER_MIN_CHARS = int(os.environ.get("PDF_TEXT_LAYER_MIN_CHARS", "200"))
@@ -213,6 +219,7 @@ async def _call_ocr_node(
                     response = await client.post(
                         url,
                         files={"file": (upload_filename, f, "application/pdf")},
+                        headers=_AUTH_HEADERS,
                     )
                 response.raise_for_status()
 

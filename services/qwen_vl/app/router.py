@@ -7,8 +7,9 @@ import io
 import structlog
 import time
 
-from fastapi import APIRouter, File, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 
+from shared.auth import require_api_key
 from shared.confidence import build_confidence_map
 from shared.logging_config import bind_pdf_filename
 from shared.preprocessing import pdf_to_images
@@ -24,7 +25,7 @@ DPI = int(__import__("os").environ.get("OCR_DPI", "300"))
 qwen_client = QwenVLClient()
 
 
-@router.post("")
+@router.post("", dependencies=[Depends(require_api_key)])
 async def extract(file: UploadFile = File(...)) -> dict:
     """Extract PCB data using Qwen3-VL.
 

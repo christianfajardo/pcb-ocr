@@ -7,6 +7,16 @@ COMPOSE_FILE="${COMPOSE_FILE:-docker-compose.yml}"
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$PROJECT_DIR"
 
+# docker compose reads .env itself for container env vars, but this script
+# runs pytest directly on the host — it needs API_KEY exported too, so the
+# e2e tests can send the same key the live services were started with.
+if [ -f .env ]; then
+    set -a
+    # shellcheck disable=SC1091
+    source .env
+    set +a
+fi
+
 # Export supervisor URL for tests
 export SUPERVISOR_URL="${SUPERVISOR_URL:-http://localhost:8080/extract}"
 export SUPERVISOR_HEALTH="${SUPERVISOR_HEALTH:-http://localhost:8080/health}"

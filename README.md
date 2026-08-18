@@ -119,9 +119,12 @@ make health
 
 ```bash
 curl -X POST http://localhost:8080/extract \
+  -H "Authorization: Bearer $API_KEY" \
   -F "file=@samples/sample1.pdf" \
   | python3 -m json.tool
 ```
+
+Every service's `POST /extract` requires this header when `API_KEY` is set (see [Authentication](#authentication) below); `/health` and `/ready` stay open for Docker healthchecks.
 
 Response: `PCBData` JSON with all extracted fields + confidence scores.
 
@@ -287,6 +290,7 @@ Every field in the response has a matching entry under `attribution`, answering 
 
 | Env Var | Default | Description |
 |---------|---------|-------------|
+| `API_KEY` | *(unset)* | Bearer token required on every service's `POST /extract` — see [Authentication](#authentication) |
 | `OCR_DPI` | `300` | PDF rasterization DPI |
 | `TESSERACT_URL` | `http://tesseract-ocr:8001/extract` | Tesseract service URL |
 | `GLM_OCR_URL` | `http://glm-ocr-api:8002/extract` | GLM-OCR service URL |
@@ -295,6 +299,14 @@ Every field in the response has a matching entry under `attribution`, answering 
 | `QWEN_VL_VLLM_URL` | `http://vllm-qwen-vl:8011/v1` | Qwen-VL vLLM endpoint |
 | `PDF_TEXT_LAYER_MIN_CHARS` | `200` | Min. alphanumeric characters in the PDF's embedded text layer before PyMuPDF contributes a result (below this, it's treated as a scan/no text layer and skipped) |
 | `LOG_DIR` | `/logs` | Where per-PDF log files are written (see below) |
+
+### Authentication
+
+Set `API_KEY` in `.env` to require an `Authorization: Bearer <API_KEY>` header on every service's `POST /extract` (`shared/auth.py`). Each of the 4 services (`supervisor`, `tesseract-ocr`, `glm-ocr-api`, `qwen-vl-api`) checks it independently — there's no shared auth service or session. `/health` and `/ready` are never gated, since Docker's healthchecks and `scripts/health_check.py` don't send custom headers.
+
+The supervisor forwards the same key on its own internal calls to the 3 downstream services, so the whole pipeline keeps working end-to-end once a key is set — no separate internal credential to manage.
+
+Leaving `API_KEY` unset disables auth entirely (every request is accepted) — the default for local dev. All 3 host-tool entry points that call the live API directly source `.env` before running, so the key travels automatically once set: `scripts/run_tests.sh` (used by `make test`), the `benchmark` Makefile target, and `tests/conftest.py` (used by `pytest tests/test_e2e.py`).
 
 ## Per-PDF logs
 

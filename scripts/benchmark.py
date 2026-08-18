@@ -23,6 +23,11 @@ SAMPLE_FILES = [
 
 SUPERVISOR_URL = "http://localhost:8080/extract"
 
+# Same API_KEY the live services were started with (see shared/auth.py) — a
+# no-op empty dict when auth isn't configured.
+_API_KEY = os.environ.get("API_KEY")
+_AUTH_HEADERS = {"Authorization": f"Bearer {_API_KEY}"} if _API_KEY else {}
+
 
 async def extract_sample(pdf_path: str) -> dict:
     """Extract a single sample via the supervisor."""
@@ -31,6 +36,7 @@ async def extract_sample(pdf_path: str) -> dict:
             resp = await client.post(
                 SUPERVISOR_URL,
                 files={"file": (os.path.basename(pdf_path), f, "application/pdf")},
+                headers=_AUTH_HEADERS,
             )
         resp.raise_for_status()
         return resp.json()

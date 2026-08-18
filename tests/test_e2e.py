@@ -8,7 +8,7 @@ from pathlib import Path
 
 import httpx
 import pytest
-from conftest import PROJECT_ROOT, SAMPLE_FILES
+from conftest import AUTH_HEADERS, PROJECT_ROOT, SAMPLE_FILES
 
 from shared.schemas import (
     BoardThickness,
@@ -198,6 +198,7 @@ async def test_extraction_accuracy(pdf_path: str, expected_path: str):
             response = await client.post(
                 os.environ.get("SUPERVISOR_URL", "http://localhost:8080/extract"),
                 files={"file": ("test.pdf", f, "application/pdf")},
+                headers=AUTH_HEADERS,
             )
         assert response.status_code == 200, f"HTTP {response.status_code}: {response.text}"
 

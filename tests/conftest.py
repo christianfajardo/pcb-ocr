@@ -20,6 +20,12 @@ SAMPLE_FILES = [
 # Supervisor endpoint
 SUPERVISOR_URL = os.environ.get("SUPERVISOR_URL", "http://localhost:8080/extract")
 
+# Same API_KEY the live services were started with (see shared/auth.py) — a
+# no-op empty dict when auth isn't configured, since the services skip the
+# check in that case too.
+_API_KEY = os.environ.get("API_KEY")
+AUTH_HEADERS = {"Authorization": f"Bearer {_API_KEY}"} if _API_KEY else {}
+
 
 @pytest.fixture(params=SAMPLE_FILES, ids=["sample1", "sample2", "sample3", "sample4"])
 def sample_pair(request):

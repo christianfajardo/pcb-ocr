@@ -6,8 +6,9 @@ import time
 
 import structlog
 
-from fastapi import APIRouter, File, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 
+from shared.auth import require_api_key
 from shared.logging_config import bind_pdf_filename
 
 from .graph import compiled
@@ -32,7 +33,7 @@ _ENGINES = [
 ]
 
 
-@router.post("")
+@router.post("", dependencies=[Depends(require_api_key)])
 async def extract(file: UploadFile = File(...)) -> dict:
     """Run the full OCR pipeline on a PDF.
 

@@ -29,4 +29,4 @@ logs:
 	docker compose logs -f
 
 benchmark:
-	PYTHONPATH=. python scripts/benchmark.py
+	set -a; [ -f .env ] && . .env; set +a; PYTHONPATH=. python scripts/benchmark.py

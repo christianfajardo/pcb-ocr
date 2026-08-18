@@ -88,6 +88,7 @@ services:
       - ./logs:/logs
     environment:
       - OCR_DPI=${OCR_DPI:-300}
+      - API_KEY=${API_KEY:-}
     networks:
       - pcb-ocr-net
     healthcheck:
@@ -109,6 +110,7 @@ services:
       - ./logs:/logs
     environment:
       - OCR_DPI=${OCR_DPI:-300}
+      - API_KEY=${API_KEY:-}
       - GLM_OCR_VLLM_URL=http://vllm-glm-ocr:8010/v1
       - GLM_OCR_MODEL=zai-org/GLM-OCR
     networks:
@@ -134,6 +136,7 @@ services:
       - ./logs:/logs
     environment:
       - OCR_DPI=${OCR_DPI:-300}
+      - API_KEY=${API_KEY:-}
       - QWEN_VL_VLLM_URL=http://vllm-qwen-vl:8011/v1
       - QWEN_VL_MODEL=Qwen/Qwen3-VL-8B-Instruct
     networks:
@@ -159,6 +162,7 @@ services:
       - ./logs:/logs
     environment:
       - OCR_DPI=${OCR_DPI:-300}
+      - API_KEY=${API_KEY:-}
       - TESSERACT_URL=http://tesseract-ocr:8001/extract
       - GLM_OCR_URL=http://glm-ocr-api:8002/extract
       - QWEN_VL_URL=http://qwen-vl-api:8003/extract

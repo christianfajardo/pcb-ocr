@@ -8,7 +8,7 @@ from pathlib import Path
 
 import httpx
 import pytest
-from conftest import AUTH_HEADERS, PROJECT_ROOT, SAMPLE_FILES
+from conftest import AUTH_HEADERS, PROJECT_ROOT, SAMPLE_FILES, poll_job
 
 from shared.schemas import (
     BoardThickness,
@@ -185,7 +185,7 @@ async def test_extraction_accuracy(pdf_path: str, expected_path: str):
     expected = _load_expected(str(expected_path))
     sample_name = Path(expected_path).stem
 
-    async with httpx.AsyncClient(timeout=1080) as client:
+    async with httpx.AsyncClient(timeout=30) as client:
         try:
             # Quick check if supervisor is available
             await client.get(
@@ -200,9 +200,14 @@ async def test_extraction_accuracy(pdf_path: str, expected_path: str):
                 files={"file": ("test.pdf", f, "application/pdf")},
                 headers=AUTH_HEADERS,
             )
-        assert response.status_code == 200, f"HTTP {response.status_code}: {response.text}"
+        assert response.status_code == 202, f"HTTP {response.status_code}: {response.text}"
 
-        raw = response.json()
+        job_id = response.json()["job_id"]
+        body = await poll_job(client, job_id, AUTH_HEADERS)
+        if body["status"] == "failed":
+            pytest.fail(f"Job failed for {sample_name}: {body.get('error')}")
+
+        raw = body["result"]
         result = PCBData(**raw)
 
     output_dir = PROJECT_ROOT / "tests" / "output"

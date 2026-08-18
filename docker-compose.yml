@@ -7,6 +7,8 @@ networks:
 volumes:
   hf-cache:
     driver: local
+  redis-data:
+    driver: local
 
 services:
   # ── vLLM: GLM-OCR ─────────────────────────────────────────────────
@@ -150,6 +152,22 @@ services:
       - vllm-qwen-vl
     restart: unless-stopped
 
+  # ── Redis (async job registry for /extract) ────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: pcb-ocr-redis
+    command: redis-server --save 60 1 --appendonly yes
+    volumes:
+      - redis-data:/data
+    networks:
+      - pcb-ocr-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
   # ── Supervisor (LangGraph Orchestrator) ───────────────────────────
   supervisor:
     build:
@@ -166,6 +184,8 @@ services:
       - TESSERACT_URL=http://tesseract-ocr:8001/extract
       - GLM_OCR_URL=http://glm-ocr-api:8002/extract
       - QWEN_VL_URL=http://qwen-vl-api:8003/extract
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
+      - JOB_TTL_SEC=${JOB_TTL_SEC:-86400}
     networks:
       - pcb-ocr-net
     healthcheck:
@@ -177,4 +197,5 @@ services:
       - tesseract-ocr
       - glm-ocr-api
       - qwen-vl-api
+      - redis
     restart: unless-stopped

@@ -8,6 +8,7 @@ from fastapi import FastAPI
 
 from shared.logging_config import configure_logging
 
+from .router import jobs_router
 from .router import router as extract_router
 
 configure_logging()
@@ -56,3 +57,4 @@ async def ready() -> dict:
 
 
 app.include_router(extract_router)
+app.include_router(jobs_router)

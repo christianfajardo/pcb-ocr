@@ -16,6 +16,9 @@ Multi-model OCR pipeline for extracting structured data from PCB fabrication dra
 │                Supervisor (LangGraph Orchestrator)                │
 │                             Port 8080                             │
 │                                                                   │
+│   202 { job_id, status: "processing" }         ← immediate response│
+│                                ▼                                  │
+│                     (background job runs)                         │
 │ ┌──────────────┬──────────────┬──────────────┬────────────────┐   │
 │ │Tesseract OCR │ GLM-OCR API  │   Qwen3-VL   │    PyMuPDF     │   │
 │ │ (port 8001)  │ (port 8002)  │ (port 8003)  │  (in-process)  │   │
@@ -31,20 +34,20 @@ Multi-model OCR pipeline for extracting structured data from PCB fabrication dra
 │            │            majority voting)            │             │
 │            └────────────────────────────────────────┘             │
 │                                ▼                                  │
-│                       ┌──────────────────┐                        │
-│                       │  PCBData (JSON)  │              ← response│
-│                       └──────────────────┘                        │
+│                  job → completed, result stored in Redis          │
 └───────────────────────────────────────────────────────────────────┘
-                              │
-                    ┌─────────┴─────────┐
-                    ▼                   ▼
-            ┌──────────────┐    ┌──────────────┐
-            │ vLLM GLM-OCR │    │vLLM Qwen3-VL │
-            │ (port 8010)  │    │ (port 8011)  │
-            │     GPU      │    │     GPU      │
+                              │                    │
+                    ┌─────────┴─────────┐          │ GET /jobs/{job_id}
+                    ▼                   ▼          ▼ (client polls)
+            ┌──────────────┐    ┌──────────────┐ ┌───────┐
+            │ vLLM GLM-OCR │    │vLLM Qwen3-VL │ │ Redis │
+            │ (port 8010)  │    │ (port 8011)  │ │(jobs) │
+            │     GPU      │    │     GPU      │ └───────┘
             └──────────────┘    └──────────────┘
 ```
 \* PyMuPDF only contributes when the PDF has a substantial embedded text layer — see below.
+
+`POST /extract` is asynchronous: it returns a `job_id` immediately (well under a second) and the pipeline runs in the background — see [Async jobs](#async-jobs) below for the full request/response contract and polling example.
 
 ### Rasterization
 
@@ -68,6 +71,7 @@ From there the three services diverge in what they do with the rasterized page:
 | **glm-ocr-api** | 8002 | FastAPI wrapper for GLM-OCR model |
 | **qwen-vl-api** | 8003 | FastAPI wrapper for Qwen3-VL model |
 | **supervisor** | 8080 | LangGraph orchestrator + reconciliation + PyMuPDF text-layer extraction (runs in-process, not a separate service) |
+| **redis** | 6379 (internal only) | Async job registry for `POST /extract` — persists job status/result so it survives a supervisor restart. Only the supervisor talks to it. |
 
 ### OCR Engine Responsibilities
 
@@ -117,16 +121,22 @@ make health
 
 ### Extract a PCB drawing
 
+`POST /extract` is asynchronous — it returns a `job_id` immediately, then you poll `GET /jobs/{job_id}` for the result:
+
 ```bash
 curl -X POST http://localhost:8080/extract \
   -H "Authorization: Bearer $API_KEY" \
-  -F "file=@samples/sample1.pdf" \
+  -F "file=@samples/sample1.pdf"
+# -> 202 { "job_id": "a1b2c3...", "status": "processing" }
+
+curl http://localhost:8080/jobs/a1b2c3... \
+  -H "Authorization: Bearer $API_KEY" \
   | python3 -m json.tool
+# -> { "job_id": "...", "status": "processing" }                    (while running)
+# -> { "job_id": "...", "status": "completed", "result": {...} }    (when done — PCBData + confidence scores)
 ```
 
-Every service's `POST /extract` requires this header when `API_KEY` is set (see [Authentication](#authentication) below); `/health` and `/ready` stay open for Docker healthchecks.
-
-Response: `PCBData` JSON with all extracted fields + confidence scores.
+Every service's `POST /extract` (and the supervisor's `GET /jobs/{job_id}`) requires this header when `API_KEY` is set (see [Authentication](#authentication) below); `/health` and `/ready` stay open for Docker healthchecks. See [Async jobs](#async-jobs) for the full contract, including the failed-job shape.
 
 ### Run tests
 
@@ -143,21 +153,36 @@ PYTHONPATH=. pytest tests/ -v
 
 **What `make test` actually does** (`scripts/run_tests.sh`): checks `SUPERVISOR_HEALTH` (`http://localhost:8080/health`) is up — failing fast with a clear error if `make up` hasn't been run — then runs `PYTHONPATH=. pytest tests/ -v --timeout=1100`, then runs `scripts/local_test.py` as a final step. It's the union of the e2e path and the local path below, so a `make test` failure can come from either.
 
-- **e2e extraction test** (`tests/test_e2e.py::test_extraction_accuracy`, parametrized once per `samples/*.pdf`): `POST`s the PDF to the live `supervisor` container's `/extract` endpoint — exercising the full real pipeline (rasterization → all 4 engines → reconciliation → validation), not a mock. The raw JSON response is written to `tests/output/{sample}.json` (this is what backs every "look at the live attribution/reconciliation output" check earlier in this session) before any assertions run, so a failing test still leaves the actual response on disk to inspect. `_check_accuracy` then deserializes it into `PCBData` and field-by-field compares it against the corresponding `tests/expected/{sample}.json` fixture, collecting every mismatch (not stopping at the first) into one combined failure message.
+- **e2e extraction test** (`tests/test_e2e.py::test_extraction_accuracy`, parametrized once per `samples/*.pdf`): `POST`s the PDF to the live `supervisor` container's `/extract` endpoint (asserting the `202 { job_id }` response), then polls `GET /jobs/{job_id}` (`conftest.py::poll_job`) until the job resolves — exercising the full real pipeline (rasterization → all 4 engines → reconciliation → validation), not a mock. The polled `result` is written to `tests/output/{sample}.json` (this is what backs every "look at the live attribution/reconciliation output" check earlier in this session) before any assertions run, so a failing test still leaves the actual response on disk to inspect. `_check_accuracy` then deserializes it into `PCBData` and field-by-field compares it against the corresponding `tests/expected/{sample}.json` fixture, collecting every mismatch (not stopping at the first) into one combined failure message.
 - **local extraction test** (`scripts/local_test.py`, also runnable standalone via `make test-local`): bypasses Docker and the supervisor entirely — imports `TesseractOCR` and `shared.pcb_parser.parse_pcb_text` directly in-process, so it only exercises Tesseract + the regex parser, never the VLMs or reconciliation. Same `tests/expected/*.json` fixtures, but with deliberately lenient checks on fields Tesseract genuinely cannot read from certain scans (e.g. `board_thickness`, `drill_table`, `layer_count`, `surface_finish` on specific samples) — it only validates the correctness of values Tesseract *did* find, never requires a value it has no way to detect. This is what you run for a fast (~seconds, no GPU, no Docker) sanity check while iterating on `shared/pcb_parser.py`.
 - **unit tests** (everything else under `tests/`, e.g. `test_pcb_parser.py`, `test_schema_validation.py`, `test_reconciliation.py`, `test_pdf_text.py`): pure Python, no network calls, run in milliseconds.
 
 ## API Reference
 
-### Supervisor: `POST /extract`
+### Async jobs
 
-Upload a PCB fabrication PDF and receive structured `PCBData` JSON.
+`POST /extract` accepts a PCB fabrication PDF and starts the pipeline as a background job — it does not wait for extraction to finish. Poll `GET /jobs/{job_id}` for status and, eventually, the result.
 
-**Request:**
+**`POST /extract`**
 - Content-Type: `multipart/form-data`
 - Field: `file` (PDF)
+- Response: `202 Accepted`
+  ```json
+  { "job_id": "a1b2c3d4e5f6...", "status": "processing" }
+  ```
+  Returns in well under a second regardless of how long the pipeline itself takes (~90–600s) — the actual OCR/reconciliation work happens in the background afterward.
 
-**Response:**
+**`GET /jobs/{job_id}`**
+
+| State | HTTP status | Body |
+|---|---|---|
+| Unknown or expired `job_id` | `404` | `{ "detail": "Unknown or expired job_id: ..." }` |
+| Still running | `200` | `{ "job_id": "...", "status": "processing" }` |
+| Succeeded | `200` | `{ "job_id": "...", "status": "completed", "result": { ...full PCBData response, shown below... } }` |
+| Failed | `200` | `{ "job_id": "...", "status": "failed", "error": "<exception message>" }` (the GET itself succeeded — the job's outcome is data, not a transport error) |
+
+`result` is the same structured `PCBData` payload the endpoint used to return synchronously:
+
 ```json
 {
   "layer_count": 4,
@@ -183,6 +208,8 @@ Upload a PCB fabrication PDF and receive structured `PCBData` JSON.
 ```
 
 `engine_durations_sec[].start_time`/`end_time` are ISO-8601 timestamps in US Pacific time (`America/Los_Angeles`, so `-08:00`/PST or `-07:00`/PDT depending on the date) — not UTC.
+
+Job state lives in Redis (`services/supervisor/app/jobs.py`), keyed by `job:{job_id}`, and expires after `JOB_TTL_SEC` (default 24h — see [Configuration](#configuration)) so completed/failed jobs don't accumulate forever. Persisted, not in-memory: job status survives a supervisor container restart. Only the supervisor talks to Redis; the other 3 services are unaffected. There's no cancellation endpoint, and no concurrency-limiting queue — submitting many jobs in quick succession still fans each one out into concurrent GPU calls against the same physical GPU (see [Troubleshooting](#troubleshooting)), the same constraint that existed before this endpoint became async, just now easier to trigger by accident since submission no longer blocks.
 
 ### Per-field attribution
 
@@ -238,6 +265,8 @@ Every field in the response has a matching entry under `attribution`, answering 
 | `QWEN_VL_VLLM_URL` | `http://vllm-qwen-vl:8011/v1` | Qwen-VL vLLM endpoint |
 | `PDF_TEXT_LAYER_MIN_CHARS` | `200` | Min. alphanumeric characters in the PDF's embedded text layer before PyMuPDF contributes a result (below this, it's treated as a scan/no text layer and skipped) |
 | `LOG_DIR` | `/logs` | Where per-PDF log files are written (see below) |
+| `REDIS_URL` | `redis://redis:6379/0` | Supervisor's async job registry — see [Async jobs](#async-jobs) |
+| `JOB_TTL_SEC` | `86400` (24h) | How long a completed/failed job stays queryable via `GET /jobs/{job_id}` before Redis expires it |
 
 ### Authentication
 
@@ -295,3 +324,6 @@ Each engine's own per-field confidence is computed independently beforehand (fro
 **Tesseract returns low-quality text:**
 - Increase `OCR_DPI` to 400 or 600
 - Check poppler-utils is installed: `pdftoppm -v`
+
+**Jobs are slow to complete when submitting several at once:**
+- There's no concurrency-limiting queue on the supervisor — every accepted job fans out into concurrent GPU calls against the same physical GPU that the two vLLM servers already share, so submitting many jobs back-to-back (easy to do now that `POST /extract` returns immediately) just serializes them at the GPU rather than actually running in parallel. Submit one at a time, or space submissions out, if you notice jobs taking longer than a single sample normally does.

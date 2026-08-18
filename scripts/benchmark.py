@@ -22,6 +22,12 @@ SAMPLE_FILES = [
 ]
 
 SUPERVISOR_URL = "http://localhost:8080/extract"
+JOBS_URL = "http://localhost:8080/jobs"
+
+# 300s was sized for a single blocking call against observed 90-260s
+# per-sample durations; a poll loop adds interval overhead on top.
+MAX_WAIT_SEC = 420
+POLL_INTERVAL_SEC = 3
 
 # Same API_KEY the live services were started with (see shared/auth.py) — a
 # no-op empty dict when auth isn't configured.
@@ -29,9 +35,28 @@ _API_KEY = os.environ.get("API_KEY")
 _AUTH_HEADERS = {"Authorization": f"Bearer {_API_KEY}"} if _API_KEY else {}
 
 
+async def _poll_job(client: httpx.AsyncClient, job_id: str) -> dict:
+    """Poll GET /jobs/{job_id} until status is completed/failed.
+
+    Mirrors tests/conftest.py::poll_job — scripts/ doesn't import from
+    tests/, consistent with check_accuracy() below already duplicating
+    tests/test_e2e.py::_check_accuracy.
+    """
+    deadline = time.monotonic() + MAX_WAIT_SEC
+    while True:
+        resp = await client.get(f"{JOBS_URL}/{job_id}", headers=_AUTH_HEADERS)
+        resp.raise_for_status()
+        body = resp.json()
+        if body["status"] in ("completed", "failed"):
+            return body
+        if time.monotonic() > deadline:
+            raise TimeoutError(f"job {job_id} still {body['status']} after {MAX_WAIT_SEC}s")
+        await asyncio.sleep(POLL_INTERVAL_SEC)
+
+
 async def extract_sample(pdf_path: str) -> dict:
     """Extract a single sample via the supervisor."""
-    async with httpx.AsyncClient(timeout=300) as client:
+    async with httpx.AsyncClient(timeout=30) as client:
         with open(pdf_path, "rb") as f:
             resp = await client.post(
                 SUPERVISOR_URL,
@@ -39,7 +64,12 @@ async def extract_sample(pdf_path: str) -> dict:
                 headers=_AUTH_HEADERS,
             )
         resp.raise_for_status()
-        return resp.json()
+        job_id = resp.json()["job_id"]
+
+        body = await _poll_job(client, job_id)
+        if body["status"] == "failed":
+            raise RuntimeError(f"job failed: {body.get('error')}")
+        return body["result"]
 
 
 def check_accuracy(result: dict, expected: dict, sample_name: str) -> list[str]:

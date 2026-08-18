@@ -11,8 +11,8 @@ from zoneinfo import ZoneInfo
 
 import httpx
 
-from shared.confidence import build_confidence_map, safe_merge_results
-from shared.pcb_parser import parse_pcb_text
+from shared.confidence import build_confidence_map, merge_with_attribution
+from shared.pcb_parser import parse_pcb_text_with_provenance
 from shared.pdf_text import extract_pdf_text_layer, has_substantial_text_layer
 from shared.preprocessing import image_to_bytes, pdf_to_images
 from shared.schemas import PCBDataWithConfidence, normalize_units
@@ -135,9 +135,11 @@ async def pymupdf_extract_node(state: dict) -> dict:
                 "pymupdf_end_time": end_time,
             }
 
-        data = parse_pcb_text(text)
+        data, provenance = parse_pcb_text_with_provenance(text)
         data = normalize_units(data)
-        confidence = build_confidence_map(data=data, ocr_engine="pymupdf")
+        confidence = build_confidence_map(
+            data=data, ocr_engine="pymupdf", provenance=provenance
+        )
 
         result = PCBDataWithConfidence(
             data=data,
@@ -286,7 +288,7 @@ async def reconcile_node(state: dict) -> dict:
         if not results:
             raise ValueError("No OCR engine produced a result")
 
-        merged, log = safe_merge_results(results)
+        merged, log, attribution = merge_with_attribution(results)
 
         elapsed = (time.monotonic() - start) * 1000
         logger.info(
@@ -298,6 +300,7 @@ async def reconcile_node(state: dict) -> dict:
         return {
             "reconciled": merged,
             "reconciliation_log": log,
+            "attribution": attribution,
             "processing_time_ms": elapsed,
         }
 

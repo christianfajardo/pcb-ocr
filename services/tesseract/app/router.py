@@ -9,7 +9,7 @@ from fastapi import APIRouter, File, HTTPException, UploadFile
 
 from shared.confidence import build_confidence_map
 from shared.logging_config import bind_pdf_filename
-from shared.pcb_parser import parse_pcb_text
+from shared.pcb_parser import parse_pcb_text_with_provenance
 from shared.schemas import PCBDataWithConfidence, normalize_units
 
 from .ocr_engine import TesseractOCR
@@ -51,7 +51,7 @@ async def extract(file: UploadFile = File(...)) -> dict:
                 ocr_result = ocr_engine.extract(tmp_path)
 
                 # Parse structured data
-                data = parse_pcb_text(ocr_result["raw_text"])
+                data, provenance = parse_pcb_text_with_provenance(ocr_result["raw_text"])
 
                 # Normalize units
                 data = normalize_units(data)
@@ -63,6 +63,7 @@ async def extract(file: UploadFile = File(...)) -> dict:
                     data=data,
                     ocr_engine="tesseract",
                     tesseract_avg_confidence=ocr_result.get("word_confidences"),
+                    provenance=provenance,
                 )
 
                 result = PCBDataWithConfidence(

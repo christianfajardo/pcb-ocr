@@ -35,6 +35,8 @@ class PipelineState(TypedDict, total=False):
             bracketing the PyMuPDF node's execution.
         reconciled: Merged/reconciled PCBData.
         reconciliation_log: Audit trail of merge decisions.
+        attribution: Per-field provenance — winning engine, the drawing text
+            it attributed the value to, and all contributing engines.
         errors: List of error messages, appended to by concurrent nodes.
         processing_time_ms: Total processing time.
     """
@@ -60,6 +62,7 @@ class PipelineState(TypedDict, total=False):
     pymupdf_end_time: str | None
     reconciled: PCBData | None
     reconciliation_log: list[Any]
+    attribution: dict[str, Any]
     errors: Annotated[list[str], operator.add]
     processing_time_ms: float
 
@@ -97,6 +100,7 @@ def create_initial_state(pdf_path: str, original_filename: str | None = None) ->
         "pymupdf_end_time": None,
         "reconciled": None,
         "reconciliation_log": [],
+        "attribution": {},
         "errors": [],
         "processing_time_ms": 0.0,
     }

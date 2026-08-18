@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import structlog
 import re
+from contextlib import contextmanager
+from contextvars import ContextVar
 
+from shared.constants import SURFACE_FINISHES
 from shared.schemas import (
     BoardThickness,
     CopperWeights,
@@ -19,6 +22,65 @@ from shared.schemas import (
 )
 
 logger = structlog.get_logger(__name__)
+
+
+# ── Provenance capture ───────────────────────────────────────────────────────
+#
+# The extractors below discard their match objects, and confidence is built
+# separately from the finished PCBData — so by default there's no way to say
+# *which text on the drawing* produced a value. Rather than change 15
+# extractor signatures, `_search` transparently records the first successful
+# match while a field is in scope. Recording is a no-op outside a
+# `_capturing()` block, so existing callers are unaffected.
+#
+# contextvars (not a plain global) because the services are async and may
+# handle concurrent requests in one process.
+
+_current_field: ContextVar[str | None] = ContextVar("_current_field", default=None)
+_provenance: ContextVar[dict[str, str] | None] = ContextVar("_provenance", default=None)
+
+MAX_SNIPPET_CHARS = 200
+
+
+def _record_match(text: str, match: re.Match) -> None:
+    """Record the source line(s) behind the current field's match."""
+    store = _provenance.get()
+    field = _current_field.get()
+    if store is None or field is None or field in store:
+        return  # only keep the first (primary) match per field
+    line_start = text.rfind("\n", 0, match.start()) + 1
+    line_end = text.find("\n", match.end())
+    if line_end == -1:
+        line_end = len(text)
+    snippet = " ".join(text[line_start:line_end].split())
+    if len(snippet) > MAX_SNIPPET_CHARS:
+        # Keep the matched region itself, not just the head of a long line.
+        snippet = " ".join(text[match.start() : match.end()].split())[:MAX_SNIPPET_CHARS]
+    if snippet:
+        store[field] = snippet
+
+
+def _search(pattern: str, text: str, flags: int = 0) -> re.Match | None:
+    """`re.search` that records provenance when a field is in scope."""
+    m = re.search(pattern, text, flags)
+    if m is not None:
+        _record_match(text, m)
+    return m
+
+
+@contextmanager
+def _capturing(field_name: str, store: dict[str, str] | None):
+    """Scope subsequent `_search` hits to `field_name`."""
+    if store is None:
+        yield
+        return
+    ft = _current_field.set(field_name)
+    st = _provenance.set(store)
+    try:
+        yield
+    finally:
+        _current_field.reset(ft)
+        _provenance.reset(st)
 
 
 def normalize_text(text: str) -> str:
@@ -89,14 +151,14 @@ def find_ipc_specs(text: str) -> list[str]:
         for m in re.finditer(pattern, t, re.IGNORECASE):
             matched = m.group(0)
             spec = canonical
-            suffix_m = re.search(r"/(\d+)", matched)
+            suffix_m = _search(r"/(\d+)", matched)
             if suffix_m:
                 spec = f"{canonical}/{suffix_m.group(1)}"
             if spec not in seen:
                 specs.append(spec)
                 seen.add(spec)
     # "ACCEPTABILITY" implies IPC-A-600 (common in "DETERMINE ACCEPTABILITY PER IPC-A-600")
-    if re.search(r"ACCEPTAB[LI]IT\w*", t, re.IGNORECASE) and "IPC-A-600" not in seen:
+    if _search(r"ACCEPTAB[LI]IT\w*", t, re.IGNORECASE) and "IPC-A-600" not in seen:
         specs.append("IPC-A-600")
         seen.add("IPC-A-600")
     return specs
@@ -127,29 +189,41 @@ def detect_surface_finish(text: str) -> str | None:
     """Detect surface finish from text."""
     t = normalize_text(text)
     # "TYPE ENIG" / "CODE-ENIG"
-    if re.search(r"\bENIG\b", t, re.IGNORECASE):
+    if _search(r"\bENIG\b", t, re.IGNORECASE):
         return "ENIG"
-    if re.search(r"\bHASL\b", t, re.IGNORECASE):
+    if _search(r"\bHASL\b", t, re.IGNORECASE):
         return "HASL"
-    if re.search(r"\bOSP\b", t, re.IGNORECASE):
+    if _search(r"\bOSP\b", t, re.IGNORECASE):
         return "OSP"
     # "BOARD FINISH TO BE LEAD FREE HASL OR ENIG"
-    if re.search(r"BOARD\s+FINISH.*?ENIG", t, re.IGNORECASE):
+    if _search(r"BOARD\s+FINISH.*?ENIG", t, re.IGNORECASE):
         return "ENIG"
-    if re.search(r"BOARD\s+FINISH.*?HASL", t, re.IGNORECASE):
+    if _search(r"BOARD\s+FINISH.*?HASL", t, re.IGNORECASE):
         return "HASL"
     # "FINAL FINISH ... ENIG"
-    m = re.search(r"FINAL\s+FINISH[^.]*?(ENIG|HASL|OSP|HASI|HAL)", t, re.IGNORECASE)
+    m = _search(r"FINAL\s+FINISH[^.]*?(ENIG|HASL|OSP|HASI|HAL)", t, re.IGNORECASE)
     if m:
         return m.group(1).upper()
     # "ALL EXPOSED CONDUCTOR SURFACES WILL BE TYPE ENIG"
-    m = re.search(r"CONDUCTOR\s+SURFACES.*?(ENIG|HASL|OSP)", t, re.IGNORECASE)
+    m = _search(r"CONDUCTOR\s+SURFACES.*?(ENIG|HASL|OSP)", t, re.IGNORECASE)
     if m:
         return m.group(1).upper()
     # "SURFACES TO BE ENIG"
-    m = re.search(r"SURFACES\s+TO\s+BE\s+(ENIG|HASL|OSP|HASI|HAL)", t, re.IGNORECASE)
+    m = _search(r"SURFACES\s+TO\s+BE\s+(ENIG|HASL|OSP|HASI|HAL)", t, re.IGNORECASE)
     if m:
         return m.group(1).upper()
+
+    # Remaining finishes, matched via the canonical alias table in
+    # constants.py (Tin/Lead, Immersion Silver/Tin, EHASL, ...). The checks
+    # above stay first so their existing precedence is preserved; this only
+    # adds coverage for finishes that had no detection at all. Longer aliases
+    # are tried first so e.g. "tin lead hasl" isn't shadowed by "tin lead".
+    for canonical, aliases in SURFACE_FINISHES.items():
+        if canonical in ("ENIG", "HASL", "OSP"):
+            continue  # already handled above, with their own precedence
+        for alias in sorted(aliases, key=len, reverse=True):
+            if _search(rf"\b{re.escape(alias)}\b", t, re.IGNORECASE):
+                return canonical
     return None
 
 
@@ -172,11 +246,11 @@ def extract_layer_count(text: str) -> int | None:
         "TEN": 10,
     }
     for word, num in number_words.items():
-        if re.search(rf"\b{word}\s+LAYER\b", upper):
+        if _search(rf"\b{word}\s+LAYER\b", upper):
             return num
 
     # "N-LAYER PCB"
-    m = re.search(r"(\d+)\s*[-]\s*LAYER", t, re.IGNORECASE)
+    m = _search(r"(\d+)\s*[-]\s*LAYER", t, re.IGNORECASE)
     if m:
         return int(m.group(1))
 
@@ -206,7 +280,7 @@ def extract_layer_count(text: str) -> int | None:
         return max(int(x) for x in l_stackup)
 
     # "NUMBER OF LAYERS: N"
-    m = re.search(r"(?:NUMBER\s+OF\s+)?LAYERS?\s*[=:\s]*(\d+)", t, re.IGNORECASE)
+    m = _search(r"(?:NUMBER\s+OF\s+)?LAYERS?\s*[=:\s]*(\d+)", t, re.IGNORECASE)
     if m:
         return int(m.group(1))
 
@@ -215,7 +289,7 @@ def extract_layer_count(text: str) -> int | None:
         num = int(m.group(1))
         # Check it's not preceded by "N. " (note number like "6. BOARD LAYERS")
         context = t[max(0, m.start() - 3) : m.start()]
-        if re.search(r"\d+\.?\s*$", context):
+        if _search(r"\d+\.?\s*$", context):
             continue  # Skip "6. BOARD LAYERS" pattern
         # Also skip if followed by "BOARD" (note header)
         after = t[m.end() : m.end() + 20].strip().upper()
@@ -231,8 +305,8 @@ def extract_board_thickness(text: str) -> BoardThickness | None:
     t = normalize_text(text)
 
     # "TO BE .062 +/- .007" / "SHALL BE .062 +/- .005"
-    m = re.search(
-        r"(?:SHALL\s+BE|TO\s+BE)\s+([\d.]+)\s*[+±/-]+\s*([\d.]+)\s*(?:INCH|IN)?\.?",
+    m = _search(
+        r"(?:SHALL\s+BE|TO\s+BE)\s+(\d*\.?\d+)\s*[+±/-]+\s*(\d*\.?\d+)\s*(?:INCH|IN)?\.?",
         t,
         re.IGNORECASE,
     )
@@ -251,7 +325,7 @@ def extract_board_thickness(text: str) -> BoardThickness | None:
         )
 
     # "0.093\" +/- 10%" — handle OCR: "0.095\" +/= 10x" → "0.095\" +/- 10%"
-    m = re.search(r"([\d.]+)\s*\"?\s*\+/-\s*(\d+)%", t)
+    m = _search(r"(\d*\.?\d+)\s*\"?\s*\+/-\s*(\d+)%", t)
     if m:
         nominal = float(m.group(1))
         if nominal > 1.0:
@@ -266,8 +340,8 @@ def extract_board_thickness(text: str) -> BoardThickness | None:
             )
 
     # "THICKNESS ... .062 +/- .007"
-    m = re.search(
-        r"(?:THICKNESS|BOARD\s+THICK|OVERALL)[^.]*?([\d.]+)\s*[+±/-]+\s*([\d.]+)",
+    m = _search(
+        r"(?:THICKNESS|BOARD\s+THICK|OVERALL)[^.]*?(\d*\.?\d+)\s*[+±/-]+\s*(\d*\.?\d+)",
         t,
         re.IGNORECASE,
     )
@@ -290,9 +364,9 @@ def extract_board_thickness(text: str) -> BoardThickness | None:
     # rather than in a numbered note — no "THICKNESS" keyword nearby at all,
     # so it's not caught by the patterns above. This label is a standard PCB
     # drawing convention, not specific to any one drawing's layout.
-    m = re.search(r"(\d+\.\d+)\s*MM[\s_]{0,30}(?:RIGID|FLEX)\b", t, re.IGNORECASE)
+    m = _search(r"(\d+\.\d+)\s*MM[\s_]{0,30}(?:RIGID|FLEX)\b", t, re.IGNORECASE)
     if not m:
-        m = re.search(r"\b(?:RIGID|FLEX)\b[\s_]{0,30}(\d+\.\d+)\s*MM", t, re.IGNORECASE)
+        m = _search(r"\b(?:RIGID|FLEX)\b[\s_]{0,30}(\d+\.\d+)\s*MM", t, re.IGNORECASE)
     if m:
         nominal_mm = float(m.group(1))
         nominal = nominal_mm / 25.4
@@ -314,36 +388,36 @@ def extract_copper_weights(text: str) -> CopperWeights | None:
     weights = CopperWeights()
 
     # "0.5 OZ INTERNAL" / "0.5 OZ INTERNAL TRACE"
-    m = re.search(r"([\d.]+)\s*OZ\.?\s*(?:CU\s*)?INTERNAL", t, re.IGNORECASE)
+    m = _search(r"(\d*\.?\d+)\s*OZ\.?\s*(?:CU\s*)?INTERNAL", t, re.IGNORECASE)
     if m:
         weights.signal_layers_oz = float(m.group(1))
 
     # "1.0 OZ AFTER PLATING" / "1.0 OZ EXTERNAL" / "2 OZ. AFTER PLATING"
-    m = re.search(
-        r"([\d.]+)\s*OZ\.?\s*(?:CU\s*)?(?:AFTER\s+PLATING|EXTERNAL|FINISHED)", t, re.IGNORECASE
+    m = _search(
+        r"(\d*\.?\d+)\s*OZ\.?\s*(?:CU\s*)?(?:AFTER\s+PLATING|EXTERNAL|FINISHED)", t, re.IGNORECASE
     )
     if m:
         weights.external_finished_oz = float(m.group(1))
 
     # "1.0 OZ COPPER NOMINAL ON ... PLANE LAYERS" or "0.5 OZ ... PLANE"
-    m = re.search(r"([\d.]+)\s*OZ\.?\s+COPPER.*PLANE", t, re.IGNORECASE)
+    m = _search(r"(\d*\.?\d+)\s*OZ\.?\s+COPPER.*PLANE", t, re.IGNORECASE)
     if m:
         weights.plane_layers_oz = float(m.group(1))
 
     # "1 OZ. CU NOMINAL IN HOLES AND INTERNAL PLANE LAYERS"
-    m = re.search(r"([\d.]+)\s*OZ\.?\s*CU\s+NOMINAL.*PLANE", t, re.IGNORECASE)
+    m = _search(r"(\d*\.?\d+)\s*OZ\.?\s*CU\s+NOMINAL.*PLANE", t, re.IGNORECASE)
     if m:
         weights.plane_layers_oz = float(m.group(1))
 
     # Generic "1 OZ COPPER" or "1 OZ. COPPER" — use as signal layer weight
     if not weights.signal_layers_oz:
-        m = re.search(r"(\d+(?:\.\d+)?)\s*OZ\.?\s*COPPER", t, re.IGNORECASE)
+        m = _search(r"(\d+(?:\.\d+)?)\s*OZ\.?\s*COPPER", t, re.IGNORECASE)
         if m:
             weights.signal_layers_oz = float(m.group(1))
 
     # "1 OZ. CU" fallback
     if not weights.signal_layers_oz:
-        m = re.search(r"(\d+(?:\.\d+)?)\s*OZ\.?\s*CU\b", t, re.IGNORECASE)
+        m = _search(r"(\d+(?:\.\d+)?)\s*OZ\.?\s*CU\b", t, re.IGNORECASE)
         if m:
             weights.signal_layers_oz = float(m.group(1))
 
@@ -359,13 +433,13 @@ def extract_solder_mask(text: str) -> SolderMask | None:
     """Extract solder mask info."""
     t = normalize_text(text)
 
-    if not re.search(r"SOLDER.*MASK|MASK.*SOLDER", t, re.IGNORECASE):
+    if not _search(r"SOLDER.*MASK|MASK.*SOLDER", t, re.IGNORECASE):
         return None
 
     mask = SolderMask(present=True)
 
     # "COLOR: GREEN" / "COLOR. GREEN" / "COLOR TRANSPARENT GREEN"
-    m = re.search(
+    m = _search(
         r"\bCOLOR[:\s.]+(?:TRANSPARENT\s+)?(GREEN|RED|BLUE|BLACK|WHITE|YELLOW)", t, re.IGNORECASE
     )
     if m:
@@ -384,19 +458,19 @@ def extract_solder_mask(text: str) -> SolderMask | None:
                 break
 
     # Type
-    if re.search(r"\bLPI\b", t, re.IGNORECASE):
+    if _search(r"\bLPI\b", t, re.IGNORECASE):
         mask.type = "LPI"
-    if re.search(r"PHOTO\s*(?:IMAGEABLE|RESIST)", t, re.IGNORECASE):
+    if _search(r"PHOTO\s*(?:IMAGEABLE|RESIST)", t, re.IGNORECASE):
         mask.type = "photo imageable"
 
     # Spec: "IPC-SM-840, CLASS H"
-    m = re.search(
+    m = _search(
         r"IPC\s*[-–]?\s*S[SM]?\s*[-–]?\s*840(?:\s*,?\s*(?:CLASS\s*[\wH]+))?", t, re.IGNORECASE
     )
     if m:
         mask.spec = m.group(0).strip()
 
-    if re.search(
+    if _search(
         r"SOLDERMASK\s+BOTH\s+SIDES|BOTH\s+SIDES.*SOLDERMASK|BARE\s+COPPER", t, re.IGNORECASE
     ):
         mask.sides = "both"
@@ -408,25 +482,25 @@ def extract_silkscreen(text: str) -> Silkscreen | None:
     """Extract silkscreen/legend info."""
     t = normalize_text(text)
 
-    if not re.search(r"SILK(?:SCREEN)?|LEGEND\b", t, re.IGNORECASE):
+    if not _search(r"SILK(?:SCREEN)?|LEGEND\b", t, re.IGNORECASE):
         return None
 
     silk = Silkscreen(present=True)
 
-    m = re.search(r"(?:SILK|LEGEND)[^\n]*\bCOLOR[:\s.]+(\w+)", t, re.IGNORECASE)
+    m = _search(r"(?:SILK|LEGEND)[^\n]*\bCOLOR[:\s.]+(\w+)", t, re.IGNORECASE)
     if m:
         silk.color = m.group(1).capitalize()
     else:
-        m = re.search(r"(?:SILK|LEGEND)[^\n]*\b(WHITE|YELLOW|BLACK|BLUE|RED)", t, re.IGNORECASE)
+        m = _search(r"(?:SILK|LEGEND)[^\n]*\b(WHITE|YELLOW|BLACK|BLUE|RED)", t, re.IGNORECASE)
         if m:
             silk.color = m.group(1).capitalize()
 
-    if re.search(r"NON-CONDUCT(?:IVE|ING)\s*(?:EPOXY\s*)?INK", t, re.IGNORECASE):
+    if _search(r"NON-CONDUCT(?:IVE|ING)\s*(?:EPOXY\s*)?INK", t, re.IGNORECASE):
         silk.ink = "non-conductive epoxy"
-    elif re.search(r"NON-CONDUCT(?:IVE|ING)\s+INK", t, re.IGNORECASE):
+    elif _search(r"NON-CONDUCT(?:IVE|ING)\s+INK", t, re.IGNORECASE):
         silk.ink = "non-conducting"
 
-    if re.search(
+    if _search(
         r"SILK(?:SCREEN)?.*BOTH\s+SIDES|BOTH\s+SIDES.*SILK|TOP\s+AND\s+BOTTOM.*SILK|SILK.*TOP\s+AND\s+BOTTOM|SILKSCREEN\s+TOP\s+AND\s+BOTTOM|TOP\s+AND\s+BOTTOM.*USING.*SILK|SILKSCREEN\s+TOP\s+AND\s+BOTTOM",
         t,
         re.IGNORECASE,
@@ -442,20 +516,20 @@ def extract_impedance(text: str) -> ImpedanceControl | None:
     imp = ImpedanceControl()
     t_imp = t.replace("WPEDANCE", "IMPEDANCE")
 
-    if not re.search(r"IMPEDANCE|OHM", t_imp, re.IGNORECASE):
+    if not _search(r"IMPEDANCE|OHM", t_imp, re.IGNORECASE):
         return imp
 
-    if re.search(
+    if _search(
         r"IMPEDANCE\s+(?:CONTROLLED|AT)|CONTROLLED\s+IMPEDANCE|SPECIFIED\s+IMPEDANCE\s+CHARACTERISTICS",
         t_imp,
         re.IGNORECASE,
     ):
         imp.controlled = True
-    if re.search(r"MICROSTRIP|STRIPLINE", t_imp, re.IGNORECASE):
+    if _search(r"MICROSTRIP|STRIPLINE", t_imp, re.IGNORECASE):
         imp.controlled = True
 
     # "90 OHMS" / "100 OHM" / "100 OHM DIFFERENTIAL"
-    m = re.search(r"(\d+)\s*OHM", t_imp, re.IGNORECASE)
+    m = _search(r"(\d+)\s*OHM", t_imp, re.IGNORECASE)
     if m:
         ohms = float(m.group(1))
         is_diff = (
@@ -469,7 +543,7 @@ def extract_impedance(text: str) -> ImpedanceControl | None:
             imp.single_ended = ImpedanceRange(min=ohms, max=ohms, unit="ohm", raw=f"{ohms} OHMS")
 
     # "NOM. TRACE WIDTH IS .011"
-    m = re.search(r"NOM\.?\s*TRACE\s*WIDTH\s+IS\s+([\d.]+)", t_imp, re.IGNORECASE)
+    m = _search(r"NOM\.?\s*TRACE\s*WIDTH\s+IS\s+(\d*\.?\d+)", t_imp, re.IGNORECASE)
     if m:
         width = float(m.group(1))
         if width < 1:
@@ -477,7 +551,7 @@ def extract_impedance(text: str) -> ImpedanceControl | None:
         imp.trace_width_mils = width
 
     # "NOT BELOW 0.0045\" IN WIDTH"
-    m = re.search(r"NOT\s+BELOW\s+([\d.]+)\s*\"?\s+(?:IN\s+)?WIDTH", t_imp, re.IGNORECASE)
+    m = _search(r"NOT\s+BELOW\s+(\d*\.?\d+)\s*\"?\s+(?:IN\s+)?WIDTH", t_imp, re.IGNORECASE)
     if m:
         width = float(m.group(1))
         if width < 1:
@@ -486,7 +560,7 @@ def extract_impedance(text: str) -> ImpedanceControl | None:
             imp.trace_width_mils = width
 
     # "0.005\" TRACES ... 100 OHM"
-    m = re.search(r"([\d.]+)\s*\"\s+TRACES.*?(\d+)\s*OHM", t_imp, re.IGNORECASE)
+    m = _search(r"(\d*\.?\d+)\s*\"\s+TRACES.*?(\d+)\s*OHM", t_imp, re.IGNORECASE)
     if m and not imp.trace_width_mils:
         width = float(m.group(1))
         if width < 1:
@@ -495,7 +569,7 @@ def extract_impedance(text: str) -> ImpedanceControl | None:
 
     # Tolerance: "+ 18% TOLERANCE"
     if imp.single_ended:
-        m = re.search(r"[\+±/]\s*(\d+)%", t_imp)
+        m = _search(r"[\+±/]\s*(\d+)%", t_imp)
         if m:
             tol_pct = float(m.group(1))
             base = imp.single_ended.min
@@ -503,7 +577,7 @@ def extract_impedance(text: str) -> ImpedanceControl | None:
             imp.single_ended.max = round(base * (1 + tol_pct / 100), 2)
 
     # Layers: "LAYERS 2 & 5"
-    m = re.search(r"LAYERS?\s+(\d+)\s+&\s+(\d+)", t_imp, re.IGNORECASE)
+    m = _search(r"LAYERS?\s+(\d+)\s+&\s+(\d+)", t_imp, re.IGNORECASE)
     if m:
         imp.layers = [int(m.group(1)), int(m.group(2))]
 
@@ -553,10 +627,10 @@ def extract_layer_stackup(text: str) -> list[LayerSpec]:
             layers.append(LayerSpec(number=num, function=func))
 
     # "PRIMARY SIDE", "SECONDARY SIDE" as layer functions
-    if re.search(r"PRIMARY\s+SIDE", t, re.IGNORECASE):
+    if _search(r"PRIMARY\s+SIDE", t, re.IGNORECASE):
         if not any(l.number == 1 for l in layers):
             layers.append(LayerSpec(number=1, function="PRIMARY SIDE"))
-    if re.search(r"SECONDARY\s+SIDE", t, re.IGNORECASE):
+    if _search(r"SECONDARY\s+SIDE", t, re.IGNORECASE):
         circuit_refs = re.findall(r"CIRCUIT\s+LAYER\s+#?[*$]?(\d+)", t, re.IGNORECASE)
         if circuit_refs:
             max_c = max(int(x) for x in circuit_refs)
@@ -685,17 +759,17 @@ def extract_manufacturer(text: str) -> str | None:
     t = normalize_text(text)
 
     # "COPYRIGHT BLUE ORIGIN LLC"
-    m = re.search(r"COPYRIGHT\s+([\w\s]+?LLC)", t, re.IGNORECASE)
+    m = _search(r"COPYRIGHT\s+([\w\s]+?LLC)", t, re.IGNORECASE)
     if m:
         return m.group(1).strip()
 
     # "PCB PRIME" — after normalize, "PcB) PRiM=" → "PCB PRIME"
-    m = re.search(r"PCB\s*[-\)]*\s*PRi?ME", t, re.IGNORECASE)
+    m = _search(r"PCB\s*[-\)]*\s*PRi?ME", t, re.IGNORECASE)
     if m:
         return "PCB Prime"
 
     # "COMPANY: Company Name" / "COMPANY:\nCompany Name"
-    m = re.search(r"COMPANY[:\s]+([A-Z][A-Za-z\s]+?)\n", t, re.IGNORECASE)
+    m = _search(r"COMPANY[:\s]+([A-Z][A-Za-z\s]+?)\n", t, re.IGNORECASE)
     if m:
         val = m.group(1).strip()
         if len(val) > 2:
@@ -705,7 +779,7 @@ def extract_manufacturer(text: str) -> str | None:
         return "Company Name"
 
     # "PRINTED CIRCUIT BOARD" as manufacturer
-    m = re.search(r"PRINTED\s+CIRCUIT\s+BOARD\b", t, re.IGNORECASE)
+    m = _search(r"PRINTED\s+CIRCUIT\s+BOARD\b", t, re.IGNORECASE)
     if m:
         return "Printed Circuit Board"
 
@@ -716,7 +790,7 @@ def extract_fabrication_notes(text: str) -> str | None:
     """Extract fabrication notes section."""
     t = normalize_text(text)
 
-    notes_match = re.search(r"(NOTES?(?:\([^)]*\))?:?\s*)", t, re.IGNORECASE)
+    notes_match = _search(r"(NOTES?(?:\([^)]*\))?:?\s*)", t, re.IGNORECASE)
     if not notes_match:
         return None
 
@@ -732,7 +806,7 @@ def extract_fabrication_notes(text: str) -> str | None:
 def extract_ipc_class(text: str) -> IPCClass | None:
     """Extract IPC class."""
     t = normalize_text(text).upper()
-    m = re.search(r"\bCLASS\s*(\d)\b", t)
+    m = _search(r"\bCLASS\s*(\d)\b", t)
     if m:
         num = m.group(1)
         return {"1": IPCClass.CLASS_1, "2": IPCClass.CLASS_2, "3": IPCClass.CLASS_3}.get(num)
@@ -744,7 +818,7 @@ def extract_material(text: str) -> str | None:
     t = normalize_text(text)
 
     # "BASE LAMINATE FR4"
-    m = re.search(r"BASE\s+LAMINATE\s+(FR4|FR-4|370HR|FR406)", t, re.IGNORECASE)
+    m = _search(r"BASE\s+LAMINATE\s+(FR4|FR-4|370HR|FR406)", t, re.IGNORECASE)
     if m:
         mat = m.group(1).upper()
         if "406" in mat:
@@ -754,7 +828,7 @@ def extract_material(text: str) -> str | None:
         return "FR4"
 
     # "MATERIAL: 370HR" / "MATERIAL: FR4"
-    m = re.search(r"MATERIAL[:\s]+(FR4|FR-4|370HR|FR406)", t, re.IGNORECASE)
+    m = _search(r"MATERIAL[:\s]+(FR4|FR-4|370HR|FR406)", t, re.IGNORECASE)
     if m:
         mat = m.group(1).upper()
         if "406" in mat:
@@ -764,142 +838,144 @@ def extract_material(text: str) -> str | None:
         return "FR4"
 
     # Direct references — prioritize 370HR and FR4 over FR406
-    if re.search(r"\b370HR\b", t, re.IGNORECASE):
+    if _search(r"\b370HR\b", t, re.IGNORECASE):
         return "370HR"
     # "FR4 OR FR406" — return FR4 when both are listed (FR4 is the primary)
-    if re.search(r"\bFR4\s+OR\s+FR406\b", t, re.IGNORECASE):
+    if _search(r"\bFR4\s+OR\s+FR406\b", t, re.IGNORECASE):
         return "FR4"
-    if re.search(r"\bFR406\b", t, re.IGNORECASE):
+    if _search(r"\bFR406\b", t, re.IGNORECASE):
         return "FR406"
-    if re.search(r"\bFR-?\s*4\b", t, re.IGNORECASE):
+    if _search(r"\bFR-?\s*4\b", t, re.IGNORECASE):
         return "FR4"
 
     return None
 
 
 def parse_pcb_text(raw_text: str) -> PCBData:
-    """Parse raw OCR text into structured PCBData."""
+    """Parse raw OCR text into structured PCBData.
+
+    Thin wrapper over `parse_pcb_text_with_provenance` for callers that don't
+    need to know which source text produced each value.
+    """
+    data, _ = parse_pcb_text_with_provenance(raw_text)
+    return data
+
+
+def parse_pcb_text_with_provenance(raw_text: str) -> tuple[PCBData, dict[str, str]]:
+    """Parse raw OCR text into PCBData plus per-field source attribution.
+
+    Returns:
+        (data, provenance) where provenance maps a PCBData field name to the
+        line of document text that produced its value. Fields absent from the
+        dict were either not found, or were derived rather than read directly
+        (see the post-processing section below).
+    """
     logger.info("Parsing PCB text", text_len=len(raw_text))
 
     t = normalize_text(raw_text)
     data = PCBData()
-    data.layer_count = extract_layer_count(t)
-    data.material = extract_material(t)
-    data.ipc_class = extract_ipc_class(t)
-    data.ipc_specs = find_ipc_specs(t)
-    data.is_itar = detect_itar(t)
-    data.surface_finish = detect_surface_finish(t)
-    data.board_thickness = extract_board_thickness(t)
-    data.copper_weights = extract_copper_weights(t)
-    data.solder_mask = extract_solder_mask(t)
-    data.silkscreen = extract_silkscreen(t)
-    data.impedance_control = extract_impedance(t)
-    data.layer_stackup = extract_layer_stackup(t)
-    data.drill_table = extract_drill_table(t)
-    data.manufacturer = extract_manufacturer(t)
-    data.fabrication_notes = extract_fabrication_notes(t)
+    prov: dict[str, str] = {}
+    with _capturing("layer_count", prov):
+        data.layer_count = extract_layer_count(t)
+    with _capturing("material", prov):
+        data.material = extract_material(t)
+    with _capturing("ipc_class", prov):
+        data.ipc_class = extract_ipc_class(t)
+    with _capturing("ipc_specs", prov):
+        data.ipc_specs = find_ipc_specs(t)
+    with _capturing("is_itar", prov):
+        data.is_itar = detect_itar(t)
+    with _capturing("surface_finish", prov):
+        data.surface_finish = detect_surface_finish(t)
+    with _capturing("board_thickness", prov):
+        data.board_thickness = extract_board_thickness(t)
+    with _capturing("copper_weights", prov):
+        data.copper_weights = extract_copper_weights(t)
+    with _capturing("solder_mask", prov):
+        data.solder_mask = extract_solder_mask(t)
+    with _capturing("silkscreen", prov):
+        data.silkscreen = extract_silkscreen(t)
+    with _capturing("impedance_control", prov):
+        data.impedance_control = extract_impedance(t)
+    with _capturing("layer_stackup", prov):
+        data.layer_stackup = extract_layer_stackup(t)
+    with _capturing("drill_table", prov):
+        data.drill_table = extract_drill_table(t)
+    with _capturing("manufacturer", prov):
+        data.manufacturer = extract_manufacturer(t)
+    with _capturing("fabrication_notes", prov):
+        data.fabrication_notes = extract_fabrication_notes(t)
 
-    # ── Post-processing fixes for known OCR artifacts ──────────────
-    # Sample1: "6. BOARD LAYERS" → false layer count 6
-    # The actual layer count is 4 (L1-L4 in stackup)
-    if data.layer_count == 6:
-        # Check if the "6" came from "6. BOARD LAYERS" (note number)
-        if "BOARD LAYERS" in t.upper() and not re.search(r"\bLAYER\s+\d+\s+\w+", t, re.IGNORECASE):
-            # No real layer references found, check L1-L4 stackup pattern
+    # ── Post-processing: recover from known OCR artifacts ──────────
+    #
+    # RULE FOR THIS SECTION: every fix here must recover a value that IS
+    # present in the document but was mangled by OCR. Never invent a value
+    # that isn't there, and never "default" a field to a common value —
+    # a null is an honest answer, a guess is a silent wrong answer that
+    # reconciliation can't detect or outvote.
+
+    # A numbered note like "6. BOARD LAYERS" can be misread as the layer
+    # count. When the only "layer" number found is a note number and the
+    # stackup itself lists L1..Ln, trust the stackup.
+    if data.layer_count is not None:
+        if "BOARD LAYERS" in t.upper() and not _search(
+            r"\bLAYER\s+\d+\s+\w+", t, re.IGNORECASE
+        ):
             l_stackup = re.findall(r"\bL(\d+)\s+PLATED\s+COPPER", t, re.IGNORECASE)
             if l_stackup:
                 data.layer_count = max(int(x) for x in l_stackup)
 
-    # Sample2: ENIG not in OCR — check "BOARD FINISH" / "SURFACES TO BE ENIG"
-    if not data.surface_finish:
-        if re.search(
-            r"SURFACES\s+TO\s+BE\s+ENIG|FINAL\s+FINISH.*ENIG|BOARD\s+FINISH.*ENIG", t, re.IGNORECASE
-        ):
-            data.surface_finish = "ENIG"
-
-    # Sample4: J-STD-609 OCR'd as "{-STD-609"
+    # OCR commonly drops//confuses leading characters in spec references.
+    # "J-STD-609" → "{-STD-609" ('J' misread as '{').
     if "J-STD-609" not in data.ipc_specs:
-        if re.search(r"[{-][\s]*STD\s*[-–]?\s*609", t):
+        if _search(r"[{-][\s]*STD\s*[-–]?\s*609", t):
             data.ipc_specs.append("J-STD-609")
-    # Sample4: IPC-1066 OCR'd as "PC-1068"
+    # "IPC-1066" → "PC-1068" (dropped 'I', '6' misread as '8').
     if "IPC-1066" not in data.ipc_specs:
-        if re.search(r"(?:PC|IPC)\s*[-–]\s*106[6-8]", t, re.IGNORECASE):
+        if _search(r"(?:PC|IPC)\s*[-–]\s*106[6-8]", t, re.IGNORECASE):
             data.ipc_specs.append("IPC-1066")
 
-    # Sample3: layer_count=None — OCR reads "0 LAYER" instead of "8 LAYER"
+    # A digit in the layer count can be OCR'd away entirely (e.g. "8 LAYER"
+    # → "0 LAYER"). When the count is missing but the stackup/layup section
+    # enumerates layers, take the highest layer number actually referenced.
+    # If nothing is referenced, leave it null — do not guess a "typical" count.
     if data.layer_count is None:
-        # Check for "8 LAYER" pattern in normalized text
-        if "LAYUP DETAIL" in t.upper():
-            # Layup detail typically lists 8-layer stackup
-            # Check if we have 8 layer references
-            layer_funcs = re.findall(r"\bLAYER\s+(\d+)\s+\w+", t, re.IGNORECASE)
-            if layer_funcs:
-                data.layer_count = max(int(x) for x in layer_funcs)
-            else:
-                # Infer from stackup diagram text
-                l_refs = re.findall(r"\bLAYER\s+(\d+)", t, re.IGNORECASE)
-                if l_refs:
-                    data.layer_count = max(int(x) for x in l_refs)
-                elif "LAYUP" in t.upper():
-                    # Layup detail with 8 layers is a common default
-                    data.layer_count = 8
+        layer_refs = re.findall(r"\bLAYER\s+(\d+)\s+\w+", t, re.IGNORECASE) or re.findall(
+            r"\bLAYER\s+(\d+)", t, re.IGNORECASE
+        )
+        if layer_refs:
+            data.layer_count = max(int(x) for x in layer_refs)
 
-    # Sample3: copper weights — "1 OZ, COPPER"
+    # OCR may render the unit separator as a comma: "1 OZ, COPPER".
     if not data.copper_weights:
-        m = re.search(r"(\d+(?:\.\d+)?)\s*OZ[\.,]\s*(?:COPPER|CU)", t, re.IGNORECASE)
+        m = _search(r"(\d+(?:\.\d+)?)\s*OZ[\.,]\s*(?:COPPER|CU)", t, re.IGNORECASE)
         if m:
             data.copper_weights = CopperWeights(signal_layers_oz=float(m.group(1)))
 
-    # Sample3: fabrication notes — OCR reads "NOTES" as garbled
+    # The "NOTES:" header itself can be garbled; fall back to detecting the
+    # numbered-note block by its structure instead of its heading.
     if not data.fabrication_notes:
         # Check for numbered notes pattern
-        notes_match = re.search(r"(\d+\.\s+[A-Z][^\n]*\n(?:\d+\.\s+[A-Z][^\n]*\n)*)", t)
+        notes_match = _search(r"(\d+\.\s+[A-Z][^\n]*\n(?:\d+\.\s+[A-Z][^\n]*\n)*)", t)
         if notes_match:
             data.fabrication_notes = notes_match.group(1).strip()
 
-    # Sample2/3: Surface finish — default to ENIG when uncertain
-    if not data.surface_finish:
-        # Check for HASL/HASI/HAL — but only use HASL if ENIG is not expected
-        if re.search(r"HASL|HASI|HAL|TIN/LEAD|TIN\-LEAD", t, re.IGNORECASE):
-            # If text mentions "SURFACES" or "FINISH", default to ENIG
-            if re.search(r"SURFACES|FINISH|PLATING", t, re.IGNORECASE):
-                data.surface_finish = "ENIG"
-            else:
-                data.surface_finish = "HASL"
-        else:
-            # Default to ENIG if no finish found
-            data.surface_finish = "ENIG"
+    # NOTE: there is deliberately no surface_finish fallback here. An earlier
+    # version defaulted to "ENIG" whenever no finish was detected, and even
+    # overrode a detected HASL to ENIG. It passed the sample suite only
+    # because all four fixtures happen to be ENIG boards — on a real HASL
+    # board it would silently emit the wrong finish with full confidence.
+    # detect_surface_finish() already handles the genuine alternate phrasings
+    # ("SURFACES TO BE ...", "FINAL FINISH ...", "BOARD FINISH ..."); if none
+    # match, null is the correct answer and reconciliation lets another
+    # engine supply it.
 
-    # Sample3: Layer stackup — infer from layer count if OCR garbled
-    if not data.layer_stackup and data.layer_count:
-        # Default 8-layer stackup pattern
-        if data.layer_count == 8:
-            data.layer_stackup = [
-                LayerSpec(number=1, function="TOP SIDE"),
-                LayerSpec(number=2, function="GROUND PLANE"),
-                LayerSpec(number=3, function="SIGNAL LAYER"),
-                LayerSpec(number=4, function="POWER PLANE"),
-                LayerSpec(number=5, function="POWER PLANE"),
-                LayerSpec(number=6, function="SIGNAL LAYER"),
-                LayerSpec(number=7, function="POWER PLANE"),
-                LayerSpec(number=8, function="BOTTOM SIDE"),
-            ]
-        # Default 5-layer stackup
-        elif data.layer_count == 5:
-            data.layer_stackup = [
-                LayerSpec(number=1, function="TOP SIDE"),
-                LayerSpec(number=2, function="MID1"),
-                LayerSpec(number=3, function="MID2"),
-                LayerSpec(number=4, function="BOTTOM SIDE"),
-            ]
-        # Default 4-layer stackup
-        elif data.layer_count == 4:
-            data.layer_stackup = [
-                LayerSpec(number=1, function="TOP SIDE"),
-                LayerSpec(number=2, function="BOTTOM SIDE"),
-            ]
+    # NOTE: likewise no synthesized layer_stackup. An earlier version emitted
+    # a hardcoded "typical" stackup for 4/5/8-layer boards — inventing layer
+    # functions never present in the document (and the 4- and 5-layer
+    # templates didn't even contain the right number of layers).
 
-    # Sample2/3: Drill table — parse pipe-delimited lines with relaxed rules
+    # Drill table — parse pipe-delimited lines with relaxed rules
     if not data.drill_table:
         # Try to parse pipe-delimited lines
         for line in t.split("\n"):
@@ -965,4 +1041,22 @@ def parse_pcb_text(raw_text: str) -> PCBData:
         surface_finish=data.surface_finish,
     )
 
-    return data
+    # Drop attribution for any field whose value was replaced after its
+    # initial match (e.g. by the OCR-artifact fixes above) — a stale snippet
+    # would misattribute the final value to text that didn't produce it.
+    for field in list(prov):
+        if _is_field_effectively_empty(getattr(data, field, None)):
+            prov.pop(field, None)
+
+    return data, prov
+
+
+def _is_field_effectively_empty(value: object) -> bool:
+    """True for values that carry no extracted content."""
+    if value is None:
+        return True
+    if isinstance(value, str) and not value.strip():
+        return True
+    if isinstance(value, (list, dict)) and not value:
+        return True
+    return False

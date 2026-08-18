@@ -130,6 +130,14 @@ class FieldConfidence(BaseModel):
         description="Which OCR engine produced this: tesseract | glm-ocr | qwen-vl | pymupdf"
     )
     reasoning: str | None = Field(default=None, description="Why this confidence level")
+    source_text: str | None = Field(
+        default=None,
+        description=(
+            "The text on the drawing that produced this value, when the engine "
+            "can attribute it. Null when the value was inferred rather than read "
+            "from a specific span (the vision models don't always report one)."
+        ),
+    )
 
 
 class PCBDataWithConfidence(BaseModel):

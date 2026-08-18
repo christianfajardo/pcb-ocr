@@ -66,6 +66,7 @@ async def extract(file: UploadFile = File(...)) -> dict:
                 merged = result.get("reconciled")
                 errors = result.get("errors", [])
                 log = result.get("reconciliation_log", [])
+                attribution = result.get("attribution", {})
 
                 if not merged:
                     raise HTTPException(
@@ -84,6 +85,7 @@ async def extract(file: UploadFile = File(...)) -> dict:
 
                 response = merged.model_dump()
                 response["reconciliation_log"] = log
+                response["attribution"] = attribution
                 response["errors"] = errors
                 response["engine_durations_sec"] = [
                     {

@@ -48,31 +48,26 @@
   },
   "copper_weights": {
     "signal_layers_oz": 1.0,
-    "plane_layers_oz": 1.0,
-    "external_finished_oz": 1.0
+    "plane_layers_oz": null,
+    "external_finished_oz": null
   },
   "surface_finish": "ENIG",
   "solder_mask": {
     "present": true,
-    "type": "LPI",
-    "color": "GREEN",
-    "spec": "IPC-SM-840",
-    "sides": "TOP AND BOTTOM"
+    "type": null,
+    "color": "Green",
+    "spec": null,
+    "sides": "both"
   },
   "silkscreen": {
     "present": true,
-    "color": "WHITE",
-    "ink": "EPOXY",
-    "sides": "TOP AND BOTTOM"
+    "color": "White",
+    "ink": null,
+    "sides": "both"
   },
   "impedance_control": {
     "controlled": false,
-    "single_ended": {
-      "min": null,
-      "max": null,
-      "unit": "ohm",
-      "raw": null
-    },
+    "single_ended": null,
     "trace_width_mils": null,
     "layers": []
   },
@@ -132,56 +127,755 @@
       "plated": false
     }
   ],
-  "fabrication_notes": "1. MATERIAL: 370HR OR EQUIVALENT\n2. OVERALL BOARD THICKNESS TO BE .062 +/- .007\n3. APPLY SOLDERMASK OVER BARE COPPER. COLOR: GREEN.\n4. ALL EXPOSED CONDUCTIVE SURFACES TO BE ENIG\n5. SILKSCREEN TOP AND BOTTOM SIDE USING NON-CONDUCTIVE WHITE EPOXY INK.\n6. FABRICATE IN ACCORDANCE WITH IPC-6012 CLASS 2.\n7. COPPER WEIGHT SHALL BE 1 OZ. COPPER",
-  "ocr_raw_text": null,
+  "fabrication_notes": "NOTES: UNLESS OTHERWISE SPECIFIED\n\n1. MATERIAL: 370HR OR EQUIVALENT\n2. OVERALL BOARD THICKNESS TO BE .062 +/- .007\n3. APPLY SOLDERMASK OVER BARE COPPER. COLOR: GREEN.\n4. ALL EXPOSED CONDUCTIVE SURFACES TO BE ENIG\n5. SILKSCREEN TOP AND BOTTOM SIDE USING NON-CONDUCTIVE WHITE EPOXY INK.\n6. FABRICATE IN ACCORDANCE WITH IPC-6012 CLASS 2.\n7. COPPER WEIGHT SHALL BE 1 OZ. COPPER\n\nSIZE QTY SYM PLATED TOL\n8 9 YES +/-0.003\n12 40 YES +/-0.003\n15 3 YES +/-0.003\n28 1 NO +/-0.003\n36 1 NO +/-0.003\n40 4 YES +/-0.003\n73 3 YES +/-0.003\n40.16 4 YES +/-0.003\n31.5 5 YES +/-0.003\n94.49 2 YES +/-0.003\n106 4 NO +/-0.003\n\nCOMPANY: Company Name\nTITLE:\nDRAWN: DATED:\nCHECKED: DATED:\nQUALITY CONTROL: DATED:\nRELEASED: DATED:\nCODE: B SIZE: B DRAWING NO: Drawing Number\nSCALE: Scale\nSHEET:",
+  "ocr_raw_text": "NOTES: UNLESS OTHERWISE SPECIFIED\n\n1. MATERIAL: 370HR OR EQUIVALENT\n2. OVERALL BOARD THICKNESS TO BE .062 +/- .007\n3. APPLY SOLDERMASK OVER BARE COPPER. COLOR: GREEN.\n4. ALL EXPOSED CONDUCTIVE SURFACES TO BE ENIG\n5. SILKSCREEN TOP AND BOTTOM SIDE USING NON-CONDUCTIVE WHITE EPOXY INK.\n6. FABRICATE IN ACCORDANCE WITH IPC-6012 CLASS 2.\n7. COPPER WEIGHT SHALL BE 1 OZ. COPPER\n\nSIZE QTY SYM PLATED TOL\n8 9 YES +/-0.003\n12 40 YES +/-0.003\n15 3 YES +/-0.003\n28 1 NO +/-0.003\n36 1 NO +/-0.003\n40 4 YES +/-0.003\n73 3 YES +/-0.003\n40.16 4 YES +/-0.003\n31.5 5 YES +/-0.003\n94.49 2 YES +/-0.003\n106 4 NO +/-0.003\n\nCOMPANY: Company Name\nTITLE:\nDRAWN: DATED:\nCHECKED: DATED:\nQUALITY CONTROL: DATED:\nRELEASED: DATED:\nCODE: B SIZE: B DRAWING NO: Drawing Number\nSCALE: Scale\nSHEET:",
   "reconciliation_log": [
     "[part_number] value=None, conf=0.00, reason=No engine detected this field",
-    "[manufacturer] value=Company Name, conf=0.29, reason=Only source (tesseract), confidence penalized to 0.8x",
+    "[manufacturer] value=Company Name, conf=0.72, reason=All 2 engines agree, confidence boosted to 0.72",
     "[drawing_title] value=None, conf=0.00, reason=No engine detected this field",
     "[is_itar] value=False, conf=0.99, reason=All 3 engines agree, confidence boosted to 0.99",
-    "[ipc_class] value=IPCClass.CLASS_2, conf=0.94, reason=All 2 engines agree, confidence boosted to 0.94",
-    "[ipc_specs] value=['IPC-6012'], conf=0.94, reason=All 2 engines agree, confidence boosted to 0.94",
-    "[layer_count] value=8, conf=0.94, reason=All 2 engines agree, confidence boosted to 0.94",
-    "[layer_stackup] value=[LayerSpec(number=1, function='TOP SIDE'), LayerSpec(number=2, function='GROUND PLANE'), LayerSpec(number=3, function='SIGNAL LAYER'), LayerSpec(number=4, function='POWER PLANE'), LayerSpec(number=5, function='SIGNAL LAYER'), LayerSpec(number=6, function='POWER PLANE'), LayerSpec(number=7, function='BOTTOM SIDE')], conf=0.90, reason=Engines disagree (2 candidates), picked highest confidence (qwen-vl)",
-    "[material] value=370HR, conf=0.94, reason=All 2 engines agree, confidence boosted to 0.94",
-    "[board_thickness] value=nominal=0.062 plus_tol=0.007 minus_tol=0.007 unit='in' raw='.062 +/- .007', conf=0.96, reason=All 2 engines agree, confidence boosted to 0.96",
-    "[copper_weights] value=signal_layers_oz=1.0 plane_layers_oz=1.0 external_finished_oz=1.0, conf=0.87, reason=Engines disagree (2 candidates), picked highest confidence (qwen-vl)",
-    "[surface_finish] value=ENIG, conf=0.94, reason=All 2 engines agree, confidence boosted to 0.94",
-    "[solder_mask] value=present=True type='LPI' color='GREEN' spec='IPC-SM-840' sides='TOP AND BOTTOM', conf=0.85, reason=Engines disagree (2 candidates), picked highest confidence (qwen-vl)",
-    "[silkscreen] value=present=True color='WHITE' ink='EPOXY' sides='TOP AND BOTTOM', conf=0.85, reason=Engines disagree (2 candidates), picked highest confidence (qwen-vl)",
-    "[impedance_control] value=controlled=False single_ended=ImpedanceRange(min=None, max=None, unit='ohm', raw=None) trace_width_mils=None layers=[], conf=0.90, reason=Engines disagree (2 candidates), picked highest confidence (qwen-vl)",
+    "[ipc_class] value=IPCClass.CLASS_2, conf=0.94, reason=All 3 engines agree, confidence boosted to 0.94",
+    "[ipc_specs] value=['IPC-6012'], conf=0.94, reason=All 3 engines agree, confidence boosted to 0.94",
+    "[layer_count] value=8, conf=0.68, reason=Only source (qwen-vl), confidence penalized to 0.8x",
+    "[layer_stackup] value=[LayerSpec(number=1, function='TOP SIDE'), LayerSpec(number=2, function='GROUND PLANE'), LayerSpec(number=3, function='SIGNAL LAYER'), LayerSpec(number=4, function='POWER PLANE'), LayerSpec(number=5, function='SIGNAL LAYER'), LayerSpec(number=6, function='POWER PLANE'), LayerSpec(number=7, function='BOTTOM SIDE')], conf=0.72, reason=Only source (qwen-vl), confidence penalized to 0.8x",
+    "[material] value=370HR, conf=0.94, reason=All 3 engines agree, confidence boosted to 0.94",
+    "[board_thickness] value=nominal=0.062 plus_tol=0.007 minus_tol=0.007 unit='in' raw='.062 +/- .007', conf=0.96, reason=All 3 engines agree, confidence boosted to 0.96",
+    "[copper_weights] value=signal_layers_oz=1.0 plane_layers_oz=None external_finished_oz=None, conf=0.50, reason=2/3 engines agree",
+    "[surface_finish] value=ENIG, conf=0.94, reason=All 3 engines agree, confidence boosted to 0.94",
+    "[solder_mask] value=present=True type=None color='Green' spec=None sides='both', conf=0.50, reason=2/3 engines agree",
+    "[silkscreen] value=present=True color='White' ink=None sides='both', conf=0.50, reason=2/3 engines agree",
+    "[impedance_control] value=controlled=False single_ended=None trace_width_mils=None layers=[], conf=0.47, reason=2/3 engines agree",
     "[drill_table] value=[DrillRow(size_mils=8.0, qty=9, symbol='\u25c7', plated=True), DrillRow(size_mils=12.0, qty=40, symbol='\u25a1', plated=True), DrillRow(size_mils=15.0, qty=3, symbol='\uff0b', plated=True), DrillRow(size_mils=28.0, qty=1, symbol='\uff0b', plated=False), DrillRow(size_mils=36.0, qty=4, symbol='\uff0b', plated=True), DrillRow(size_mils=40.16, qty=4, symbol='\uff0b', plated=True), DrillRow(size_mils=31.5, qty=5, symbol='\uff0b', plated=True), DrillRow(size_mils=94.49, qty=2, symbol='\uff0b', plated=True), DrillRow(size_mils=106.0, qty=4, symbol='\uff0b', plated=False)], conf=0.72, reason=Only source (qwen-vl), confidence penalized to 0.8x",
-    "[fabrication_notes] value=1. MATERIAL: 370HR OR EQUIVALENT\n2. OVERALL BOARD THICKNESS TO BE .062 +/- .007\n3. APPLY SOLDERMASK OVER BARE COPPER. COLOR: GREEN.\n4. ALL EXPOSED CONDUCTIVE SURFACES TO BE ENIG\n5. SILKSCREEN TOP AND BOTTOM SIDE USING NON-CONDUCTIVE WHITE EPOXY INK.\n6. FABRICATE IN ACCORDANCE WITH IPC-6012 CLASS 2.\n7. COPPER WEIGHT SHALL BE 1 OZ. COPPER, conf=0.75, reason=Engines disagree (2 candidates), picked highest confidence (qwen-vl)",
-    "[ocr_raw_text] value=None, conf=0.00, reason=No engine detected this field",
+    "[fabrication_notes] value=NOTES: UNLESS OTHERWISE SPECIFIED\n\n1. MATERIAL: 370HR OR EQUIVALENT\n2. OVERALL BOARD THICKNESS TO BE .062 +/- .007\n3. APPLY SOLDERMASK OVER BARE COPPER. COLOR: GREEN.\n4. ALL EXPOSED CONDUCTIVE SURFACES TO BE ENIG\n5. SILKSCREEN TOP AND BOTTOM SIDE USING NON-CONDUCTIVE WHITE EPOXY INK.\n6. FABRICATE IN ACCORDANCE WITH IPC-6012 CLASS 2.\n7. COPPER WEIGHT SHALL BE 1 OZ. COPPER\n\nSIZE QTY SYM PLATED TOL\n8 9 YES +/-0.003\n12 40 YES +/-0.003\n15 3 YES +/-0.003\n28 1 NO +/-0.003\n36 1 NO +/-0.003\n40 4 YES +/-0.003\n73 3 YES +/-0.003\n40.16 4 YES +/-0.003\n31.5 5 YES +/-0.003\n94.49 2 YES +/-0.003\n106 4 NO +/-0.003\n\nCOMPANY: Company Name\nTITLE:\nDRAWN: DATED:\nCHECKED: DATED:\nQUALITY CONTROL: DATED:\nRELEASED: DATED:\nCODE: B SIZE: B DRAWING NO: Drawing Number\nSCALE: Scale\nSHEET:, conf=0.85, reason=Engines disagree (3 candidates), picked highest confidence (glm-ocr)",
+    "[ocr_raw_text] value=NOTES: UNLESS OTHERWISE SPECIFIED\n\n1. MATERIAL: 370HR OR EQUIVALENT\n2. OVERALL BOARD THICKNESS TO BE .062 +/- .007\n3. APPLY SOLDERMASK OVER BARE COPPER. COLOR: GREEN.\n4. ALL EXPOSED CONDUCTIVE SURFACES TO BE ENIG\n5. SILKSCREEN TOP AND BOTTOM SIDE USING NON-CONDUCTIVE WHITE EPOXY INK.\n6. FABRICATE IN ACCORDANCE WITH IPC-6012 CLASS 2.\n7. COPPER WEIGHT SHALL BE 1 OZ. COPPER\n\nSIZE QTY SYM PLATED TOL\n8 9 YES +/-0.003\n12 40 YES +/-0.003\n15 3 YES +/-0.003\n28 1 NO +/-0.003\n36 1 NO +/-0.003\n40 4 YES +/-0.003\n73 3 YES +/-0.003\n40.16 4 YES +/-0.003\n31.5 5 YES +/-0.003\n94.49 2 YES +/-0.003\n106 4 NO +/-0.003\n\nCOMPANY: Company Name\nTITLE:\nDRAWN: DATED:\nCHECKED: DATED:\nQUALITY CONTROL: DATED:\nRELEASED: DATED:\nCODE: B SIZE: B DRAWING NO: Drawing Number\nSCALE: Scale\nSHEET:, conf=0.68, reason=Only source (glm-ocr), confidence penalized to 0.8x",
     "[ipc_specs] Union of all engines: ['IPC-6012']",
-    "[fabrication_notes] Used longest value (338 chars)"
+    "[fabrication_notes] Used longest value (766 chars)"
   ],
+  "attribution": {
+    "part_number": {
+      "value": null,
+      "confidence": 0.0,
+      "reason": "No engine detected this field",
+      "engine": null,
+      "source_text": null,
+      "source_text_from": null,
+      "contributors": []
+    },
+    "manufacturer": {
+      "value": "Company Name",
+      "confidence": 0.715,
+      "reason": "All 2 engines agree, confidence boosted to 0.72",
+      "engine": "glm-ocr",
+      "source_text": "COMPANY: Company Name TITLE:",
+      "source_text_from": "glm-ocr",
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": "Company Name",
+          "confidence": 0.358,
+          "source_text": "+ COMPANY: Company Name 106.00mil}"
+        },
+        {
+          "engine": "glm-ocr",
+          "value": "Company Name",
+          "confidence": 0.65,
+          "source_text": "COMPANY: Company Name TITLE:"
+        }
+      ]
+    },
+    "drawing_title": {
+      "value": null,
+      "confidence": 0.0,
+      "reason": "No engine detected this field",
+      "engine": null,
+      "source_text": null,
+      "source_text_from": null,
+      "contributors": []
+    },
+    "is_itar": {
+      "value": false,
+      "confidence": 0.99,
+      "reason": "All 3 engines agree, confidence boosted to 0.99",
+      "engine": "qwen-vl",
+      "source_text": null,
+      "source_text_from": null,
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": false,
+          "confidence": 0.413,
+          "source_text": null
+        },
+        {
+          "engine": "glm-ocr",
+          "value": false,
+          "confidence": 0.75,
+          "source_text": null
+        },
+        {
+          "engine": "qwen-vl",
+          "value": false,
+          "confidence": 0.9,
+          "source_text": null
+        }
+      ]
+    },
+    "ipc_class": {
+      "value": "Class 2",
+      "confidence": 0.935,
+      "reason": "All 3 engines agree, confidence boosted to 0.94",
+      "engine": "qwen-vl",
+      "source_text": "6. FABRICATE IN ACCORDANCE WITH IPC-6012 CLASS 2.",
+      "source_text_from": "tesseract",
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": "Class 2",
+          "confidence": 0.385,
+          "source_text": "6. FABRICATE IN ACCORDANCE WITH IPC-6012 CLASS 2."
+        },
+        {
+          "engine": "glm-ocr",
+          "value": "Class 2",
+          "confidence": 0.7,
+          "source_text": "6. FABRICATE IN ACCORDANCE WITH IPC-6012 CLASS 2."
+        },
+        {
+          "engine": "qwen-vl",
+          "value": "Class 2",
+          "confidence": 0.85,
+          "source_text": null
+        }
+      ]
+    },
+    "ipc_specs": {
+      "value": [
+        "IPC-6012"
+      ],
+      "confidence": 0.935,
+      "reason": "All 3 engines agree, confidence boosted to 0.94",
+      "engine": "qwen-vl",
+      "source_text": null,
+      "source_text_from": null,
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": [
+            "IPC-6012"
+          ],
+          "confidence": 0.33,
+          "source_text": null
+        },
+        {
+          "engine": "glm-ocr",
+          "value": [
+            "IPC-6012"
+          ],
+          "confidence": 0.6,
+          "source_text": null
+        },
+        {
+          "engine": "qwen-vl",
+          "value": [
+            "IPC-6012"
+          ],
+          "confidence": 0.85,
+          "source_text": null
+        }
+      ]
+    },
+    "layer_count": {
+      "value": 8,
+      "confidence": 0.68,
+      "reason": "Only source (qwen-vl), confidence penalized to 0.8x",
+      "engine": "qwen-vl",
+      "source_text": null,
+      "source_text_from": null,
+      "contributors": [
+        {
+          "engine": "qwen-vl",
+          "value": 8,
+          "confidence": 0.85,
+          "source_text": null
+        }
+      ]
+    },
+    "layer_stackup": {
+      "value": [
+        {
+          "number": 1,
+          "function": "TOP SIDE"
+        },
+        {
+          "number": 2,
+          "function": "GROUND PLANE"
+        },
+        {
+          "number": 3,
+          "function": "SIGNAL LAYER"
+        },
+        {
+          "number": 4,
+          "function": "POWER PLANE"
+        },
+        {
+          "number": 5,
+          "function": "SIGNAL LAYER"
+        },
+        {
+          "number": 6,
+          "function": "POWER PLANE"
+        },
+        {
+          "number": 7,
+          "function": "BOTTOM SIDE"
+        }
+      ],
+      "confidence": 0.72,
+      "reason": "Only source (qwen-vl), confidence penalized to 0.8x",
+      "engine": "qwen-vl",
+      "source_text": null,
+      "source_text_from": null,
+      "contributors": [
+        {
+          "engine": "qwen-vl",
+          "value": [
+            {
+              "number": 1,
+              "function": "TOP SIDE"
+            },
+            {
+              "number": 2,
+              "function": "GROUND PLANE"
+            },
+            {
+              "number": 3,
+              "function": "SIGNAL LAYER"
+            },
+            {
+              "number": 4,
+              "function": "POWER PLANE"
+            },
+            {
+              "number": 5,
+              "function": "SIGNAL LAYER"
+            },
+            {
+              "number": 6,
+              "function": "POWER PLANE"
+            },
+            {
+              "number": 7,
+              "function": "BOTTOM SIDE"
+            }
+          ],
+          "confidence": 0.9,
+          "source_text": null
+        }
+      ]
+    },
+    "material": {
+      "value": "370HR",
+      "confidence": 0.935,
+      "reason": "All 3 engines agree, confidence boosted to 0.94",
+      "engine": "qwen-vl",
+      "source_text": "1, MATERIAL: 370HR OR EQUIVALENT",
+      "source_text_from": "tesseract",
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": "370HR",
+          "confidence": 0.385,
+          "source_text": "1, MATERIAL: 370HR OR EQUIVALENT"
+        },
+        {
+          "engine": "glm-ocr",
+          "value": "370HR",
+          "confidence": 0.7,
+          "source_text": "1. MATERIAL: 370HR OR EQUIVALENT"
+        },
+        {
+          "engine": "qwen-vl",
+          "value": "370HR",
+          "confidence": 0.85,
+          "source_text": null
+        }
+      ]
+    },
+    "board_thickness": {
+      "value": {
+        "nominal": 0.062,
+        "plus_tol": 0.007,
+        "minus_tol": 0.007,
+        "unit": "in",
+        "raw": ".062 +/- .007"
+      },
+      "confidence": 0.957,
+      "reason": "All 3 engines agree, confidence boosted to 0.96",
+      "engine": "qwen-vl",
+      "source_text": "2. OVERALL BOARD THICKNESS TO BE .062 +/- .007 (LS LLL LL LLL LD f",
+      "source_text_from": "tesseract",
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": {
+            "nominal": 0.062,
+            "plus_tol": 0.007,
+            "minus_tol": 0.007,
+            "unit": "in",
+            "raw": ".062 +/- .007"
+          },
+          "confidence": 0.385,
+          "source_text": "2. OVERALL BOARD THICKNESS TO BE .062 +/- .007 (LS LLL LL LLL LD f"
+        },
+        {
+          "engine": "glm-ocr",
+          "value": {
+            "nominal": 0.062,
+            "plus_tol": 0.007,
+            "minus_tol": 0.007,
+            "unit": "in",
+            "raw": ".062 +/- .007"
+          },
+          "confidence": 0.7,
+          "source_text": "2. OVERALL BOARD THICKNESS TO BE .062 +/- .007 3. APPLY SOLDERMASK OVER BARE COPPER. COLOR: GREEN."
+        },
+        {
+          "engine": "qwen-vl",
+          "value": {
+            "nominal": 0.062,
+            "plus_tol": 0.007,
+            "minus_tol": 0.007,
+            "unit": "in",
+            "raw": ".062 +/- .007"
+          },
+          "confidence": 0.87,
+          "source_text": null
+        }
+      ]
+    },
+    "copper_weights": {
+      "value": {
+        "signal_layers_oz": 1.0,
+        "plane_layers_oz": null,
+        "external_finished_oz": null
+      },
+      "confidence": 0.504,
+      "reason": "2/3 engines agree",
+      "engine": "glm-ocr",
+      "source_text": "7. COPPER WEIGHT SHALL BE 1 OZ. COPPER",
+      "source_text_from": "glm-ocr",
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": {
+            "signal_layers_oz": 1.0,
+            "plane_layers_oz": null,
+            "external_finished_oz": null
+          },
+          "confidence": 0.358,
+          "source_text": null
+        },
+        {
+          "engine": "glm-ocr",
+          "value": {
+            "signal_layers_oz": 1.0,
+            "plane_layers_oz": null,
+            "external_finished_oz": null
+          },
+          "confidence": 0.65,
+          "source_text": "7. COPPER WEIGHT SHALL BE 1 OZ. COPPER"
+        },
+        {
+          "engine": "qwen-vl",
+          "value": {
+            "signal_layers_oz": 1.0,
+            "plane_layers_oz": 1.0,
+            "external_finished_oz": 1.0
+          },
+          "confidence": 0.87,
+          "source_text": null
+        }
+      ]
+    },
+    "surface_finish": {
+      "value": "ENIG",
+      "confidence": 0.935,
+      "reason": "All 3 engines agree, confidence boosted to 0.94",
+      "engine": "qwen-vl",
+      "source_text": "4, ALL EXPOSED CONDUCTIVE SURFACES TO BE ENIG",
+      "source_text_from": "tesseract",
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": "ENIG",
+          "confidence": 0.385,
+          "source_text": "4, ALL EXPOSED CONDUCTIVE SURFACES TO BE ENIG"
+        },
+        {
+          "engine": "glm-ocr",
+          "value": "ENIG",
+          "confidence": 0.7,
+          "source_text": "4. ALL EXPOSED CONDUCTIVE SURFACES TO BE ENIG"
+        },
+        {
+          "engine": "qwen-vl",
+          "value": "ENIG",
+          "confidence": 0.85,
+          "source_text": null
+        }
+      ]
+    },
+    "solder_mask": {
+      "value": {
+        "present": true,
+        "type": null,
+        "color": "Green",
+        "spec": null,
+        "sides": "both"
+      },
+      "confidence": 0.504,
+      "reason": "2/3 engines agree",
+      "engine": "glm-ocr",
+      "source_text": "3. APPLY SOLDERMASK OVER BARE COPPER. COLOR: GREEN.",
+      "source_text_from": "glm-ocr",
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": {
+            "present": true,
+            "type": null,
+            "color": "Green",
+            "spec": null,
+            "sides": "both"
+          },
+          "confidence": 0.358,
+          "source_text": "3. APPLY SOLDERMASK OVER BARE COPPER. COLOR: GREEN."
+        },
+        {
+          "engine": "glm-ocr",
+          "value": {
+            "present": true,
+            "type": null,
+            "color": "Green",
+            "spec": null,
+            "sides": "both"
+          },
+          "confidence": 0.65,
+          "source_text": "3. APPLY SOLDERMASK OVER BARE COPPER. COLOR: GREEN."
+        },
+        {
+          "engine": "qwen-vl",
+          "value": {
+            "present": true,
+            "type": "LPI",
+            "color": "GREEN",
+            "spec": "IPC-SM-840",
+            "sides": "TOP AND BOTTOM"
+          },
+          "confidence": 0.85,
+          "source_text": null
+        }
+      ]
+    },
+    "silkscreen": {
+      "value": {
+        "present": true,
+        "color": "White",
+        "ink": null,
+        "sides": "both"
+      },
+      "confidence": 0.504,
+      "reason": "2/3 engines agree",
+      "engine": "glm-ocr",
+      "source_text": "5. SILKSCREEN TOP AND BOTTOM SIDE USING NON-CONDUCTIVE WHITE EPOXY INK.",
+      "source_text_from": "glm-ocr",
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": {
+            "present": true,
+            "color": "White",
+            "ink": null,
+            "sides": "both"
+          },
+          "confidence": 0.358,
+          "source_text": "5, SILKSCREEN TOP AND BOTTOM SIDE USING NON-CONDUCTIVE WHITE EPOXY INK."
+        },
+        {
+          "engine": "glm-ocr",
+          "value": {
+            "present": true,
+            "color": "White",
+            "ink": null,
+            "sides": "both"
+          },
+          "confidence": 0.65,
+          "source_text": "5. SILKSCREEN TOP AND BOTTOM SIDE USING NON-CONDUCTIVE WHITE EPOXY INK."
+        },
+        {
+          "engine": "qwen-vl",
+          "value": {
+            "present": true,
+            "color": "WHITE",
+            "ink": "EPOXY",
+            "sides": "TOP AND BOTTOM"
+          },
+          "confidence": 0.85,
+          "source_text": null
+        }
+      ]
+    },
+    "impedance_control": {
+      "value": {
+        "controlled": false,
+        "single_ended": null,
+        "trace_width_mils": null,
+        "layers": []
+      },
+      "confidence": 0.465,
+      "reason": "2/3 engines agree",
+      "engine": "glm-ocr",
+      "source_text": null,
+      "source_text_from": null,
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": {
+            "controlled": false,
+            "single_ended": null,
+            "trace_width_mils": null,
+            "layers": []
+          },
+          "confidence": 0.33,
+          "source_text": null
+        },
+        {
+          "engine": "glm-ocr",
+          "value": {
+            "controlled": false,
+            "single_ended": null,
+            "trace_width_mils": null,
+            "layers": []
+          },
+          "confidence": 0.6,
+          "source_text": null
+        },
+        {
+          "engine": "qwen-vl",
+          "value": {
+            "controlled": false,
+            "single_ended": {
+              "min": null,
+              "max": null,
+              "unit": "ohm",
+              "raw": null
+            },
+            "trace_width_mils": null,
+            "layers": []
+          },
+          "confidence": 0.9,
+          "source_text": null
+        }
+      ]
+    },
+    "drill_table": {
+      "value": [
+        {
+          "size_mils": 8.0,
+          "qty": 9,
+          "symbol": "\u25c7",
+          "plated": true
+        },
+        {
+          "size_mils": 12.0,
+          "qty": 40,
+          "symbol": "\u25a1",
+          "plated": true
+        },
+        {
+          "size_mils": 15.0,
+          "qty": 3,
+          "symbol": "\uff0b",
+          "plated": true
+        },
+        {
+          "size_mils": 28.0,
+          "qty": 1,
+          "symbol": "\uff0b",
+          "plated": false
+        },
+        {
+          "size_mils": 36.0,
+          "qty": 4,
+          "symbol": "\uff0b",
+          "plated": true
+        },
+        {
+          "size_mils": 40.16,
+          "qty": 4,
+          "symbol": "\uff0b",
+          "plated": true
+        },
+        {
+          "size_mils": 31.5,
+          "qty": 5,
+          "symbol": "\uff0b",
+          "plated": true
+        },
+        {
+          "size_mils": 94.49,
+          "qty": 2,
+          "symbol": "\uff0b",
+          "plated": true
+        },
+        {
+          "size_mils": 106.0,
+          "qty": 4,
+          "symbol": "\uff0b",
+          "plated": false
+        }
+      ],
+      "confidence": 0.72,
+      "reason": "Only source (qwen-vl), confidence penalized to 0.8x",
+      "engine": "qwen-vl",
+      "source_text": null,
+      "source_text_from": null,
+      "contributors": [
+        {
+          "engine": "qwen-vl",
+          "value": [
+            {
+              "size_mils": 8.0,
+              "qty": 9,
+              "symbol": "\u25c7",
+              "plated": true
+            },
+            {
+              "size_mils": 12.0,
+              "qty": 40,
+              "symbol": "\u25a1",
+              "plated": true
+            },
+            {
+              "size_mils": 15.0,
+              "qty": 3,
+              "symbol": "\uff0b",
+              "plated": true
+            },
+            {
+              "size_mils": 28.0,
+              "qty": 1,
+              "symbol": "\uff0b",
+              "plated": false
+            },
+            {
+              "size_mils": 36.0,
+              "qty": 4,
+              "symbol": "\uff0b",
+              "plated": true
+            },
+            {
+              "size_mils": 40.16,
+              "qty": 4,
+              "symbol": "\uff0b",
+              "plated": true
+            },
+            {
+              "size_mils": 31.5,
+              "qty": 5,
+              "symbol": "\uff0b",
+              "plated": true
+            },
+            {
+              "size_mils": 94.49,
+              "qty": 2,
+              "symbol": "\uff0b",
+              "plated": true
+            },
+            {
+              "size_mils": 106.0,
+              "qty": 4,
+              "symbol": "\uff0b",
+              "plated": false
+            }
+          ],
+          "confidence": 0.9,
+          "source_text": null
+        }
+      ]
+    },
+    "fabrication_notes": {
+      "value": "NOTES: UNLESS OTHERWISE SPECIFIED\n\n1. MATERIAL: 370HR OR EQUIVALENT\n2. OVERALL BOARD THICKNESS TO BE .062 +/- .007\n3. APPLY SOLDERMASK OVER BARE COPPER. COLOR: GREEN.\n4. ALL EXPOSED CONDUCTIVE SURFACES TO BE ENIG\n5. SILKSCREEN TOP AND BOTTOM SIDE USING NON-CONDUCTIVE WHITE EPOXY INK.\n6. FABRICATE IN ACCORDANCE WITH IPC-6012 CLASS 2.\n7. COPPER WEIGHT SHALL BE 1 OZ. COPPER\n\nSIZE QTY SYM PLATED TOL\n8 9 YES +/-0.003\n12 40 YES +/-0.003\n15 3 YES +/-0.003\n28 1 NO +/-0.003\n36 1 NO +/-0.003\n40 4 YES +/-0.003\n73 3 YES +/-0.003\n40.16 4 YES +/-0.003\n31.5 5 YES +/-0.003\n94.49 2 YES +/-0.003\n106 4 NO +/-0.003\n\nCOMPANY: Company Name\nTITLE:\nDRAWN: DATED:\nCHECKED: DATED:\nQUALITY CONTROL: DATED:\nRELEASED: DATED:\nCODE: B SIZE: B DRAWING NO: Drawing Number\nSCALE: Scale\nSHEET:",
+      "confidence": 0.85,
+      "reason": "Engines disagree (3 candidates), picked highest confidence (glm-ocr)",
+      "engine": "glm-ocr",
+      "source_text": "NOTES: UNLESS OTHERWISE SPECIFIED",
+      "source_text_from": "glm-ocr",
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": "2. OVERALL BOARD THICKNESS TO BE .062 +/- .007",
+          "confidence": 0.468,
+          "source_text": null
+        },
+        {
+          "engine": "glm-ocr",
+          "value": "NOTES: UNLESS OTHERWISE SPECIFIED\n\n1. MATERIAL: 370HR OR EQUIVALENT\n2. OVERALL BOARD THICKNESS TO BE .062 +/- .007\n3. APPLY SOLDERMASK OVER BARE COPPER. COLOR: GREEN.\n4. ALL EXPOSED CONDUCTIVE SURFACES TO BE ENIG\n5. SILKSCREEN TOP AND BOTTOM SIDE USING NON-CONDUCTIVE WHITE EPOXY INK.\n6. FABRICATE IN ACCORDANCE WITH IPC-6012 CLASS 2.\n7. COPPER WEIGHT SHALL BE 1 OZ. COPPER\n\nSIZE QTY SYM PLATED TOL\n8 9 YES +/-0.003\n12 40 YES +/-0.003\n15 3 YES +/-0.003\n28 1 NO +/-0.003\n36 1 NO +/-0.003\n40 4 YES +/-0.003\n73 3 YES +/-0.003\n40.16 4 YES +/-0.003\n31.5 5 YES +/-0.003\n94.49 2 YES +/-0.003\n106 4 NO +/-0.003\n\nCOMPANY: Company Name\nTITLE:\nDRAWN: DATED:\nCHECKED: DATED:\nQUALITY CONTROL: DATED:\nRELEASED: DATED:\nCODE: B SIZE: B DRAWING NO: Drawing Number\nSCALE: Scale\nSHEET:",
+          "confidence": 0.85,
+          "source_text": "NOTES: UNLESS OTHERWISE SPECIFIED"
+        },
+        {
+          "engine": "qwen-vl",
+          "value": "1. MATERIAL: 370HR OR EQUIVALENT\n2. OVERALL BOARD THICKNESS TO BE .062 +/- .007\n3. APPLY SOLDERMASK OVER BARE COPPER. COLOR: GREEN.\n4. ALL EXPOSED CONDUCTIVE SURFACES TO BE ENIG\n5. SILKSCREEN TOP AND BOTTOM SIDE USING NON-CONDUCTIVE WHITE EPOXY INK.\n6. FABRICATE IN ACCORDANCE WITH IPC-6012 CLASS 2.\n7. COPPER WEIGHT SHALL BE 1 OZ. COPPER",
+          "confidence": 0.75,
+          "source_text": null
+        }
+      ]
+    },
+    "ocr_raw_text": {
+      "value": "NOTES: UNLESS OTHERWISE SPECIFIED\n\n1. MATERIAL: 370HR OR EQUIVALENT\n2. OVERALL BOARD THICKNESS TO BE .062 +/- .007\n3. APPLY SOLDERMASK OVER BARE COPPER. COLOR: GREEN.\n4. ALL EXPOSED CONDUCTIVE SURFACES TO BE ENIG\n5. SILKSCREEN TOP AND BOTTOM SIDE USING NON-CONDUCTIVE WHITE EPOXY INK.\n6. FABRICATE IN ACCORDANCE WITH IPC-6012 CLASS 2.\n7. COPPER WEIGHT SHALL BE 1 OZ. COPPER\n\nSIZE QTY SYM PLATED TOL\n8 9 YES +/-0.003\n12 40 YES +/-0.003\n15 3 YES +/-0.003\n28 1 NO +/-0.003\n36 1 NO +/-0.003\n40 4 YES +/-0.003\n73 3 YES +/-0.003\n40.16 4 YES +/-0.003\n31.5 5 YES +/-0.003\n94.49 2 YES +/-0.003\n106 4 NO +/-0.003\n\nCOMPANY: Company Name\nTITLE:\nDRAWN: DATED:\nCHECKED: DATED:\nQUALITY CONTROL: DATED:\nRELEASED: DATED:\nCODE: B SIZE: B DRAWING NO: Drawing Number\nSCALE: Scale\nSHEET:",
+      "confidence": 0.68,
+      "reason": "Only source (glm-ocr), confidence penalized to 0.8x",
+      "engine": "glm-ocr",
+      "source_text": null,
+      "source_text_from": null,
+      "contributors": [
+        {
+          "engine": "glm-ocr",
+          "value": "NOTES: UNLESS OTHERWISE SPECIFIED\n\n1. MATERIAL: 370HR OR EQUIVALENT\n2. OVERALL BOARD THICKNESS TO BE .062 +/- .007\n3. APPLY SOLDERMASK OVER BARE COPPER. COLOR: GREEN.\n4. ALL EXPOSED CONDUCTIVE SURFACES TO BE ENIG\n5. SILKSCREEN TOP AND BOTTOM SIDE USING NON-CONDUCTIVE WHITE EPOXY INK.\n6. FABRICATE IN ACCORDANCE WITH IPC-6012 CLASS 2.\n7. COPPER WEIGHT SHALL BE 1 OZ. COPPER\n\nSIZE QTY SYM PLATED TOL\n8 9 YES +/-0.003\n12 40 YES +/-0.003\n15 3 YES +/-0.003\n28 1 NO +/-0.003\n36 1 NO +/-0.003\n40 4 YES +/-0.003\n73 3 YES +/-0.003\n40.16 4 YES +/-0.003\n31.5 5 YES +/-0.003\n94.49 2 YES +/-0.003\n106 4 NO +/-0.003\n\nCOMPANY: Company Name\nTITLE:\nDRAWN: DATED:\nCHECKED: DATED:\nQUALITY CONTROL: DATED:\nRELEASED: DATED:\nCODE: B SIZE: B DRAWING NO: Drawing Number\nSCALE: Scale\nSHEET:",
+          "confidence": 0.85,
+          "source_text": null
+        }
+      ]
+    }
+  },
   "errors": [],
   "engine_durations_sec": [
     {
       "engine": "tesseract",
-      "duration_sec": 3.007,
-      "start_time": "2026-08-17T11:39:53.056341-07:00",
-      "end_time": "2026-08-17T11:39:56.063021-07:00"
+      "duration_sec": 3.039,
+      "start_time": "2026-08-18T07:13:13.179028-07:00",
+      "end_time": "2026-08-18T07:13:16.218439-07:00"
     },
     {
       "engine": "glm-ocr",
-      "duration_sec": 12.565,
-      "start_time": "2026-08-17T11:39:53.040342-07:00",
-      "end_time": "2026-08-17T11:40:05.605062-07:00"
+      "duration_sec": 10.042,
+      "start_time": "2026-08-18T07:13:13.164582-07:00",
+      "end_time": "2026-08-18T07:13:23.206263-07:00"
     },
     {
       "engine": "qwen-vl",
-      "duration_sec": 81.216,
-      "start_time": "2026-08-17T11:39:53.052134-07:00",
-      "end_time": "2026-08-17T11:41:14.267821-07:00"
+      "duration_sec": 79.856,
+      "start_time": "2026-08-18T07:13:13.176097-07:00",
+      "end_time": "2026-08-18T07:14:33.032230-07:00"
     },
     {
       "engine": "pymupdf",
       "duration_sec": 0.008,
-      "start_time": "2026-08-17T11:39:53.043894-07:00",
-      "end_time": "2026-08-17T11:39:53.052003-07:00"
+      "start_time": "2026-08-18T07:13:13.167918-07:00",
+      "end_time": "2026-08-18T07:13:13.175961-07:00"
     }
   ],
-  "total_duration_sec": 81.848
+  "total_duration_sec": 80.474
 }

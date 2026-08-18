@@ -43,7 +43,7 @@
     "plane_layers_oz": null,
     "external_finished_oz": 2.0
   },
-  "surface_finish": "ENIG",
+  "surface_finish": "Tin/Lead",
   "solder_mask": {
     "present": true,
     "type": "photo imageable",

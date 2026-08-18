@@ -11,8 +11,9 @@ from fastapi import APIRouter, File, HTTPException, UploadFile
 
 from shared.confidence import build_confidence_map
 from shared.logging_config import bind_pdf_filename
+from shared.pcb_parser import parse_pcb_text_with_provenance
 from shared.preprocessing import pdf_to_images
-from shared.schemas import PCBData, PCBDataWithConfidence, normalize_units
+from shared.schemas import PCBDataWithConfidence, normalize_units
 
 from .vlm_client import GLMOCRClient
 
@@ -27,6 +28,16 @@ glm_client = GLMOCRClient()
 @router.post("")
 async def extract(file: UploadFile = File(...)) -> dict:
     """Extract PCB data using GLM-OCR.
+
+    GLM-OCR is a document-vision model, not a general reasoning LLM: its raw
+    text recognition is strong (dense text, small fonts), but asking it to
+    also map that text onto a complex nested JSON schema (this project's
+    PCBData) produces empty or misattributed fields — verified directly
+    against the model, both with our full schema and with a minimal prompt
+    matching the model card's own "Information Extraction" example. So GLM-OCR
+    is used here only for OCR; the proven shared regex parser (same one
+    Tesseract and PyMuPDF use) turns its raw text into structured fields, with
+    per-field source-text attribution as a side effect.
 
     Args:
         file: PDF file.
@@ -55,7 +66,6 @@ async def extract(file: UploadFile = File(...)) -> dict:
                 # OCR each page
                 all_text_parts: list[str] = []
                 for img in images:
-                    # Convert to base64
                     buf = io.BytesIO()
                     img.save(buf, format="PNG")
                     b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
@@ -65,11 +75,11 @@ async def extract(file: UploadFile = File(...)) -> dict:
 
                 raw_text = "\n".join(all_text_parts)
 
-                # Structured extraction
-                structured = await glm_client.structured_extract(raw_text)
+                # Parse structured data from the raw OCR text
+                data, provenance = parse_pcb_text_with_provenance(raw_text)
+                data.ocr_raw_text = raw_text[:5000]
 
-                # Build PCBData from structured output
-                data = _build_pcb_data(structured, raw_text)
+                # Normalize units
                 data = normalize_units(data)
 
                 elapsed_ms = (time.monotonic() - start) * 1000
@@ -79,7 +89,7 @@ async def extract(file: UploadFile = File(...)) -> dict:
                     data=data,
                     ocr_engine="glm-ocr",
                     raw_text_length=len(raw_text),
-                    json_parse_success=structured is not None,
+                    provenance=provenance,
                 )
 
                 result = PCBDataWithConfidence(
@@ -103,115 +113,3 @@ async def extract(file: UploadFile = File(...)) -> dict:
         except Exception as e:
             logger.error("GLM-OCR extraction failed", error=str(e))
             raise HTTPException(status_code=500, detail=str(e))
-
-
-def _safe_int(value: object) -> int | None:
-    """Best-effort int conversion; None for anything unparseable (e.g. "")."""
-    if value is None or isinstance(value, bool):
-        return None
-    try:
-        return int(value)
-    except (TypeError, ValueError):
-        return None
-
-
-def _build_pcb_data(structured: dict | None, raw_text: str) -> PCBData:
-    """Build PCBData from structured GLM-OCR output."""
-    from shared.schemas import (
-        BoardThickness,
-        CopperWeights,
-        DrillRow,
-        ImpedanceControl,
-        IPCClass,
-        LayerSpec,
-        PCBData,
-        Silkscreen,
-        SolderMask,
-    )
-
-    if not structured:
-        return PCBData(ocr_raw_text=raw_text[:5000])
-
-    data = PCBData()
-    data.part_number = structured.get("part_number")
-    data.manufacturer = structured.get("manufacturer")
-    data.drawing_title = structured.get("drawing_title")
-    data.is_itar = structured.get("is_itar", False)
-    data.ipc_specs = structured.get("ipc_specs", [])
-    data.layer_count = _safe_int(structured.get("layer_count"))
-    data.material = structured.get("material")
-    data.surface_finish = structured.get("surface_finish")
-    data.fabrication_notes = structured.get("fabrication_notes")
-
-    # IPC class
-    ipc_class = structured.get("ipc_class")
-    if ipc_class:
-        try:
-            data.ipc_class = IPCClass(ipc_class)
-        except ValueError:
-            pass
-
-    # Board thickness
-    bt = structured.get("board_thickness")
-    if bt and isinstance(bt, dict):
-        try:
-            data.board_thickness = BoardThickness(
-                nominal=bt.get("nominal"),
-                plus_tol=bt.get("plus_tol"),
-                minus_tol=bt.get("minus_tol"),
-                unit="in",
-            )
-        except Exception as e:
-            logger.warning("Skipping malformed board_thickness", error=str(e))
-
-    # Copper weights
-    cw = structured.get("copper_weights")
-    if cw and isinstance(cw, dict):
-        try:
-            data.copper_weights = CopperWeights(**cw)
-        except Exception as e:
-            logger.warning("Skipping malformed copper_weights", error=str(e))
-
-    # Solder mask
-    sm = structured.get("solder_mask")
-    if sm and isinstance(sm, dict):
-        try:
-            data.solder_mask = SolderMask(**sm)
-        except Exception as e:
-            logger.warning("Skipping malformed solder_mask", error=str(e))
-
-    # Silkscreen
-    sk = structured.get("silkscreen")
-    if sk and isinstance(sk, dict):
-        try:
-            data.silkscreen = Silkscreen(**sk)
-        except Exception as e:
-            logger.warning("Skipping malformed silkscreen", error=str(e))
-
-    # Impedance
-    imp = structured.get("impedance_control")
-    if imp and isinstance(imp, dict):
-        try:
-            if not isinstance(imp.get("single_ended"), dict):
-                imp = {**imp, "single_ended": None}
-            data.impedance_control = ImpedanceControl(**imp)
-        except Exception as e:
-            logger.warning("Skipping malformed impedance_control", error=str(e))
-
-    # Layer stackup
-    stackup = structured.get("layer_stackup")
-    if stackup and isinstance(stackup, list):
-        try:
-            data.layer_stackup = [LayerSpec(**s) for s in stackup]
-        except Exception as e:
-            logger.warning("Skipping malformed layer_stackup", error=str(e))
-
-    # Drill table
-    dt = structured.get("drill_table")
-    if dt and isinstance(dt, list):
-        try:
-            data.drill_table = [DrillRow(**d) for d in dt]
-        except Exception as e:
-            logger.warning("Skipping malformed drill_table", error=str(e))
-
-    return data

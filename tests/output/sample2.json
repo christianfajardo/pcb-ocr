@@ -40,10 +40,10 @@
   },
   "copper_weights": {
     "signal_layers_oz": 1.0,
-    "plane_layers_oz": 2.0,
+    "plane_layers_oz": null,
     "external_finished_oz": 1.0
   },
-  "surface_finish": "ENIG",
+  "surface_finish": "Tin/Lead",
   "solder_mask": {
     "present": true,
     "type": "LPI",
@@ -65,7 +65,7 @@
       "unit": "ohm",
       "raw": "90.0 OHMS"
     },
-    "trace_width_mils": null,
+    "trace_width_mils": 11.0,
     "layers": []
   },
   "drill_table": [
@@ -119,55 +119,862 @@
     }
   ],
   "fabrication_notes": "NOTES (UNLESS OTHERWISE SPECIFIED):\n1. FABRICATE PER IPC-A-608, CLASS 2 8. ALL HOLES TO BE +/- .003 IN. DIA. UNLESS D\n, OTHERWISE SPECIFIED. HOLE SIZES GIVEN ARE\n2. MATERIAL: AFTER PLATING. PLATED THRU HOLES SHALL\n1 OZ, CU INTERNAL HAVE A MINIMUM OF .001 COPPER.\n1 OZ. CU EXTERNAL, 2 OZ. AFTER PLATING\nBASE LAMINATE FR4 IT IS THE FABRICATORS RESPONSIBILITY TO\nSELECT THE BASE MATERIAL TO YIELD THE 19.90- -\n3. TOTAL THICKNESS OF PCB AFTER PLATING SPECIFIED IMPEDANCE CHARACTERISTICS TO 3% 8-9 sz, *\nSHALL BE .062 +/- .005 WITHIN +/- 18% TOLERANCE. 9.58 . : ee\n+ 44 +f oh og\n4. SOLDERMASK BOTH SIDES USING PHOTO 10. ALL HOLES SHALL BE LOCATED WITHIN .003 . + \u00a3 7, 4. fF fe RO ome\nIMAGEABLE PROCESS. SOLDER MASK OVER DIA. OF TRUE POSITION. eS i.\nBARE COPPER. SOLDER MASK SHALL BE 7\nBETWEEN FINE PITCH PADS. COLOR TRANSPARENT 11. CONDUCTOR WIDTHS AND SPACING SHALL BE i\nGREEN WITHIN +/- 20% OF PHOTOPLOT ORIGINALS. a alt \u00a5 zi\n5. SILKSCREEN BOTH SIDES OF PCB USING 12. WARP OR TWIST OF BOARD SHALL NOT ae Tet ex [Te \u00a5 4\nc NON-CONDUCTIVE EPOXY INK, COLOR EXCEED .010 INCH PER INCH sy Yo. 4 4 y \u00a5 4 c\nWHITE. NO INK SHALL BE ON EXPOSED PADS. 13. REMOVE ALL BURRS AND BREAK SHARP EDGES zw FE YL Rw FH, g y\n.015 MAX, gee 4 sxe | 4+\n6. GERBER ARTWORK PROVIDED. NO ALTERATIONS z a :\nTO GERBER FILES WITHOUT PRIOR CONSENT 14, PLATED THRU HOLES AND EXPOSED PADS SHALL arr 7.7, eo gee FLT,\nat +\nFROM THE CALIFORNIA ASSOC. FOR RESEARCH BE TIN/LEAD PLATED .0085 TO .0005 THK. way ye way Te y\nIN ASTRONOMY. Pom FY YF om FEY, 4\n> HOLE SCHEDULE see 44 whee | 44 x cI\n7. ALL DIMENSIONS ARE IN INCHES. TOLERANCES HOLE DIA. z 4 = y\nARE AS FOLLOWS: 9.018 Eye + + ByR ER P+ [+ \u00a5\nXX: +/- .018 | BOB TS ody oY You 4 y \"\nXXX: +/- 005 0.046 Bow AY YB we EH,\n0.063 | xX | 89 | wee 44 sfee | 44 +\n0.071 | ht | 1a * + x y\n0.125 | Oo 2 \u00bbuar go, wat i 8\nLAYER STRUCTURE (NOT TO SCALE) gi4e | i | rw AY we FEY, :\n1 OZ. CU FOIL 0014 | Layer 1 TOP ; | |\nPREPREG 7629, .0075 ga B88 g ks\n1 OZ. CU, .0014 LAYER 2 MID1 SIS] +o wo m pod\n0140 CORE, .140 JALL TRACES ON LAYER 2 ARE z qm\nETCH THIS SIDE, .0000 90 OHMS. NOM. TRACE WIDTH\nPREPREG 7629, 0075 IS .011, BURIED MICROSTRIP.\n1 OZ. CU, 0014 --- LAYER 3 GNDA\n0140 CORE, .0140\nA 1 OZ. CU, .0a74 -$-- LAYER 4 MID2 \u2018\nPREPREG 7629, .0075\n1 OZ. CU FOIL .0014 ---- LAYER 5 BOTTOM\nEJALL TRACES ON LAYER 5 ARE Fe ern anen erainm\n90 OHMS. NOM. TRACE WIDTH Ce\nIS .11. MICROSTRIP. 3 PRINTED CIRCUIT BOARD,\n[fesse | SG | NIRC2 PREAMP\n. few | [es Po | its7o17 Se [|\n5 5 5 5 cry mrt Frog EME EE",
-  "ocr_raw_text": null,
+  "ocr_raw_text": "NOTES (UNLESS OTHERWISE SPECIFIED):\n\n1. FABRICATE PER IPC-A-600, CLASS 2.\n2. MATERIAL:\n   1 OZ. CU INTERNAL\n   1 OZ. CU EXTERNAL, 2 OZ. AFTER PLATING BASE LAMINATE FR4\n3. TOTAL THICKNESS OF PCB AFTER PLATING SHALL BE .062 +/- .005\n4. SOLDERMASK BOTH SIDES USING PHOTO IMAGEABLE PROCESS. SOLDER MASK OVER BARE COPPER. SOLDER MASK SHALL BE BETWEEN FINE PITCH PADS. COLOR TRANSPARENT GREEN.\n5. SILKSCREEN BOTH SIDES OF PCB USING NON-CONDUCTIVE EPOXY INK, COLOR WHITE. NO INK SHALL BE ON EXPOSED PADS.\n6. GERBER ARTWORK PROVIDED. NO ALTERATIONS TO GERBER FILES WITHOUT PRIOR CONSENT FROM THE CALIFORNIA ASSOC. FOR RESEARCH IN ASTRONOMY.\n7. ALL DIMENSIONS ARE IN INCHES. TOLERANCES ARE AS FOLLOWS:\n   .XX: +/- .010\n   .XXX: +/- .005\n\nLAYER STRUCTURE (NOT TO SCALE)\n\n1 OZ. CU FOIL, .0014\nLAYER 1 TOP\nPREPREG 7629, .0075\nLAYER 2 MID1\n0140 CORE, .0140\n*ETCH THIS SIDE, .0000\nPREPREG 7629, .0075\n1 OZ. CU, .0014\nLAYER 3 GNDA\n0140 CORE, .0140\n1 OZ. CU, .0014\nPREPREG 7629, .0075\n1 OZ. CU FOIL, .0014\n\n8. ALL HOLES TO BE +/- .003 IN. DIA. UNLESS OTHERWISE SPECIFIED. HOLE SIZES GIVEN ARE AFTER PLATING. PLATED THRU HOLES SHALL HAVE A MINIMUM OF .001 COPPER.\n\n9. IT IS THE FABRICATORS RESPONSIBILITY TO SELECT THE BASE MATERIAL TO YIELD THE SPECIFIED IMPEDANCE CHARACTERISTICS TO WITHIN +/- 10% TOLERANCE.\n\n10. ALL HOLES SHALL BE LOCATED WITHIN .003 DIA. OF TRUE POSITION.\n\n11. CONDUCTOR WIDTHS AND SPACING SHALL BE WITHIN +/- 20% OF PHOTOPLOT ORIGINALS.\n\n12. WARP OR TWIST OF BOARD SHALL NOT EXCEED .010 INCH PER INCH\n\n13. REMOVE ALL BURRS AND BREAK SHARP EDGES .015 MAX.\n\n14. PLATED THRU HOLES AND EXPOSED PADS SHALL BE TIN/LEAD PLATED .0003 TO .0005 THK.\n\nHOLE SCHEDULE\nHOLE DIA. SYM. QTY.\n0.018 + 270\n0.028 3\n0.038 204\n0.046 12\n0.063 89\n0.071 10\n0.124 2\n0.125 2\n0.144 8\n\n9. ALL TRACES ON LAYER 2 ARE 90 OHMS. NOM. TRACE WIDTH IS .011. BURIED MICROSTRIP.\n\n9. ALL TRACES ON LAYER 5 ARE 90 OHMS. NOM. TRACE WIDTH IS .011. MICROSTRIP.",
   "reconciliation_log": [
     "[part_number] value=None, conf=0.00, reason=No engine detected this field",
     "[manufacturer] value=W. M. KECK OBSERVATORY, conf=0.85, reason=Engines disagree (2 candidates), picked highest confidence (qwen-vl)",
     "[drawing_title] value=PRINTED CIRCUIT BOARD, NIRC2 PREAMP, conf=0.68, reason=Only source (qwen-vl), confidence penalized to 0.8x",
     "[is_itar] value=False, conf=0.99, reason=All 3 engines agree, confidence boosted to 0.99",
-    "[ipc_class] value=IPCClass.CLASS_2, conf=0.94, reason=All 2 engines agree, confidence boosted to 0.94",
-    "[ipc_specs] value=['IPC-A-600'], conf=0.94, reason=All 2 engines agree, confidence boosted to 0.94",
-    "[layer_count] value=5, conf=0.94, reason=All 2 engines agree, confidence boosted to 0.94",
-    "[layer_stackup] value=[LayerSpec(number=1, function='signal'), LayerSpec(number=2, function='signal'), LayerSpec(number=3, function='ground'), LayerSpec(number=4, function='signal'), LayerSpec(number=5, function='signal')], conf=0.90, reason=Engines disagree (2 candidates), picked highest confidence (qwen-vl)",
-    "[material] value=FR4, conf=0.94, reason=All 2 engines agree, confidence boosted to 0.94",
-    "[board_thickness] value=nominal=0.062 plus_tol=0.005 minus_tol=0.005 unit='in' raw='.062 +/- .005', conf=0.96, reason=All 2 engines agree, confidence boosted to 0.96",
-    "[copper_weights] value=signal_layers_oz=1.0 plane_layers_oz=2.0 external_finished_oz=1.0, conf=0.87, reason=Engines disagree (2 candidates), picked highest confidence (qwen-vl)",
-    "[surface_finish] value=ENIG, conf=0.37, reason=Only source (tesseract), confidence penalized to 0.8x",
-    "[solder_mask] value=present=True type='LPI' color='green' spec='IPC-SM-840' sides='both', conf=0.85, reason=Engines disagree (2 candidates), picked highest confidence (qwen-vl)",
-    "[silkscreen] value=present=True color='white' ink='non-conductive epoxy' sides='both', conf=0.85, reason=Engines disagree (2 candidates), picked highest confidence (qwen-vl)",
-    "[impedance_control] value=controlled=True single_ended=ImpedanceRange(min=90.0, max=90.0, unit='ohm', raw='90.0 OHMS') trace_width_mils=None layers=[], conf=0.32, reason=Only source (tesseract), confidence penalized to 0.8x",
-    "[drill_table] value=[DrillRow(size_mils=18.0, qty=270, symbol='+', plated=True), DrillRow(size_mils=28.0, qty=3, symbol='X', plated=True), DrillRow(size_mils=38.0, qty=204, symbol='Y', plated=True), DrillRow(size_mils=46.0, qty=12, symbol='T', plated=True), DrillRow(size_mils=63.0, qty=10, symbol='X', plated=True), DrillRow(size_mils=124.0, qty=2, symbol='T', plated=True), DrillRow(size_mils=125.0, qty=2, symbol='T', plated=True), DrillRow(size_mils=144.0, qty=8, symbol='T', plated=True)], conf=0.90, reason=Engines disagree (2 candidates), picked highest confidence (qwen-vl)",
-    "[fabrication_notes] value=1. FABRICATE PER IPC-A-600, CLASS 2.\n2. MATERIAL: 1 OZ. CU INTERNAL\n1 OZ. CU EXTERNAL, 2 OZ. AFTER PLATING\nBASE LAMINATE FR4\n3. TOTAL THICKNESS OF PCB AFTER PLATING\nSHALL BE .062 +/- .005\n4. SOLDERMASK BOTH SIDES USING PHOTO\nIMAGEABLE PROCESS. SOLDER MASK OVER\nBARE COPPER. SOLDER MASK SHALL BE\nBETWEEN FINE PITCH PADS. COLOR TRANSPARENT\nGREEN.\n5. SILKSCREEN BOTH SIDES OF PCB USING\nNON-CONDUCTIVE EPOXY INK, COLOR\nWHITE. NO INK SHALL BE ON EXPOSED PADS.\n6. GERBER ARTWORK PROVIDED. NO ALTERATIONS\nTO GERBER FILES WITHOUT PRIOR CONSENT\nFROM THE CALIFORNIA ASSOC. FOR RESEARCH\nIN ASTRONOMY.\n7. ALL DIMENSIONS ARE IN INCHES. TOLERANCES\nARE AS FOLLOWS:\n.XX: +/- .010\n.XXX: +/- .005\n8. ALL HOLES TO BE +/- .003 IN. DIA. UNLESS\nOTHERWISE SPECIFIED. HOLE SIZES GIVEN ARE\nAFTER PLATING. PLATED THRU HOLES SHALL\nHAVE A MINIMUM OF .001 COPPER.\n9. IT IS THE FABRICATORS RESPONSIBILITY TO\nSELECT THE BASE MATERIAL TO YIELD THE\nSPECIFIED IMPEDANCE CHARACTERISTICS TO\nWITHIN +/- 10% TOLERANCE.\n10. ALL HOLES SHALL BE LOCATED WITHIN .003\nDIA. OF TRUE POSITION.\n11. CONDUCTOR WIDTHS AND SPACING SHALL BE\nWITHIN +/- 20% OF PHOTOPLOT ORIGINALS.\n12. WARP OR TWIST OF BOARD SHALL NOT\nEXCEED .010 INCH PER INCH\n13. REMOVE ALL BURRS AND BREAK SHARP EDGES\n.015 MAX.\n14. PLATED THRU HOLES AND EXPOSED PADS SHALL\nBE TIN/LEAD PLATED .0003 TO .0005 THK., conf=0.75, reason=Engines disagree (2 candidates), picked highest confidence (qwen-vl)",
-    "[ocr_raw_text] value=None, conf=0.00, reason=No engine detected this field",
+    "[ipc_class] value=IPCClass.CLASS_2, conf=0.94, reason=All 3 engines agree, confidence boosted to 0.94",
+    "[ipc_specs] value=['IPC-A-600'], conf=0.94, reason=All 3 engines agree, confidence boosted to 0.94",
+    "[layer_count] value=5, conf=0.94, reason=All 3 engines agree, confidence boosted to 0.94",
+    "[layer_stackup] value=[LayerSpec(number=1, function='signal'), LayerSpec(number=2, function='signal'), LayerSpec(number=3, function='ground'), LayerSpec(number=4, function='signal'), LayerSpec(number=5, function='signal')], conf=0.90, reason=Engines disagree (3 candidates), picked highest confidence (qwen-vl)",
+    "[material] value=FR4, conf=0.94, reason=All 3 engines agree, confidence boosted to 0.94",
+    "[board_thickness] value=nominal=0.062 plus_tol=0.005 minus_tol=0.005 unit='in' raw='.062 +/- .005', conf=0.96, reason=All 3 engines agree, confidence boosted to 0.96",
+    "[copper_weights] value=signal_layers_oz=1.0 plane_layers_oz=None external_finished_oz=1.0, conf=0.54, reason=2/3 engines agree",
+    "[surface_finish] value=Tin/Lead, conf=0.77, reason=All 2 engines agree, confidence boosted to 0.77",
+    "[solder_mask] value=present=True type='LPI' color='green' spec='IPC-SM-840' sides='both', conf=0.85, reason=Engines disagree (3 candidates), picked highest confidence (qwen-vl)",
+    "[silkscreen] value=present=True color='white' ink='non-conductive epoxy' sides='both', conf=0.85, reason=Engines disagree (3 candidates), picked highest confidence (qwen-vl)",
+    "[impedance_control] value=controlled=True single_ended=ImpedanceRange(min=90.0, max=90.0, unit='ohm', raw='90.0 OHMS') trace_width_mils=11.0 layers=[], conf=0.60, reason=Engines disagree (2 candidates), picked highest confidence (glm-ocr)",
+    "[drill_table] value=[DrillRow(size_mils=18.0, qty=270, symbol='+', plated=True), DrillRow(size_mils=28.0, qty=3, symbol='X', plated=True), DrillRow(size_mils=38.0, qty=204, symbol='Y', plated=True), DrillRow(size_mils=46.0, qty=12, symbol='T', plated=True), DrillRow(size_mils=63.0, qty=10, symbol='X', plated=True), DrillRow(size_mils=124.0, qty=2, symbol='T', plated=True), DrillRow(size_mils=125.0, qty=2, symbol='T', plated=True), DrillRow(size_mils=144.0, qty=8, symbol='T', plated=True)], conf=0.90, reason=Engines disagree (3 candidates), picked highest confidence (qwen-vl)",
+    "[fabrication_notes] value=NOTES (UNLESS OTHERWISE SPECIFIED):\n\n1. FABRICATE PER IPC-A-600, CLASS 2.\n2. MATERIAL:\n   1 OZ. CU INTERNAL\n   1 OZ. CU EXTERNAL, 2 OZ. AFTER PLATING BASE LAMINATE FR4\n3. TOTAL THICKNESS OF PCB AFTER PLATING SHALL BE .062 +/- .005\n4. SOLDERMASK BOTH SIDES USING PHOTO IMAGEABLE PROCESS. SOLDER MASK OVER BARE COPPER. SOLDER MASK SHALL BE BETWEEN FINE PITCH PADS. COLOR TRANSPARENT GREEN.\n5. SILKSCREEN BOTH SIDES OF PCB USING NON-CONDUCTIVE EPOXY INK, COLOR WHITE. NO INK SHALL BE ON EXPOSED PADS.\n6. GERBER ARTWORK PROVIDED. NO ALTERATIONS TO GERBER FILES WITHOUT PRIOR CONSENT FROM THE CALIFORNIA ASSOC. FOR RESEARCH IN ASTRONOMY.\n7. ALL DIMENSIONS ARE IN INCHES. TOLERANCES ARE AS FOLLOWS:\n   .XX: +/- .010\n   .XXX: +/- .005\n\nLAYER STRUCTURE (NOT TO SCALE)\n\n1 OZ. CU FOIL, .0014\nLAYER 1 TOP\nPREPREG 7629, .0075\nLAYER 2 MID1\n0140 CORE, .0140\n*ETCH THIS SIDE, .0000\nPREPREG 7629, .0075\n1 OZ. CU, .0014\nLAYER 3 GNDA\n0140 CORE, .0140\n1 OZ. CU, .0014\nPREPREG 7629, .0075\n1 OZ. CU FOIL, .0014\n\n8. ALL HOLES TO BE +/- .003 IN. DIA. UNLESS OTHERWISE SPECIFIED. HOLE SIZES GIVEN ARE AFTER PLATING. PLATED THRU HOLES SHALL HAVE A MINIMUM OF .001 COPPER.\n\n9. IT IS THE FABRICATORS RESPONSIBILITY TO SELECT THE BASE MATERIAL TO YIELD THE SPECIFIED IMPEDANCE CHARACTERISTICS TO WITHIN +/- 10% TOLERANCE.\n\n10. ALL HOLES SHALL BE LOCATED WITHIN .003 DIA. OF TRUE POSITION.\n\n11. CONDUCTOR WIDTHS AND SPACING SHALL BE WITHIN +/- 20% OF PHOTOPLOT ORIGINALS.\n\n12. WARP OR TWIST OF BOARD SHALL NOT EXCEED .010 INCH PER INCH\n\n13. REMOVE ALL BURRS AND BREAK SHARP EDGES .015 MAX.\n\n14. PLATED THRU HOLES AND EXPOSED PADS SHALL BE TIN/LEAD PLATED .0003 TO .0005 THK.\n\nHOLE SCHEDULE\nHOLE DIA. SYM. QTY.\n0.018 + 270\n0.028 3\n0.038 204\n0.046 12\n0.063 89\n0.071 10\n0.124 2\n0.125 2\n0.144 8\n\n9. ALL TRACES ON LAYER 2 ARE 90 OHMS. NOM. TRACE WIDTH IS .011. BURIED MICROSTRIP.\n\n9. ALL TRACES ON LAYER 5 ARE 90 OHMS. NOM. TRACE WIDTH IS .011. MICROSTRIP., conf=0.85, reason=Engines disagree (3 candidates), picked highest confidence (glm-ocr)",
+    "[ocr_raw_text] value=NOTES (UNLESS OTHERWISE SPECIFIED):\n\n1. FABRICATE PER IPC-A-600, CLASS 2.\n2. MATERIAL:\n   1 OZ. CU INTERNAL\n   1 OZ. CU EXTERNAL, 2 OZ. AFTER PLATING BASE LAMINATE FR4\n3. TOTAL THICKNESS OF PCB AFTER PLATING SHALL BE .062 +/- .005\n4. SOLDERMASK BOTH SIDES USING PHOTO IMAGEABLE PROCESS. SOLDER MASK OVER BARE COPPER. SOLDER MASK SHALL BE BETWEEN FINE PITCH PADS. COLOR TRANSPARENT GREEN.\n5. SILKSCREEN BOTH SIDES OF PCB USING NON-CONDUCTIVE EPOXY INK, COLOR WHITE. NO INK SHALL BE ON EXPOSED PADS.\n6. GERBER ARTWORK PROVIDED. NO ALTERATIONS TO GERBER FILES WITHOUT PRIOR CONSENT FROM THE CALIFORNIA ASSOC. FOR RESEARCH IN ASTRONOMY.\n7. ALL DIMENSIONS ARE IN INCHES. TOLERANCES ARE AS FOLLOWS:\n   .XX: +/- .010\n   .XXX: +/- .005\n\nLAYER STRUCTURE (NOT TO SCALE)\n\n1 OZ. CU FOIL, .0014\nLAYER 1 TOP\nPREPREG 7629, .0075\nLAYER 2 MID1\n0140 CORE, .0140\n*ETCH THIS SIDE, .0000\nPREPREG 7629, .0075\n1 OZ. CU, .0014\nLAYER 3 GNDA\n0140 CORE, .0140\n1 OZ. CU, .0014\nPREPREG 7629, .0075\n1 OZ. CU FOIL, .0014\n\n8. ALL HOLES TO BE +/- .003 IN. DIA. UNLESS OTHERWISE SPECIFIED. HOLE SIZES GIVEN ARE AFTER PLATING. PLATED THRU HOLES SHALL HAVE A MINIMUM OF .001 COPPER.\n\n9. IT IS THE FABRICATORS RESPONSIBILITY TO SELECT THE BASE MATERIAL TO YIELD THE SPECIFIED IMPEDANCE CHARACTERISTICS TO WITHIN +/- 10% TOLERANCE.\n\n10. ALL HOLES SHALL BE LOCATED WITHIN .003 DIA. OF TRUE POSITION.\n\n11. CONDUCTOR WIDTHS AND SPACING SHALL BE WITHIN +/- 20% OF PHOTOPLOT ORIGINALS.\n\n12. WARP OR TWIST OF BOARD SHALL NOT EXCEED .010 INCH PER INCH\n\n13. REMOVE ALL BURRS AND BREAK SHARP EDGES .015 MAX.\n\n14. PLATED THRU HOLES AND EXPOSED PADS SHALL BE TIN/LEAD PLATED .0003 TO .0005 THK.\n\nHOLE SCHEDULE\nHOLE DIA. SYM. QTY.\n0.018 + 270\n0.028 3\n0.038 204\n0.046 12\n0.063 89\n0.071 10\n0.124 2\n0.125 2\n0.144 8\n\n9. ALL TRACES ON LAYER 2 ARE 90 OHMS. NOM. TRACE WIDTH IS .011. BURIED MICROSTRIP.\n\n9. ALL TRACES ON LAYER 5 ARE 90 OHMS. NOM. TRACE WIDTH IS .011. MICROSTRIP., conf=0.68, reason=Only source (glm-ocr), confidence penalized to 0.8x",
     "[ipc_specs] Union of all engines: ['IPC-A-600']",
     "[fabrication_notes] Used longest value (2492 chars)"
   ],
+  "attribution": {
+    "part_number": {
+      "value": null,
+      "confidence": 0.0,
+      "reason": "No engine detected this field",
+      "engine": null,
+      "source_text": null,
+      "source_text_from": null,
+      "contributors": []
+    },
+    "manufacturer": {
+      "value": "W. M. KECK OBSERVATORY",
+      "confidence": 0.85,
+      "reason": "Engines disagree (2 candidates), picked highest confidence (qwen-vl)",
+      "engine": "qwen-vl",
+      "source_text": null,
+      "source_text_from": null,
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": "Printed Circuit Board",
+          "confidence": 0.432,
+          "source_text": "IS .11. MICROSTRIP. 3 PRINTED CIRCUIT BOARD,"
+        },
+        {
+          "engine": "qwen-vl",
+          "value": "W. M. KECK OBSERVATORY",
+          "confidence": 0.85,
+          "source_text": null
+        }
+      ]
+    },
+    "drawing_title": {
+      "value": "PRINTED CIRCUIT BOARD, NIRC2 PREAMP",
+      "confidence": 0.68,
+      "reason": "Only source (qwen-vl), confidence penalized to 0.8x",
+      "engine": "qwen-vl",
+      "source_text": null,
+      "source_text_from": null,
+      "contributors": [
+        {
+          "engine": "qwen-vl",
+          "value": "PRINTED CIRCUIT BOARD, NIRC2 PREAMP",
+          "confidence": 0.85,
+          "source_text": null
+        }
+      ]
+    },
+    "is_itar": {
+      "value": false,
+      "confidence": 0.99,
+      "reason": "All 3 engines agree, confidence boosted to 0.99",
+      "engine": "qwen-vl",
+      "source_text": null,
+      "source_text_from": null,
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": false,
+          "confidence": 0.498,
+          "source_text": null
+        },
+        {
+          "engine": "glm-ocr",
+          "value": false,
+          "confidence": 0.75,
+          "source_text": null
+        },
+        {
+          "engine": "qwen-vl",
+          "value": false,
+          "confidence": 0.9,
+          "source_text": null
+        }
+      ]
+    },
+    "ipc_class": {
+      "value": "Class 2",
+      "confidence": 0.935,
+      "reason": "All 3 engines agree, confidence boosted to 0.94",
+      "engine": "qwen-vl",
+      "source_text": "1. FABRICATE PER IPC-A-608, CLASS 2 8. ALL HOLES TO BE +/- .003 IN. DIA. UNLESS D",
+      "source_text_from": "tesseract",
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": "Class 2",
+          "confidence": 0.465,
+          "source_text": "1. FABRICATE PER IPC-A-608, CLASS 2 8. ALL HOLES TO BE +/- .003 IN. DIA. UNLESS D"
+        },
+        {
+          "engine": "glm-ocr",
+          "value": "Class 2",
+          "confidence": 0.7,
+          "source_text": "1. FABRICATE PER IPC-A-600, CLASS 2."
+        },
+        {
+          "engine": "qwen-vl",
+          "value": "Class 2",
+          "confidence": 0.85,
+          "source_text": null
+        }
+      ]
+    },
+    "ipc_specs": {
+      "value": [
+        "IPC-A-600"
+      ],
+      "confidence": 0.935,
+      "reason": "All 3 engines agree, confidence boosted to 0.94",
+      "engine": "qwen-vl",
+      "source_text": null,
+      "source_text_from": null,
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": [
+            "IPC-A-600"
+          ],
+          "confidence": 0.398,
+          "source_text": null
+        },
+        {
+          "engine": "glm-ocr",
+          "value": [
+            "IPC-A-600"
+          ],
+          "confidence": 0.6,
+          "source_text": null
+        },
+        {
+          "engine": "qwen-vl",
+          "value": [
+            "IPC-A-600"
+          ],
+          "confidence": 0.85,
+          "source_text": null
+        }
+      ]
+    },
+    "layer_count": {
+      "value": 5,
+      "confidence": 0.935,
+      "reason": "All 3 engines agree, confidence boosted to 0.94",
+      "engine": "qwen-vl",
+      "source_text": null,
+      "source_text_from": null,
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": 5,
+          "confidence": 0.465,
+          "source_text": null
+        },
+        {
+          "engine": "glm-ocr",
+          "value": 5,
+          "confidence": 0.7,
+          "source_text": null
+        },
+        {
+          "engine": "qwen-vl",
+          "value": 5,
+          "confidence": 0.85,
+          "source_text": null
+        }
+      ]
+    },
+    "layer_stackup": {
+      "value": [
+        {
+          "number": 1,
+          "function": "signal"
+        },
+        {
+          "number": 2,
+          "function": "signal"
+        },
+        {
+          "number": 3,
+          "function": "ground"
+        },
+        {
+          "number": 4,
+          "function": "signal"
+        },
+        {
+          "number": 5,
+          "function": "signal"
+        }
+      ],
+      "confidence": 0.9,
+      "reason": "Engines disagree (3 candidates), picked highest confidence (qwen-vl)",
+      "engine": "qwen-vl",
+      "source_text": null,
+      "source_text_from": null,
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": [
+            {
+              "number": 1,
+              "function": "TOP"
+            },
+            {
+              "number": 2,
+              "function": "MID1"
+            },
+            {
+              "number": 3,
+              "function": "GNDA"
+            },
+            {
+              "number": 4,
+              "function": "MID2"
+            },
+            {
+              "number": 5,
+              "function": "BOTTOM"
+            }
+          ],
+          "confidence": 0.365,
+          "source_text": null
+        },
+        {
+          "engine": "glm-ocr",
+          "value": [
+            {
+              "number": 1,
+              "function": "TOP"
+            },
+            {
+              "number": 2,
+              "function": "MID1"
+            },
+            {
+              "number": 3,
+              "function": "GNDA"
+            },
+            {
+              "number": 5,
+              "function": "ARE"
+            }
+          ],
+          "confidence": 0.55,
+          "source_text": null
+        },
+        {
+          "engine": "qwen-vl",
+          "value": [
+            {
+              "number": 1,
+              "function": "signal"
+            },
+            {
+              "number": 2,
+              "function": "signal"
+            },
+            {
+              "number": 3,
+              "function": "ground"
+            },
+            {
+              "number": 4,
+              "function": "signal"
+            },
+            {
+              "number": 5,
+              "function": "signal"
+            }
+          ],
+          "confidence": 0.9,
+          "source_text": null
+        }
+      ]
+    },
+    "material": {
+      "value": "FR4",
+      "confidence": 0.935,
+      "reason": "All 3 engines agree, confidence boosted to 0.94",
+      "engine": "qwen-vl",
+      "source_text": "BASE LAMINATE FR4 IT IS THE FABRICATORS RESPONSIBILITY TO",
+      "source_text_from": "tesseract",
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": "FR4",
+          "confidence": 0.465,
+          "source_text": "BASE LAMINATE FR4 IT IS THE FABRICATORS RESPONSIBILITY TO"
+        },
+        {
+          "engine": "glm-ocr",
+          "value": "FR4",
+          "confidence": 0.7,
+          "source_text": "1 OZ. CU EXTERNAL, 2 OZ. AFTER PLATING BASE LAMINATE FR4"
+        },
+        {
+          "engine": "qwen-vl",
+          "value": "FR4",
+          "confidence": 0.85,
+          "source_text": null
+        }
+      ]
+    },
+    "board_thickness": {
+      "value": {
+        "nominal": 0.062,
+        "plus_tol": 0.005,
+        "minus_tol": 0.005,
+        "unit": "in",
+        "raw": ".062 +/- .005"
+      },
+      "confidence": 0.957,
+      "reason": "All 3 engines agree, confidence boosted to 0.96",
+      "engine": "qwen-vl",
+      "source_text": "SHALL BE .062 +/- .005 WITHIN +/- 18% TOLERANCE. 9.58 . : ee",
+      "source_text_from": "tesseract",
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": {
+            "nominal": 0.062,
+            "plus_tol": 0.005,
+            "minus_tol": 0.005,
+            "unit": "in",
+            "raw": ".062 +/- .005"
+          },
+          "confidence": 0.465,
+          "source_text": "SHALL BE .062 +/- .005 WITHIN +/- 18% TOLERANCE. 9.58 . : ee"
+        },
+        {
+          "engine": "glm-ocr",
+          "value": {
+            "nominal": 0.062,
+            "plus_tol": 0.005,
+            "minus_tol": 0.005,
+            "unit": "in",
+            "raw": ".062 +/- .005"
+          },
+          "confidence": 0.7,
+          "source_text": "SHALL BE .062 +/- .005"
+        },
+        {
+          "engine": "qwen-vl",
+          "value": {
+            "nominal": 0.062,
+            "plus_tol": 0.005,
+            "minus_tol": 0.005,
+            "unit": "in",
+            "raw": ".062 +/- .005"
+          },
+          "confidence": 0.87,
+          "source_text": null
+        }
+      ]
+    },
+    "copper_weights": {
+      "value": {
+        "signal_layers_oz": 1.0,
+        "plane_layers_oz": null,
+        "external_finished_oz": 1.0
+      },
+      "confidence": 0.541,
+      "reason": "2/3 engines agree",
+      "engine": "glm-ocr",
+      "source_text": "1 OZ. CU INTERNAL",
+      "source_text_from": "glm-ocr",
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": {
+            "signal_layers_oz": 1.0,
+            "plane_layers_oz": null,
+            "external_finished_oz": 1.0
+          },
+          "confidence": 0.432,
+          "source_text": "1 OZ. CU EXTERNAL, 2 OZ. AFTER PLATING"
+        },
+        {
+          "engine": "glm-ocr",
+          "value": {
+            "signal_layers_oz": 1.0,
+            "plane_layers_oz": null,
+            "external_finished_oz": 1.0
+          },
+          "confidence": 0.65,
+          "source_text": "1 OZ. CU INTERNAL"
+        },
+        {
+          "engine": "qwen-vl",
+          "value": {
+            "signal_layers_oz": 1.0,
+            "plane_layers_oz": 2.0,
+            "external_finished_oz": 1.0
+          },
+          "confidence": 0.87,
+          "source_text": null
+        }
+      ]
+    },
+    "surface_finish": {
+      "value": "Tin/Lead",
+      "confidence": 0.77,
+      "reason": "All 2 engines agree, confidence boosted to 0.77",
+      "engine": "glm-ocr",
+      "source_text": "14. PLATED THRU HOLES AND EXPOSED PADS SHALL BE TIN/LEAD PLATED .0003 TO .0005 THK.",
+      "source_text_from": "glm-ocr",
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": "Tin/Lead",
+          "confidence": 0.465,
+          "source_text": "FROM THE CALIFORNIA ASSOC. FOR RESEARCH BE TIN/LEAD PLATED .0085 TO .0005 THK. way ye way Te y"
+        },
+        {
+          "engine": "glm-ocr",
+          "value": "Tin/Lead",
+          "confidence": 0.7,
+          "source_text": "14. PLATED THRU HOLES AND EXPOSED PADS SHALL BE TIN/LEAD PLATED .0003 TO .0005 THK."
+        }
+      ]
+    },
+    "solder_mask": {
+      "value": {
+        "present": true,
+        "type": "LPI",
+        "color": "green",
+        "spec": "IPC-SM-840",
+        "sides": "both"
+      },
+      "confidence": 0.85,
+      "reason": "Engines disagree (3 candidates), picked highest confidence (qwen-vl)",
+      "engine": "qwen-vl",
+      "source_text": null,
+      "source_text_from": null,
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": {
+            "present": true,
+            "type": null,
+            "color": "Green",
+            "spec": null,
+            "sides": "both"
+          },
+          "confidence": 0.432,
+          "source_text": "4. SOLDERMASK BOTH SIDES USING PHOTO 10. ALL HOLES SHALL BE LOCATED WITHIN .003 . + \u00a3 7, 4. fF fe RO ome"
+        },
+        {
+          "engine": "glm-ocr",
+          "value": {
+            "present": true,
+            "type": "photo imageable",
+            "color": "Green",
+            "spec": null,
+            "sides": "both"
+          },
+          "confidence": 0.65,
+          "source_text": "4. SOLDERMASK BOTH SIDES USING PHOTO IMAGEABLE PROCESS. SOLDER MASK OVER BARE COPPER. SOLDER MASK SHALL BE BETWEEN FINE PITCH PADS. COLOR TRANSPARENT GREEN."
+        },
+        {
+          "engine": "qwen-vl",
+          "value": {
+            "present": true,
+            "type": "LPI",
+            "color": "green",
+            "spec": "IPC-SM-840",
+            "sides": "both"
+          },
+          "confidence": 0.85,
+          "source_text": null
+        }
+      ]
+    },
+    "silkscreen": {
+      "value": {
+        "present": true,
+        "color": "white",
+        "ink": "non-conductive epoxy",
+        "sides": "both"
+      },
+      "confidence": 0.85,
+      "reason": "Engines disagree (3 candidates), picked highest confidence (qwen-vl)",
+      "engine": "qwen-vl",
+      "source_text": null,
+      "source_text_from": null,
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": {
+            "present": true,
+            "color": null,
+            "ink": "non-conductive epoxy",
+            "sides": "both"
+          },
+          "confidence": 0.432,
+          "source_text": "5. SILKSCREEN BOTH SIDES OF PCB USING 12. WARP OR TWIST OF BOARD SHALL NOT ae Tet ex [Te \u00a5 4"
+        },
+        {
+          "engine": "glm-ocr",
+          "value": {
+            "present": true,
+            "color": "White",
+            "ink": "non-conductive epoxy",
+            "sides": "both"
+          },
+          "confidence": 0.65,
+          "source_text": "5. SILKSCREEN BOTH SIDES OF PCB USING NON-CONDUCTIVE EPOXY INK, COLOR WHITE. NO INK SHALL BE ON EXPOSED PADS."
+        },
+        {
+          "engine": "qwen-vl",
+          "value": {
+            "present": true,
+            "color": "white",
+            "ink": "non-conductive epoxy",
+            "sides": "both"
+          },
+          "confidence": 0.85,
+          "source_text": null
+        }
+      ]
+    },
+    "impedance_control": {
+      "value": {
+        "controlled": true,
+        "single_ended": {
+          "min": 90.0,
+          "max": 90.0,
+          "unit": "ohm",
+          "raw": "90.0 OHMS"
+        },
+        "trace_width_mils": 11.0,
+        "layers": []
+      },
+      "confidence": 0.6,
+      "reason": "Engines disagree (2 candidates), picked highest confidence (glm-ocr)",
+      "engine": "glm-ocr",
+      "source_text": "9. IT IS THE FABRICATORS RESPONSIBILITY TO SELECT THE BASE MATERIAL TO YIELD THE SPECIFIED IMPEDANCE CHARACTERISTICS TO WITHIN +/- 10% TOLERANCE.",
+      "source_text_from": "glm-ocr",
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": {
+            "controlled": true,
+            "single_ended": {
+              "min": 90.0,
+              "max": 90.0,
+              "unit": "ohm",
+              "raw": "90.0 OHMS"
+            },
+            "trace_width_mils": null,
+            "layers": []
+          },
+          "confidence": 0.398,
+          "source_text": "3. TOTAL THICKNESS OF PCB AFTER PLATING SPECIFIED IMPEDANCE CHARACTERISTICS TO 3% 8-9 sz, *"
+        },
+        {
+          "engine": "glm-ocr",
+          "value": {
+            "controlled": true,
+            "single_ended": {
+              "min": 90.0,
+              "max": 90.0,
+              "unit": "ohm",
+              "raw": "90.0 OHMS"
+            },
+            "trace_width_mils": 11.0,
+            "layers": []
+          },
+          "confidence": 0.6,
+          "source_text": "9. IT IS THE FABRICATORS RESPONSIBILITY TO SELECT THE BASE MATERIAL TO YIELD THE SPECIFIED IMPEDANCE CHARACTERISTICS TO WITHIN +/- 10% TOLERANCE."
+        }
+      ]
+    },
+    "drill_table": {
+      "value": [
+        {
+          "size_mils": 18.0,
+          "qty": 270,
+          "symbol": "+",
+          "plated": true
+        },
+        {
+          "size_mils": 28.0,
+          "qty": 3,
+          "symbol": "X",
+          "plated": true
+        },
+        {
+          "size_mils": 38.0,
+          "qty": 204,
+          "symbol": "Y",
+          "plated": true
+        },
+        {
+          "size_mils": 46.0,
+          "qty": 12,
+          "symbol": "T",
+          "plated": true
+        },
+        {
+          "size_mils": 63.0,
+          "qty": 10,
+          "symbol": "X",
+          "plated": true
+        },
+        {
+          "size_mils": 124.0,
+          "qty": 2,
+          "symbol": "T",
+          "plated": true
+        },
+        {
+          "size_mils": 125.0,
+          "qty": 2,
+          "symbol": "T",
+          "plated": true
+        },
+        {
+          "size_mils": 144.0,
+          "qty": 8,
+          "symbol": "T",
+          "plated": true
+        }
+      ],
+      "confidence": 0.9,
+      "reason": "Engines disagree (3 candidates), picked highest confidence (qwen-vl)",
+      "engine": "qwen-vl",
+      "source_text": null,
+      "source_text_from": null,
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": [
+            {
+              "size_mils": 63.0,
+              "qty": 89,
+              "symbol": "xX",
+              "plated": null
+            },
+            {
+              "size_mils": 71.0,
+              "qty": null,
+              "symbol": "ht",
+              "plated": null
+            }
+          ],
+          "confidence": 0.332,
+          "source_text": null
+        },
+        {
+          "engine": "glm-ocr",
+          "value": [
+            {
+              "size_mils": 28.0,
+              "qty": 3,
+              "symbol": null,
+              "plated": null
+            },
+            {
+              "size_mils": 38.0,
+              "qty": 204,
+              "symbol": null,
+              "plated": null
+            },
+            {
+              "size_mils": 46.0,
+              "qty": 12,
+              "symbol": null,
+              "plated": null
+            },
+            {
+              "size_mils": 63.0,
+              "qty": 89,
+              "symbol": null,
+              "plated": null
+            },
+            {
+              "size_mils": 71.0,
+              "qty": 10,
+              "symbol": null,
+              "plated": null
+            },
+            {
+              "size_mils": 124.0,
+              "qty": 2,
+              "symbol": null,
+              "plated": null
+            },
+            {
+              "size_mils": 125.0,
+              "qty": 2,
+              "symbol": null,
+              "plated": null
+            },
+            {
+              "size_mils": 144.0,
+              "qty": 8,
+              "symbol": null,
+              "plated": null
+            }
+          ],
+          "confidence": 0.5,
+          "source_text": null
+        },
+        {
+          "engine": "qwen-vl",
+          "value": [
+            {
+              "size_mils": 18.0,
+              "qty": 270,
+              "symbol": "+",
+              "plated": true
+            },
+            {
+              "size_mils": 28.0,
+              "qty": 3,
+              "symbol": "X",
+              "plated": true
+            },
+            {
+              "size_mils": 38.0,
+              "qty": 204,
+              "symbol": "Y",
+              "plated": true
+            },
+            {
+              "size_mils": 46.0,
+              "qty": 12,
+              "symbol": "T",
+              "plated": true
+            },
+            {
+              "size_mils": 63.0,
+              "qty": 10,
+              "symbol": "X",
+              "plated": true
+            },
+            {
+              "size_mils": 124.0,
+              "qty": 2,
+              "symbol": "T",
+              "plated": true
+            },
+            {
+              "size_mils": 125.0,
+              "qty": 2,
+              "symbol": "T",
+              "plated": true
+            },
+            {
+              "size_mils": 144.0,
+              "qty": 8,
+              "symbol": "T",
+              "plated": true
+            }
+          ],
+          "confidence": 0.9,
+          "source_text": null
+        }
+      ]
+    },
+    "fabrication_notes": {
+      "value": "NOTES (UNLESS OTHERWISE SPECIFIED):\n\n1. FABRICATE PER IPC-A-600, CLASS 2.\n2. MATERIAL:\n   1 OZ. CU INTERNAL\n   1 OZ. CU EXTERNAL, 2 OZ. AFTER PLATING BASE LAMINATE FR4\n3. TOTAL THICKNESS OF PCB AFTER PLATING SHALL BE .062 +/- .005\n4. SOLDERMASK BOTH SIDES USING PHOTO IMAGEABLE PROCESS. SOLDER MASK OVER BARE COPPER. SOLDER MASK SHALL BE BETWEEN FINE PITCH PADS. COLOR TRANSPARENT GREEN.\n5. SILKSCREEN BOTH SIDES OF PCB USING NON-CONDUCTIVE EPOXY INK, COLOR WHITE. NO INK SHALL BE ON EXPOSED PADS.\n6. GERBER ARTWORK PROVIDED. NO ALTERATIONS TO GERBER FILES WITHOUT PRIOR CONSENT FROM THE CALIFORNIA ASSOC. FOR RESEARCH IN ASTRONOMY.\n7. ALL DIMENSIONS ARE IN INCHES. TOLERANCES ARE AS FOLLOWS:\n   .XX: +/- .010\n   .XXX: +/- .005\n\nLAYER STRUCTURE (NOT TO SCALE)\n\n1 OZ. CU FOIL, .0014\nLAYER 1 TOP\nPREPREG 7629, .0075\nLAYER 2 MID1\n0140 CORE, .0140\n*ETCH THIS SIDE, .0000\nPREPREG 7629, .0075\n1 OZ. CU, .0014\nLAYER 3 GNDA\n0140 CORE, .0140\n1 OZ. CU, .0014\nPREPREG 7629, .0075\n1 OZ. CU FOIL, .0014\n\n8. ALL HOLES TO BE +/- .003 IN. DIA. UNLESS OTHERWISE SPECIFIED. HOLE SIZES GIVEN ARE AFTER PLATING. PLATED THRU HOLES SHALL HAVE A MINIMUM OF .001 COPPER.\n\n9. IT IS THE FABRICATORS RESPONSIBILITY TO SELECT THE BASE MATERIAL TO YIELD THE SPECIFIED IMPEDANCE CHARACTERISTICS TO WITHIN +/- 10% TOLERANCE.\n\n10. ALL HOLES SHALL BE LOCATED WITHIN .003 DIA. OF TRUE POSITION.\n\n11. CONDUCTOR WIDTHS AND SPACING SHALL BE WITHIN +/- 20% OF PHOTOPLOT ORIGINALS.\n\n12. WARP OR TWIST OF BOARD SHALL NOT EXCEED .010 INCH PER INCH\n\n13. REMOVE ALL BURRS AND BREAK SHARP EDGES .015 MAX.\n\n14. PLATED THRU HOLES AND EXPOSED PADS SHALL BE TIN/LEAD PLATED .0003 TO .0005 THK.\n\nHOLE SCHEDULE\nHOLE DIA. SYM. QTY.\n0.018 + 270\n0.028 3\n0.038 204\n0.046 12\n0.063 89\n0.071 10\n0.124 2\n0.125 2\n0.144 8\n\n9. ALL TRACES ON LAYER 2 ARE 90 OHMS. NOM. TRACE WIDTH IS .011. BURIED MICROSTRIP.\n\n9. ALL TRACES ON LAYER 5 ARE 90 OHMS. NOM. TRACE WIDTH IS .011. MICROSTRIP.",
+      "confidence": 0.85,
+      "reason": "Engines disagree (3 candidates), picked highest confidence (glm-ocr)",
+      "engine": "glm-ocr",
+      "source_text": "NOTES (UNLESS OTHERWISE SPECIFIED):",
+      "source_text_from": "glm-ocr",
+      "contributors": [
+        {
+          "engine": "tesseract",
+          "value": "NOTES (UNLESS OTHERWISE SPECIFIED):\n1. FABRICATE PER IPC-A-608, CLASS 2 8. ALL HOLES TO BE +/- .003 IN. DIA. UNLESS D\n, OTHERWISE SPECIFIED. HOLE SIZES GIVEN ARE\n2. MATERIAL: AFTER PLATING. PLATED THRU HOLES SHALL\n1 OZ, CU INTERNAL HAVE A MINIMUM OF .001 COPPER.\n1 OZ. CU EXTERNAL, 2 OZ. AFTER PLATING\nBASE LAMINATE FR4 IT IS THE FABRICATORS RESPONSIBILITY TO\nSELECT THE BASE MATERIAL TO YIELD THE 19.90- -\n3. TOTAL THICKNESS OF PCB AFTER PLATING SPECIFIED IMPEDANCE CHARACTERISTICS TO 3% 8-9 sz, *\nSHALL BE .062 +/- .005 WITHIN +/- 18% TOLERANCE. 9.58 . : ee\n+ 44 +f oh og\n4. SOLDERMASK BOTH SIDES USING PHOTO 10. ALL HOLES SHALL BE LOCATED WITHIN .003 . + \u00a3 7, 4. fF fe RO ome\nIMAGEABLE PROCESS. SOLDER MASK OVER DIA. OF TRUE POSITION. eS i.\nBARE COPPER. SOLDER MASK SHALL BE 7\nBETWEEN FINE PITCH PADS. COLOR TRANSPARENT 11. CONDUCTOR WIDTHS AND SPACING SHALL BE i\nGREEN WITHIN +/- 20% OF PHOTOPLOT ORIGINALS. a alt \u00a5 zi\n5. SILKSCREEN BOTH SIDES OF PCB USING 12. WARP OR TWIST OF BOARD SHALL NOT ae Tet ex [Te \u00a5 4\nc NON-CONDUCTIVE EPOXY INK, COLOR EXCEED .010 INCH PER INCH sy Yo. 4 4 y \u00a5 4 c\nWHITE. NO INK SHALL BE ON EXPOSED PADS. 13. REMOVE ALL BURRS AND BREAK SHARP EDGES zw FE YL Rw FH, g y\n.015 MAX, gee 4 sxe | 4+\n6. GERBER ARTWORK PROVIDED. NO ALTERATIONS z a :\nTO GERBER FILES WITHOUT PRIOR CONSENT 14, PLATED THRU HOLES AND EXPOSED PADS SHALL arr 7.7, eo gee FLT,\nat +\nFROM THE CALIFORNIA ASSOC. FOR RESEARCH BE TIN/LEAD PLATED .0085 TO .0005 THK. way ye way Te y\nIN ASTRONOMY. Pom FY YF om FEY, 4\n> HOLE SCHEDULE see 44 whee | 44 x cI\n7. ALL DIMENSIONS ARE IN INCHES. TOLERANCES HOLE DIA. z 4 = y\nARE AS FOLLOWS: 9.018 Eye + + ByR ER P+ [+ \u00a5\nXX: +/- .018 | BOB TS ody oY You 4 y \"\nXXX: +/- 005 0.046 Bow AY YB we EH,\n0.063 | xX | 89 | wee 44 sfee | 44 +\n0.071 | ht | 1a * + x y\n0.125 | Oo 2 \u00bbuar go, wat i 8\nLAYER STRUCTURE (NOT TO SCALE) gi4e | i | rw AY we FEY, :\n1 OZ. CU FOIL 0014 | Layer 1 TOP ; | |\nPREPREG 7629, .0075 ga B88 g ks\n1 OZ. CU, .0014 LAYER 2 MID1 SIS] +o wo m pod\n0140 CORE, .140 JALL TRACES ON LAYER 2 ARE z qm\nETCH THIS SIDE, .0000 90 OHMS. NOM. TRACE WIDTH\nPREPREG 7629, 0075 IS .011, BURIED MICROSTRIP.\n1 OZ. CU, 0014 --- LAYER 3 GNDA\n0140 CORE, .0140\nA 1 OZ. CU, .0a74 -$-- LAYER 4 MID2 \u2018\nPREPREG 7629, .0075\n1 OZ. CU FOIL .0014 ---- LAYER 5 BOTTOM\nEJALL TRACES ON LAYER 5 ARE Fe ern anen erainm\n90 OHMS. NOM. TRACE WIDTH Ce\nIS .11. MICROSTRIP. 3 PRINTED CIRCUIT BOARD,\n[fesse | SG | NIRC2 PREAMP\n. few | [es Po | its7o17 Se [|\n5 5 5 5 cry mrt Frog EME EE",
+          "confidence": 0.564,
+          "source_text": "NOTES (UNLESS OTHERWISE SPECIFIED):"
+        },
+        {
+          "engine": "glm-ocr",
+          "value": "NOTES (UNLESS OTHERWISE SPECIFIED):\n\n1. FABRICATE PER IPC-A-600, CLASS 2.\n2. MATERIAL:\n   1 OZ. CU INTERNAL\n   1 OZ. CU EXTERNAL, 2 OZ. AFTER PLATING BASE LAMINATE FR4\n3. TOTAL THICKNESS OF PCB AFTER PLATING SHALL BE .062 +/- .005\n4. SOLDERMASK BOTH SIDES USING PHOTO IMAGEABLE PROCESS. SOLDER MASK OVER BARE COPPER. SOLDER MASK SHALL BE BETWEEN FINE PITCH PADS. COLOR TRANSPARENT GREEN.\n5. SILKSCREEN BOTH SIDES OF PCB USING NON-CONDUCTIVE EPOXY INK, COLOR WHITE. NO INK SHALL BE ON EXPOSED PADS.\n6. GERBER ARTWORK PROVIDED. NO ALTERATIONS TO GERBER FILES WITHOUT PRIOR CONSENT FROM THE CALIFORNIA ASSOC. FOR RESEARCH IN ASTRONOMY.\n7. ALL DIMENSIONS ARE IN INCHES. TOLERANCES ARE AS FOLLOWS:\n   .XX: +/- .010\n   .XXX: +/- .005\n\nLAYER STRUCTURE (NOT TO SCALE)\n\n1 OZ. CU FOIL, .0014\nLAYER 1 TOP\nPREPREG 7629, .0075\nLAYER 2 MID1\n0140 CORE, .0140\n*ETCH THIS SIDE, .0000\nPREPREG 7629, .0075\n1 OZ. CU, .0014\nLAYER 3 GNDA\n0140 CORE, .0140\n1 OZ. CU, .0014\nPREPREG 7629, .0075\n1 OZ. CU FOIL, .0014\n\n8. ALL HOLES TO BE +/- .003 IN. DIA. UNLESS OTHERWISE SPECIFIED. HOLE SIZES GIVEN ARE AFTER PLATING. PLATED THRU HOLES SHALL HAVE A MINIMUM OF .001 COPPER.\n\n9. IT IS THE FABRICATORS RESPONSIBILITY TO SELECT THE BASE MATERIAL TO YIELD THE SPECIFIED IMPEDANCE CHARACTERISTICS TO WITHIN +/- 10% TOLERANCE.\n\n10. ALL HOLES SHALL BE LOCATED WITHIN .003 DIA. OF TRUE POSITION.\n\n11. CONDUCTOR WIDTHS AND SPACING SHALL BE WITHIN +/- 20% OF PHOTOPLOT ORIGINALS.\n\n12. WARP OR TWIST OF BOARD SHALL NOT EXCEED .010 INCH PER INCH\n\n13. REMOVE ALL BURRS AND BREAK SHARP EDGES .015 MAX.\n\n14. PLATED THRU HOLES AND EXPOSED PADS SHALL BE TIN/LEAD PLATED .0003 TO .0005 THK.\n\nHOLE SCHEDULE\nHOLE DIA. SYM. QTY.\n0.018 + 270\n0.028 3\n0.038 204\n0.046 12\n0.063 89\n0.071 10\n0.124 2\n0.125 2\n0.144 8\n\n9. ALL TRACES ON LAYER 2 ARE 90 OHMS. NOM. TRACE WIDTH IS .011. BURIED MICROSTRIP.\n\n9. ALL TRACES ON LAYER 5 ARE 90 OHMS. NOM. TRACE WIDTH IS .011. MICROSTRIP.",
+          "confidence": 0.85,
+          "source_text": "NOTES (UNLESS OTHERWISE SPECIFIED):"
+        },
+        {
+          "engine": "qwen-vl",
+          "value": "1. FABRICATE PER IPC-A-600, CLASS 2.\n2. MATERIAL: 1 OZ. CU INTERNAL\n1 OZ. CU EXTERNAL, 2 OZ. AFTER PLATING\nBASE LAMINATE FR4\n3. TOTAL THICKNESS OF PCB AFTER PLATING\nSHALL BE .062 +/- .005\n4. SOLDERMASK BOTH SIDES USING PHOTO\nIMAGEABLE PROCESS. SOLDER MASK OVER\nBARE COPPER. SOLDER MASK SHALL BE\nBETWEEN FINE PITCH PADS. COLOR TRANSPARENT\nGREEN.\n5. SILKSCREEN BOTH SIDES OF PCB USING\nNON-CONDUCTIVE EPOXY INK, COLOR\nWHITE. NO INK SHALL BE ON EXPOSED PADS.\n6. GERBER ARTWORK PROVIDED. NO ALTERATIONS\nTO GERBER FILES WITHOUT PRIOR CONSENT\nFROM THE CALIFORNIA ASSOC. FOR RESEARCH\nIN ASTRONOMY.\n7. ALL DIMENSIONS ARE IN INCHES. TOLERANCES\nARE AS FOLLOWS:\n.XX: +/- .010\n.XXX: +/- .005\n8. ALL HOLES TO BE +/- .003 IN. DIA. UNLESS\nOTHERWISE SPECIFIED. HOLE SIZES GIVEN ARE\nAFTER PLATING. PLATED THRU HOLES SHALL\nHAVE A MINIMUM OF .001 COPPER.\n9. IT IS THE FABRICATORS RESPONSIBILITY TO\nSELECT THE BASE MATERIAL TO YIELD THE\nSPECIFIED IMPEDANCE CHARACTERISTICS TO\nWITHIN +/- 10% TOLERANCE.\n10. ALL HOLES SHALL BE LOCATED WITHIN .003\nDIA. OF TRUE POSITION.\n11. CONDUCTOR WIDTHS AND SPACING SHALL BE\nWITHIN +/- 20% OF PHOTOPLOT ORIGINALS.\n12. WARP OR TWIST OF BOARD SHALL NOT\nEXCEED .010 INCH PER INCH\n13. REMOVE ALL BURRS AND BREAK SHARP EDGES\n.015 MAX.\n14. PLATED THRU HOLES AND EXPOSED PADS SHALL\nBE TIN/LEAD PLATED .0003 TO .0005 THK.",
+          "confidence": 0.75,
+          "source_text": null
+        }
+      ]
+    },
+    "ocr_raw_text": {
+      "value": "NOTES (UNLESS OTHERWISE SPECIFIED):\n\n1. FABRICATE PER IPC-A-600, CLASS 2.\n2. MATERIAL:\n   1 OZ. CU INTERNAL\n   1 OZ. CU EXTERNAL, 2 OZ. AFTER PLATING BASE LAMINATE FR4\n3. TOTAL THICKNESS OF PCB AFTER PLATING SHALL BE .062 +/- .005\n4. SOLDERMASK BOTH SIDES USING PHOTO IMAGEABLE PROCESS. SOLDER MASK OVER BARE COPPER. SOLDER MASK SHALL BE BETWEEN FINE PITCH PADS. COLOR TRANSPARENT GREEN.\n5. SILKSCREEN BOTH SIDES OF PCB USING NON-CONDUCTIVE EPOXY INK, COLOR WHITE. NO INK SHALL BE ON EXPOSED PADS.\n6. GERBER ARTWORK PROVIDED. NO ALTERATIONS TO GERBER FILES WITHOUT PRIOR CONSENT FROM THE CALIFORNIA ASSOC. FOR RESEARCH IN ASTRONOMY.\n7. ALL DIMENSIONS ARE IN INCHES. TOLERANCES ARE AS FOLLOWS:\n   .XX: +/- .010\n   .XXX: +/- .005\n\nLAYER STRUCTURE (NOT TO SCALE)\n\n1 OZ. CU FOIL, .0014\nLAYER 1 TOP\nPREPREG 7629, .0075\nLAYER 2 MID1\n0140 CORE, .0140\n*ETCH THIS SIDE, .0000\nPREPREG 7629, .0075\n1 OZ. CU, .0014\nLAYER 3 GNDA\n0140 CORE, .0140\n1 OZ. CU, .0014\nPREPREG 7629, .0075\n1 OZ. CU FOIL, .0014\n\n8. ALL HOLES TO BE +/- .003 IN. DIA. UNLESS OTHERWISE SPECIFIED. HOLE SIZES GIVEN ARE AFTER PLATING. PLATED THRU HOLES SHALL HAVE A MINIMUM OF .001 COPPER.\n\n9. IT IS THE FABRICATORS RESPONSIBILITY TO SELECT THE BASE MATERIAL TO YIELD THE SPECIFIED IMPEDANCE CHARACTERISTICS TO WITHIN +/- 10% TOLERANCE.\n\n10. ALL HOLES SHALL BE LOCATED WITHIN .003 DIA. OF TRUE POSITION.\n\n11. CONDUCTOR WIDTHS AND SPACING SHALL BE WITHIN +/- 20% OF PHOTOPLOT ORIGINALS.\n\n12. WARP OR TWIST OF BOARD SHALL NOT EXCEED .010 INCH PER INCH\n\n13. REMOVE ALL BURRS AND BREAK SHARP EDGES .015 MAX.\n\n14. PLATED THRU HOLES AND EXPOSED PADS SHALL BE TIN/LEAD PLATED .0003 TO .0005 THK.\n\nHOLE SCHEDULE\nHOLE DIA. SYM. QTY.\n0.018 + 270\n0.028 3\n0.038 204\n0.046 12\n0.063 89\n0.071 10\n0.124 2\n0.125 2\n0.144 8\n\n9. ALL TRACES ON LAYER 2 ARE 90 OHMS. NOM. TRACE WIDTH IS .011. BURIED MICROSTRIP.\n\n9. ALL TRACES ON LAYER 5 ARE 90 OHMS. NOM. TRACE WIDTH IS .011. MICROSTRIP.",
+      "confidence": 0.68,
+      "reason": "Only source (glm-ocr), confidence penalized to 0.8x",
+      "engine": "glm-ocr",
+      "source_text": null,
+      "source_text_from": null,
+      "contributors": [
+        {
+          "engine": "glm-ocr",
+          "value": "NOTES (UNLESS OTHERWISE SPECIFIED):\n\n1. FABRICATE PER IPC-A-600, CLASS 2.\n2. MATERIAL:\n   1 OZ. CU INTERNAL\n   1 OZ. CU EXTERNAL, 2 OZ. AFTER PLATING BASE LAMINATE FR4\n3. TOTAL THICKNESS OF PCB AFTER PLATING SHALL BE .062 +/- .005\n4. SOLDERMASK BOTH SIDES USING PHOTO IMAGEABLE PROCESS. SOLDER MASK OVER BARE COPPER. SOLDER MASK SHALL BE BETWEEN FINE PITCH PADS. COLOR TRANSPARENT GREEN.\n5. SILKSCREEN BOTH SIDES OF PCB USING NON-CONDUCTIVE EPOXY INK, COLOR WHITE. NO INK SHALL BE ON EXPOSED PADS.\n6. GERBER ARTWORK PROVIDED. NO ALTERATIONS TO GERBER FILES WITHOUT PRIOR CONSENT FROM THE CALIFORNIA ASSOC. FOR RESEARCH IN ASTRONOMY.\n7. ALL DIMENSIONS ARE IN INCHES. TOLERANCES ARE AS FOLLOWS:\n   .XX: +/- .010\n   .XXX: +/- .005\n\nLAYER STRUCTURE (NOT TO SCALE)\n\n1 OZ. CU FOIL, .0014\nLAYER 1 TOP\nPREPREG 7629, .0075\nLAYER 2 MID1\n0140 CORE, .0140\n*ETCH THIS SIDE, .0000\nPREPREG 7629, .0075\n1 OZ. CU, .0014\nLAYER 3 GNDA\n0140 CORE, .0140\n1 OZ. CU, .0014\nPREPREG 7629, .0075\n1 OZ. CU FOIL, .0014\n\n8. ALL HOLES TO BE +/- .003 IN. DIA. UNLESS OTHERWISE SPECIFIED. HOLE SIZES GIVEN ARE AFTER PLATING. PLATED THRU HOLES SHALL HAVE A MINIMUM OF .001 COPPER.\n\n9. IT IS THE FABRICATORS RESPONSIBILITY TO SELECT THE BASE MATERIAL TO YIELD THE SPECIFIED IMPEDANCE CHARACTERISTICS TO WITHIN +/- 10% TOLERANCE.\n\n10. ALL HOLES SHALL BE LOCATED WITHIN .003 DIA. OF TRUE POSITION.\n\n11. CONDUCTOR WIDTHS AND SPACING SHALL BE WITHIN +/- 20% OF PHOTOPLOT ORIGINALS.\n\n12. WARP OR TWIST OF BOARD SHALL NOT EXCEED .010 INCH PER INCH\n\n13. REMOVE ALL BURRS AND BREAK SHARP EDGES .015 MAX.\n\n14. PLATED THRU HOLES AND EXPOSED PADS SHALL BE TIN/LEAD PLATED .0003 TO .0005 THK.\n\nHOLE SCHEDULE\nHOLE DIA. SYM. QTY.\n0.018 + 270\n0.028 3\n0.038 204\n0.046 12\n0.063 89\n0.071 10\n0.124 2\n0.125 2\n0.144 8\n\n9. ALL TRACES ON LAYER 2 ARE 90 OHMS. NOM. TRACE WIDTH IS .011. BURIED MICROSTRIP.\n\n9. ALL TRACES ON LAYER 5 ARE 90 OHMS. NOM. TRACE WIDTH IS .011. MICROSTRIP.",
+          "confidence": 0.85,
+          "source_text": null
+        }
+      ]
+    }
+  },
   "errors": [],
   "engine_durations_sec": [
     {
       "engine": "tesseract",
-      "duration_sec": 5.221,
-      "start_time": "2026-08-17T11:38:00.712560-07:00",
-      "end_time": "2026-08-17T11:38:05.934008-07:00"
+      "duration_sec": 5.133,
+      "start_time": "2026-08-18T07:11:22.285707-07:00",
+      "end_time": "2026-08-18T07:11:27.418989-07:00"
     },
     {
       "engine": "glm-ocr",
-      "duration_sec": 25.233,
-      "start_time": "2026-08-17T11:38:00.687298-07:00",
-      "end_time": "2026-08-17T11:38:25.920578-07:00"
+      "duration_sec": 22.583,
+      "start_time": "2026-08-18T07:11:22.271201-07:00",
+      "end_time": "2026-08-18T07:11:44.854350-07:00"
     },
     {
       "engine": "qwen-vl",
-      "duration_sec": 111.683,
-      "start_time": "2026-08-17T11:38:00.709529-07:00",
-      "end_time": "2026-08-17T11:39:52.392900-07:00"
+      "duration_sec": 110.245,
+      "start_time": "2026-08-18T07:11:22.282760-07:00",
+      "end_time": "2026-08-18T07:13:12.527897-07:00"
     },
     {
       "engine": "pymupdf",
-      "duration_sec": 0.009,
-      "start_time": "2026-08-17T11:38:00.700781-07:00",
-      "end_time": "2026-08-17T11:38:00.709396-07:00"
+      "duration_sec": 0.008,
+      "start_time": "2026-08-18T07:11:22.274594-07:00",
+      "end_time": "2026-08-18T07:11:22.282618-07:00"
     }
   ],
-  "total_duration_sec": 112.49
+  "total_duration_sec": 111.073
 }

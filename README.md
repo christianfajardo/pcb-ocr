@@ -21,8 +21,8 @@ Multi-model OCR pipeline for extracting structured data from PCB fabrication dra
 │ │ (port 8001)  │ (port 8002)  │ (port 8003)  │  (in-process)  │   │
 │ └──────────────┴──────────────┴──────────────┴────────────────┘   │
 │         ▼              ▼              ▼               ▼           │
-│     raw text      structured     structured      text layer*      │
-│                      JSON           JSON                          │
+│     raw text       raw text      structured      text layer*      │
+│    (+ parser)      (+ parser)       JSON                          │
 │         ┴──────────────┴───────┬──────┴───────────────┴           │
 │                                ▼                                  │
 │            ┌────────────────────────────────────────┐             │
@@ -46,7 +46,17 @@ Multi-model OCR pipeline for extracting structured data from PCB fabrication dra
 ```
 \* PyMuPDF only contributes when the PDF has a substantial embedded text layer — see below.
 
+### Rasterization
+
 Every uploaded PDF is unconditionally rasterized to page images (`OCR_DPI`, default 300) before Tesseract, GLM-OCR, or Qwen-VL run — this happens regardless of whether the PDF has an extractable text layer, since none of those three read the PDF's text layer directly (Tesseract-the-tool is purely an image-OCR engine; it has no capability to read PDF text metadata at all). PyMuPDF is the one exception: it reads the PDF's embedded text objects directly, with no rasterization step, and no OCR-induced character errors when that text layer exists.
+
+Mechanically, this is `shared/preprocessing.py::pdf_to_images` — `pdf2image.convert_from_path(pdf_path, dpi=OCR_DPI, fmt="png")`, wrapping Poppler's `pdftoppm`. It runs independently inside each of the three services (Tesseract, GLM-OCR, Qwen-VL), once per request — the same PDF gets rasterized three separate times at the same DPI, not shared across services, since each is a separate container/process. Each PDF page becomes one PIL `Image` in a list, one call producing all pages in one pass.
+
+From there the three services diverge in what they do with the rasterized page:
+
+- **Tesseract** runs an additional per-page adaptive preprocessing pass before OCR (`services/tesseract/app/ocr_engine.py`): classify the page as VECTOR / SCAN / LOW_CONTRAST / MIXED (via Laplacian sharpness, histogram bimodality, edge density), deskew if the page is rotated more than 0.5°, then apply a page-type-specific denoise + threshold (Otsu for scans, adaptive Gaussian threshold for vector/mixed) to binarize the image before handing it to `pytesseract`. This exists because Tesseract's LSTM engine is sensitive to noise and contrast in a way VLMs aren't.
+- **GLM-OCR and Qwen-VL** send the plain rasterized PNG straight to their vLLM endpoint, base64-encoded, with no binarization — vision-language models are trained on natural images and generally perform *worse* on aggressively thresholded/binarized input, so Tesseract's enhancement pipeline is deliberately not applied here.
+- `shared/preprocessing.py` also contains adaptive-DPI (`pdf_to_images_adaptive`) and ROI-detection (`detect_regions`) helpers that aren't wired into any current call path — dead code kept from an earlier design, not part of the live pipeline.
 
 ### Services
 
@@ -64,11 +74,13 @@ Every uploaded PDF is unconditionally rasterized to page images (`OCR_DPI`, defa
 | Engine | Strengths | Weaknesses |
 |--------|-----------|------------|
 | **Tesseract** | Raw text extraction, note parsing | Can't read shape symbols, table borders |
-| **GLM-OCR** | Dense text regions, small fonts | Slower, needs GPU |
-| **Qwen3-VL** | Layout understanding, tables, shape symbols | Slower, needs GPU |
+| **GLM-OCR** | Dense text regions, small fonts | Slower, needs GPU; JSON reasoning over its own text is weak (see below) — used for OCR only |
+| **Qwen3-VL** | Layout understanding, tables, shape symbols; reliable single-shot image→JSON | Slower, needs GPU |
 | **PyMuPDF** | Exact-character extraction (no OCR errors) when the PDF has a real text layer; near-instant, no GPU | Only works on "born-digital" PDFs — contributes nothing for scans or CAD exports with text converted to vector outlines (common in production) |
 
 Reconciliation uses confidence-weighted majority voting to resolve conflicts (see [Multi-engine reconciliation](#multi-engine-reconciliation) below).
+
+**GLM-OCR's role is OCR only, not structured extraction.** GLM-OCR (`zai-org/GLM-OCR`) is a document-vision model — strong at raw text recognition, but per its own model card its "Information Extraction" mode is tuned for flat template documents (ID cards, invoices), not deeply nested engineering-drawing schemas. Verified directly against the model: given this project's full PCBData schema it returned empty strings for nearly every field; even with a minimal prompt copied from the model card's own example, it returned real values but misattributed to the wrong fields (e.g. a soldermask color reported as `surface_finish`). So this pipeline uses GLM-OCR only for its raw OCR pass (`extract_text`) — its text then goes through the same regex parser (`shared/pcb_parser.py`) that Tesseract and PyMuPDF use, rather than trusting the model's own JSON output. Qwen3-VL's single-shot image→JSON extraction was tested the same way and does not show this failure mode, so it keeps doing structured extraction directly.
 
 ## Quick Start
 
@@ -125,6 +137,12 @@ make test-local
 # Unit tests
 PYTHONPATH=. pytest tests/ -v
 ```
+
+**What `make test` actually does** (`scripts/run_tests.sh`): checks `SUPERVISOR_HEALTH` (`http://localhost:8080/health`) is up — failing fast with a clear error if `make up` hasn't been run — then runs `PYTHONPATH=. pytest tests/ -v --timeout=1100`, then runs `scripts/local_test.py` as a final step. It's the union of the e2e path and the local path below, so a `make test` failure can come from either.
+
+- **e2e extraction test** (`tests/test_e2e.py::test_extraction_accuracy`, parametrized once per `samples/*.pdf`): `POST`s the PDF to the live `supervisor` container's `/extract` endpoint — exercising the full real pipeline (rasterization → all 4 engines → reconciliation → validation), not a mock. The raw JSON response is written to `tests/output/{sample}.json` (this is what backs every "look at the live attribution/reconciliation output" check earlier in this session) before any assertions run, so a failing test still leaves the actual response on disk to inspect. `_check_accuracy` then deserializes it into `PCBData` and field-by-field compares it against the corresponding `tests/expected/{sample}.json` fixture, collecting every mismatch (not stopping at the first) into one combined failure message.
+- **local extraction test** (`scripts/local_test.py`, also runnable standalone via `make test-local`): bypasses Docker and the supervisor entirely — imports `TesseractOCR` and `shared.pcb_parser.parse_pcb_text` directly in-process, so it only exercises Tesseract + the regex parser, never the VLMs or reconciliation. Same `tests/expected/*.json` fixtures, but with deliberately lenient checks on fields Tesseract genuinely cannot read from certain scans (e.g. `board_thickness`, `drill_table`, `layer_count`, `surface_finish` on specific samples) — it only validates the correctness of values Tesseract *did* find, never requires a value it has no way to detect. This is what you run for a fast (~seconds, no GPU, no Docker) sanity check while iterating on `shared/pcb_parser.py`.
+- **unit tests** (everything else under `tests/`, e.g. `test_pcb_parser.py`, `test_schema_validation.py`, `test_reconciliation.py`, `test_pdf_text.py`): pure Python, no network calls, run in milliseconds.
 
 ## Project Structure
 
@@ -209,7 +227,7 @@ Upload a PCB fabrication PDF and receive structured `PCBData` JSON.
   "drill_table": [ { "size_mils": 18.0, "qty": 270, "plated": true } ],
   "solder_mask": { "color": "GREEN", "type": "photo imageable" },
   "impedance_control": { "controlled": true, "single_ended": { "min": 90, "max": 90 } },
-  "confidence": { ... },
+  "attribution": { "...": "per-field provenance — see below" },
   "reconciliation_log": [ "..." ],
   "errors": [],
   "engine_durations_sec": [
@@ -223,6 +241,38 @@ Upload a PCB fabrication PDF and receive structured `PCBData` JSON.
 ```
 
 `engine_durations_sec[].start_time`/`end_time` are ISO-8601 timestamps in US Pacific time (`America/Los_Angeles`, so `-08:00`/PST or `-07:00`/PDT depending on the date) — not UTC.
+
+### Per-field attribution
+
+Every field in the response has a matching entry under `attribution`, answering *where this value came from* — including the literal drawing text behind it:
+
+```json
+"attribution": {
+  "surface_finish": {
+    "value": "Tin/Lead",
+    "confidence": 0.56,
+    "reason": "Only source (tesseract), confidence penalized to 0.8x",
+    "engine": "tesseract",
+    "source_text": "... SHALL BE TIN/LEAD PLATED .0003 TO .0005 THK.",
+    "source_text_from": "tesseract",
+    "contributors": [
+      { "engine": "tesseract", "value": "Tin/Lead", "confidence": 0.7, "source_text": "... TIN/LEAD PLATED ..." }
+    ]
+  }
+}
+```
+
+| Key | Meaning |
+|---|---|
+| `value` / `confidence` / `reason` | The merged value, its final confidence, and which voting rule selected it |
+| `engine` | Which engine's value won |
+| `source_text` | The line of drawing text that produced the value, when attributable |
+| `source_text_from` | Which engine supplied that text (may differ from `engine` — see below) |
+| `contributors` | Every engine that produced a value for this field, with its own value and evidence — lets you audit a disagreement without re-running the pipeline |
+
+**When `source_text` is null:** the regex-based engines (Tesseract, PyMuPDF) can cite the exact line they matched. The vision models generally cannot — they emit structured JSON without reporting which pixels produced it. If the winning engine is a VLM but another engine *agreed on the same value*, that agreeing engine's evidence is used and `source_text_from` names it. Evidence is never borrowed from an engine that disagreed.
+
+**Attribution is not available for values that weren't read directly** — e.g. a field recovered by the OCR-artifact post-processing rules. Those entries have a null `source_text` rather than a misleading one.
 
 ### Service Health Endpoints
 

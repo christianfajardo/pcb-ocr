@@ -1,4 +1,4 @@
-# PCB OCR Pipeline
+# PCB OCR Agentic AI Pipeline
 
 Multi-model OCR pipeline for extracting structured data from PCB fabrication drawings (PDF).
 
@@ -146,67 +146,6 @@ PYTHONPATH=. pytest tests/ -v
 - **e2e extraction test** (`tests/test_e2e.py::test_extraction_accuracy`, parametrized once per `samples/*.pdf`): `POST`s the PDF to the live `supervisor` container's `/extract` endpoint — exercising the full real pipeline (rasterization → all 4 engines → reconciliation → validation), not a mock. The raw JSON response is written to `tests/output/{sample}.json` (this is what backs every "look at the live attribution/reconciliation output" check earlier in this session) before any assertions run, so a failing test still leaves the actual response on disk to inspect. `_check_accuracy` then deserializes it into `PCBData` and field-by-field compares it against the corresponding `tests/expected/{sample}.json` fixture, collecting every mismatch (not stopping at the first) into one combined failure message.
 - **local extraction test** (`scripts/local_test.py`, also runnable standalone via `make test-local`): bypasses Docker and the supervisor entirely — imports `TesseractOCR` and `shared.pcb_parser.parse_pcb_text` directly in-process, so it only exercises Tesseract + the regex parser, never the VLMs or reconciliation. Same `tests/expected/*.json` fixtures, but with deliberately lenient checks on fields Tesseract genuinely cannot read from certain scans (e.g. `board_thickness`, `drill_table`, `layer_count`, `surface_finish` on specific samples) — it only validates the correctness of values Tesseract *did* find, never requires a value it has no way to detect. This is what you run for a fast (~seconds, no GPU, no Docker) sanity check while iterating on `shared/pcb_parser.py`.
 - **unit tests** (everything else under `tests/`, e.g. `test_pcb_parser.py`, `test_schema_validation.py`, `test_reconciliation.py`, `test_pdf_text.py`): pure Python, no network calls, run in milliseconds.
-
-## Project Structure
-
-```
-pcb-ocr/
-├── docker-compose.yml        # Full 6-service topology
-├── .dockerignore             # Build exclusions
-├── Makefile                  # Target shortcuts
-├── prd/                      # Product requirements
-│   ├── SYSTEM_PROMPT.md
-│   ├── IMPLEMENTATION_SPEC.md
-│   └── EXPECTED_OUTPUTS.md
-├── samples/                  # Input PDFs
-│   ├── sample1.pdf           # 4-layer flex, ITAR
-│   ├── sample2.pdf           # 5-layer FR4
-│   ├── sample3..pdf          # 8-layer 370HR (note: double-dot!)
-│   └── sample4.pdf           # 10-layer PCB Prime
-├── shared/                   # Common modules
-│   ├── schemas.py            # Pydantic PCBData models
-│   ├── preprocessing.py      # PDF→image, enhancement, ROI
-│   ├── pdf_text.py           # PDF embedded text-layer extraction (PyMuPDF)
-│   ├── pcb_parser.py         # Heuristic text→PCBData regex parser
-│   ├── logging_config.py     # Per-PDF /logs file sink (structlog)
-│   ├── confidence.py         # Confidence scoring
-│   └── constants.py          # IPC standards, materials, regex
-├── services/
-│   ├── tesseract/            # Tesseract OCR service
-│   │   ├── Dockerfile
-│   │   ├── requirements.txt
-│   │   └── app/              # FastAPI app
-│   ├── glm_ocr/              # GLM-OCR service
-│   ├── qwen_vl/              # Qwen3-VL service
-│   └── supervisor/           # LangGraph orchestrator
-│       ├── Dockerfile
-│       ├── requirements.txt
-│       └── app/
-│           ├── main.py       # FastAPI app entrypoint
-│           ├── router.py     # POST /extract handler
-│           ├── graph.py      # LangGraph state graph
-│           ├── nodes.py      # Node implementations
-│           └── state.py      # Pipeline state definition
-├── tests/
-│   ├── expected/             # Ground truth JSON
-│   ├── output/               # Actual response JSON from the last e2e run
-│   ├── conftest.py
-│   ├── test_e2e.py           # End-to-end tests
-│   ├── test_reconciliation.py
-│   ├── test_schema_validation.py
-│   ├── test_pcb_parser.py
-│   └── test_pdf_text.py
-└── scripts/
-    ├── start_services.sh     # Start + health polling
-    ├── stop_services.sh      # Stop all
-    ├── run_tests.sh          # Full test suite
-    ├── local_test.py         # Tesseract-only validation
-    ├── local_pipeline.py     # Tesseract + host vLLM, bypasses Docker
-    ├── convert_expected.py   # txt→JSON converter
-    ├── cache_ocr.py          # Cache Tesseract OCR output for faster iteration
-    ├── health_check.py       # Service health checker
-    └── benchmark.py          # Accuracy + timing benchmark
-```
 
 ## API Reference
 

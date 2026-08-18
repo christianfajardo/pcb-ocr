@@ -14,8 +14,8 @@ configure_logging()
 logger = structlog.get_logger(__name__)
 
 app = FastAPI(
-    title="PCB OCR Supervisor",
-    description="LangGraph-orchestrated multi-engine OCR pipeline",
+    title="PCB OCR Agentic AI Pipeline",
+    description="Multi-model OCR pipeline for extracting structured data from PCB fabrication drawings (PDF).",
     version="0.1.0",
 )
 

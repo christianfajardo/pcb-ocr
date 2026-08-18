@@ -78,6 +78,8 @@ Reconciliation uses confidence-weighted majority voting to resolve conflicts (se
 - NVIDIA GPU with CUDA (for vLLM containers)
 - NVIDIA Container Toolkit installed
 
+Tested on an **NVIDIA DGX Spark** (GB10 Grace Blackwell Superchip, ~128GB unified CPU/GPU memory, ARM64). Being a unified-memory devkit rather than a discrete-VRAM datacenter GPU, it's noticeably slower for these model sizes than typical cloud GPUs — expect Qwen3-VL calls to take 90–360s per page. Both vLLM servers share the single GPU, so the `--gpu-memory-utilization` and `--max-model-len` values in `docker-compose.yml` are tuned for that constraint; adjust them if running on different hardware.
+
 ### Start the pipeline
 
 ```bash
@@ -285,7 +287,7 @@ Each engine's own per-field confidence is computed independently beforehand (fro
 ## Troubleshooting
 
 **vLLM containers fail to start:**
-- Check GPU memory: `nvidia-smi`
+- Check GPU memory: `nvidia-smi` (on unified-memory boards like DGX Spark, the `--query-gpu=memory.*` fields can report `[N/A]` — use plain `nvidia-smi` or `free -h` instead)
 - Verify NVIDIA Container Toolkit is installed
 - GLM-OCR and Qwen3-VL each need ~12GB VRAM
 

@@ -869,34 +869,32 @@
       ]
     }
   },
-  "errors": [
-    "Drill size 1000.0 mils out of range (likely wrong units)"
-  ],
+  "errors": [],
   "engine_durations_sec": [
     {
       "engine": "tesseract",
-      "duration_sec": 19.401,
-      "start_time": "2026-08-18T21:14:11.728359-07:00",
-      "end_time": "2026-08-18T21:14:31.129110-07:00"
+      "duration_sec": 16.811,
+      "start_time": "2026-08-19T16:19:23.907024-07:00",
+      "end_time": "2026-08-19T16:19:40.717947-07:00"
     },
     {
       "engine": "glm-ocr",
-      "duration_sec": 42.552,
-      "start_time": "2026-08-18T21:14:11.671363-07:00",
-      "end_time": "2026-08-18T21:14:54.223462-07:00"
+      "duration_sec": 40.253,
+      "start_time": "2026-08-19T16:19:23.871588-07:00",
+      "end_time": "2026-08-19T16:20:04.124225-07:00"
     },
     {
       "engine": "qwen-vl",
-      "duration_sec": 173.206,
-      "start_time": "2026-08-18T21:14:11.725240-07:00",
-      "end_time": "2026-08-18T21:17:04.931653-07:00"
+      "duration_sec": 171.973,
+      "start_time": "2026-08-19T16:19:23.903931-07:00",
+      "end_time": "2026-08-19T16:22:15.877219-07:00"
     },
     {
       "engine": "pymupdf",
-      "duration_sec": 0.039,
-      "start_time": "2026-08-18T21:14:11.674905-07:00",
-      "end_time": "2026-08-18T21:14:11.713620-07:00"
+      "duration_sec": 0.019,
+      "start_time": "2026-08-19T16:19:23.874899-07:00",
+      "end_time": "2026-08-19T16:19:23.893850-07:00"
     }
   ],
-  "total_duration_sec": 176.743
+  "total_duration_sec": 175.479
 }

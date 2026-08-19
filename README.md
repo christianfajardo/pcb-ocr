@@ -16,7 +16,7 @@ Multi-model OCR pipeline for extracting structured data from PCB fabrication dra
 │                Supervisor (LangGraph Orchestrator)                │
 │                             Port 8080                             │
 │                                                                   │
-│   202 { job_id, status: "processing" }         ← immediate response│
+│   202 { job_id, status: "processing" }        ← immediate response│
 │                                ▼                                  │
 │                     (background job runs)                         │
 │ ┌──────────────┬──────────────┬──────────────┬────────────────┐   │
@@ -53,7 +53,11 @@ Multi-model OCR pipeline for extracting structured data from PCB fabrication dra
 
 Every uploaded PDF is unconditionally rasterized to page images (`OCR_DPI`, default 300) before Tesseract, GLM-OCR, or Qwen-VL run — this happens regardless of whether the PDF has an extractable text layer, since none of those three read the PDF's text layer directly (Tesseract-the-tool is purely an image-OCR engine; it has no capability to read PDF text metadata at all). PyMuPDF is the one exception: it reads the PDF's embedded text objects directly, with no rasterization step, and no OCR-induced character errors when that text layer exists.
 
-Mechanically, this is `shared/preprocessing.py::pdf_to_images` — `pdf2image.convert_from_path(pdf_path, dpi=OCR_DPI, fmt="png")`, wrapping Poppler's `pdftoppm`. It runs independently inside each of the three services (Tesseract, GLM-OCR, Qwen-VL), once per request — the same PDF gets rasterized three separate times at the same DPI, not shared across services, since each is a separate container/process. Each PDF page becomes one PIL `Image` in a list, one call producing all pages in one pass.
+Mechanically, this is `shared/preprocessing.py::pdf_to_images` — `pdf2image.convert_from_path(pdf_path, dpi=OCR_DPI, fmt="png")`, wrapping Poppler's `pdftoppm`. Each PDF page becomes one PIL `Image`.
+
+**Rasterization happens once per job, in the supervisor.** `ingest_pdf_node` renders the pages and passes the resulting PNGs to each engine over HTTP (multipart `pages` parts), so Tesseract/GLM-OCR/Qwen-VL all analyze byte-identical images instead of each re-rendering the same PDF. PNG is lossless, so this is pixel-for-pixel what per-service rasterization produced — it just does the work once instead of four times (~1.3–1.9s saved per redundant pass, scaling with page count). Each engine still accepts a plain PDF (`file`) and rasterizes it itself when called directly, which keeps the services independently usable; supply `file` or `pages`, not both.
+
+**At most `MAX_PAGES` pages (default 5) are scanned.** Fab drawings put the relevant data on the first few sheets, so `first_page`/`last_page` are passed down to Poppler and the excess pages are never rendered at all. When a PDF is longer than the cap, the response's `errors` carries a note (`"Only first 5 of 20 pages scanned (MAX_PAGES=5)"`) — `page_count` therefore means *pages processed*, not the PDF's true length.
 
 From there the three services diverge in what they do with the rasterized page:
 
@@ -147,8 +151,14 @@ make test
 # Local Tesseract-only tests (no Docker needed)
 make test-local
 
-# Unit tests
-PYTHONPATH=. pytest tests/ -v
+# Unit tests only (fast, no services needed)
+PYTHONPATH=. .venv/bin/python -m pytest tests/ -v --ignore=tests/test_e2e.py
+```
+
+The `make` targets invoke `.venv/bin/python` directly, so they work whether or not you've activated the venv. If you run `pytest` by hand, use the venv's interpreter as above — a bare `pytest` picks up whatever is on `PATH` and will fail on missing `structlog`/`pymupdf`. First-time setup:
+
+```bash
+python3 -m venv .venv && .venv/bin/pip install -e '.[dev,tesseract]'
 ```
 
 **What `make test` actually does** (`scripts/run_tests.sh`): checks `SUPERVISOR_HEALTH` (`http://localhost:8080/health`) is up — failing fast with a clear error if `make up` hasn't been run — then runs `PYTHONPATH=. pytest tests/ -v --timeout=1100`, then runs `scripts/local_test.py` as a final step. It's the union of the e2e path and the local path below, so a `make test` failure can come from either.
@@ -292,6 +302,7 @@ Every field in the response has a matching entry under `attribution`, answering 
 |---------|---------|-------------|
 | `API_KEY` | *(unset)* | Bearer token required on every service's `POST /extract` — see [Authentication](#authentication) |
 | `OCR_DPI` | `300` | PDF rasterization DPI |
+| `MAX_PAGES` | `5` | Max pages scanned per PDF. Pages beyond this are never rendered at all. `0` or negative = no limit. |
 | `TESSERACT_URL` | `http://tesseract-ocr:8001/extract` | Tesseract service URL |
 | `GLM_OCR_URL` | `http://glm-ocr-api:8002/extract` | GLM-OCR service URL |
 | `QWEN_VL_URL` | `http://qwen-vl-api:8003/extract` | Qwen-VL service URL |

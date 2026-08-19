@@ -56,10 +56,24 @@ class TesseractOCR:
             dict with keys: raw_text, page_images, page_count,
             word_confidences, enhanced_images, page_types
         """
-        start = time.monotonic()
         images = pdf_to_images(pdf_path, self.base_dpi)
+        return self.extract_images(images)
+
+    def extract_images(self, images: list[Image.Image]) -> dict[str, object]:
+        """Run extraction over already-rasterized pages.
+
+        Split out from `extract` so the supervisor can pass pages it already
+        rasterized, instead of this service re-rasterizing the same PDF.
+
+        Args:
+            images: One PIL Image per page.
+
+        Returns:
+            Same dict shape as `extract`.
+        """
+        start = time.monotonic()
         page_count = len(images)
-        logger.info("PDF pages converted", page_count=page_count)
+        logger.info("Processing pages", page_count=page_count)
 
         all_text_parts: list[str] = []
         all_confidences: list[float] = []

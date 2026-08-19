@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import base64
 import io
+import json
 import structlog
 import time
 
@@ -12,7 +13,8 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from shared.auth import require_api_key
 from shared.confidence import build_confidence_map
 from shared.logging_config import bind_pdf_filename
-from shared.preprocessing import pdf_to_images
+from shared.page_input import load_page_input
+from shared.preprocessing import MAX_PAGES
 from shared.schemas import PCBData, PCBDataWithConfidence, normalize_units
 
 from .vlm_client import QwenVLClient
@@ -26,7 +28,10 @@ qwen_client = QwenVLClient()
 
 
 @router.post("", dependencies=[Depends(require_api_key)])
-async def extract(file: UploadFile = File(...)) -> dict:
+async def extract(
+    file: UploadFile | None = File(default=None),
+    pages: list[UploadFile] | None = File(default=None),
+) -> dict:
     """Extract PCB data using Qwen3-VL.
 
     Args:
@@ -35,22 +40,16 @@ async def extract(file: UploadFile = File(...)) -> dict:
     Returns:
         PCBDataWithConfidence as dict.
     """
-    import os
-    import tempfile
-
     start = time.monotonic()
 
-    with bind_pdf_filename(file.filename):
-        logger.info("Qwen-VL extract started", filename=file.filename)
+    page_input = await load_page_input(file, pages, DPI, max_pages=MAX_PAGES)
+
+    with bind_pdf_filename(page_input.filename):
+        logger.info("Qwen-VL extract started", filename=page_input.filename)
 
         try:
-            with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
-                tmp.write(await file.read())
-                tmp_path = tmp.name
-
             try:
-                # Convert PDF to images
-                images = pdf_to_images(tmp_path, DPI)
+                images = page_input.images
                 page_count = len(images)
 
                 # Extract from each page
@@ -96,11 +95,46 @@ async def extract(file: UploadFile = File(...)) -> dict:
                 return result.model_dump()
 
             finally:
-                os.unlink(tmp_path)
+                page_input.cleanup()
 
         except Exception as e:
             logger.error("Qwen-VL extraction failed", error=str(e))
             raise HTTPException(status_code=500, detail=str(e))
+
+
+#: Fields accumulated across pages rather than taken from the first page.
+_LIST_FIELDS = ("ipc_specs", "drill_table", "layer_stackup")
+
+
+def _is_blank(value: object) -> bool:
+    """True for values carrying no information (None or empty/whitespace str)."""
+    if value is None:
+        return True
+    return isinstance(value, str) and not value.strip()
+
+
+def _row_key(row: object) -> str:
+    """Stable identity for a table row, for cross-page dedup."""
+    if isinstance(row, dict):
+        return json.dumps(row, sort_keys=True, default=str)
+    return str(row)
+
+
+def _dedupe_rows(rows: list) -> list:
+    """Drop repeated rows while preserving order.
+
+    Multi-sheet fab packages routinely repeat the drill chart or stackup on
+    more than one sheet. Without this, those rows are counted twice — which
+    doubles drill quantities and produces duplicate layer numbers.
+    """
+    seen: set[str] = set()
+    unique = []
+    for row in rows:
+        key = _row_key(row)
+        if key not in seen:
+            seen.add(key)
+            unique.append(row)
+    return unique
 
 
 def _merge_page_results(results: list[dict]) -> dict:
@@ -111,28 +145,32 @@ def _merge_page_results(results: list[dict]) -> dict:
         return results[0]
 
     merged = dict(results[0])
+    # Copy list values so accumulating across pages never mutates the caller's
+    # page-1 dict in place (dict() above is only a shallow copy).
+    for field in _LIST_FIELDS:
+        if isinstance(merged.get(field), list):
+            merged[field] = list(merged[field])
+
     for r in results[1:]:
         for k, v in r.items():
-            if (
-                k == "ipc_specs"
-                and isinstance(v, list)
-                or k == "drill_table"
-                and isinstance(v, list)
-                or k == "layer_stackup"
-                and isinstance(v, list)
-            ):
-                merged.setdefault(k, []).extend(v)
+            if k in _LIST_FIELDS and isinstance(v, list):
+                # Not setdefault(): if the key exists holding None, setdefault
+                # returns that None and .extend() raises.
+                existing = merged.get(k)
+                merged[k] = existing + v if isinstance(existing, list) else list(v)
             elif k == "fabrication_notes" and v:
                 if merged.get(k):
                     merged[k] += "\n" + v
                 else:
                     merged[k] = v
-            elif merged.get(k) is None:
+            elif _is_blank(merged.get(k)):
+                # Blank, not just None — an empty string from an earlier page
+                # must not permanently block a real value from a later one.
                 merged[k] = v
 
-    # Dedupe ipc_specs
-    if isinstance(merged.get("ipc_specs"), list):
-        merged["ipc_specs"] = list(dict.fromkeys(merged["ipc_specs"]))
+    for field in _LIST_FIELDS:
+        if isinstance(merged.get(field), list):
+            merged[field] = _dedupe_rows(merged[field])
 
     return merged
 

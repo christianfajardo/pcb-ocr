@@ -10,18 +10,48 @@ callers must check `has_substantial_text_layer` before trusting the result.
 
 from __future__ import annotations
 
+import os
+
 import pymupdf
 
+# Mirrors shared.preprocessing.MAX_PAGES. PyMuPDF must honor the same cap as
+# the image engines: if it read text from pages they never saw, reconciliation
+# would be voting on inconsistent inputs.
+MAX_PAGES = int(os.environ.get("MAX_PAGES", "5"))
 
-def extract_pdf_text_layer(pdf_path: str) -> str:
+
+def extract_pdf_text_layer(pdf_path: str, max_pages: int | None = None) -> str:
     """Extract the PDF's embedded text layer, concatenated across pages.
+
+    Args:
+        pdf_path: Path to the PDF.
+        max_pages: Stop after this many pages (defaults to MAX_PAGES; pass 0
+            or negative for no limit).
 
     Returns:
         Extracted text, or an empty string if the PDF has no text layer.
     """
+    limit = MAX_PAGES if max_pages is None else max_pages
     doc = pymupdf.open(pdf_path)
     try:
-        return "\n".join(page.get_text() for page in doc)
+        pages = list(doc)
+        if limit and limit > 0:
+            pages = pages[:limit]
+        return "\n".join(page.get_text() for page in pages)
+    finally:
+        doc.close()
+
+
+def get_pdf_page_count(pdf_path: str) -> int:
+    """Real page count from the PDF itself.
+
+    Exists because the caller previously inferred this as
+    `text.count("\f") + 1`, but pages are joined with "\n" and PyMuPDF's
+    default text mode emits no form feed — so that always evaluated to 1.
+    """
+    doc = pymupdf.open(pdf_path)
+    try:
+        return doc.page_count
     finally:
         doc.close()
 

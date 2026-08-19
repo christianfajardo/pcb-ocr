@@ -255,3 +255,19 @@ def mils_to_mm(mils: float) -> float:
 def mm_to_mils(mm: float) -> float:
     """Convert millimeters to mils."""
     return mm / 0.0254
+
+
+# ── Plausible physical ranges ────────────────────────────────────────────────
+#
+# Defined here, once, because two modules previously disagreed about the same
+# physical quantity: schemas.normalize_units documented 100-1000 mils as
+# legitimate (mounting/tooling holes) and deliberately left that band alone,
+# while the supervisor's validate_node flagged anything over 500 mils as an
+# error — so a real 0.6" tooling hole was normalized-and-kept by one and
+# rejected by the other. Both now import these.
+
+# Below this, a "mils" figure is almost certainly a raw decimal-inch value.
+DRILL_SIZE_MIN_MILS = 1.0
+# Above this, it's almost certainly microns (or a raw mm value scaled wrong).
+# 1000 mils = 1 inch; larger holes than that are routing/cutouts, not drills.
+DRILL_SIZE_MAX_MILS = 1000.0

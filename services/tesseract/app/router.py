@@ -10,7 +10,9 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from shared.auth import require_api_key
 from shared.confidence import build_confidence_map
 from shared.logging_config import bind_pdf_filename
+from shared.page_input import load_page_input
 from shared.pcb_parser import parse_pcb_text_with_provenance
+from shared.preprocessing import MAX_PAGES
 from shared.schemas import PCBDataWithConfidence, normalize_units
 
 from .ocr_engine import TesseractOCR
@@ -24,7 +26,10 @@ ocr_engine = TesseractOCR(base_dpi=DPI)
 
 
 @router.post("", dependencies=[Depends(require_api_key)])
-async def extract(file: UploadFile = File(...)) -> dict:
+async def extract(
+    file: UploadFile | None = File(default=None),
+    pages: list[UploadFile] | None = File(default=None),
+) -> dict:
     """Extract PCB data from a PDF using Tesseract.
 
     Args:
@@ -33,23 +38,17 @@ async def extract(file: UploadFile = File(...)) -> dict:
     Returns:
         PCBDataWithConfidence as dict.
     """
-    import os
-    import tempfile
-
     start = time.monotonic()
 
-    with bind_pdf_filename(file.filename):
-        logger.info("Tesseract extract started", filename=file.filename)
+    page_input = await load_page_input(file, pages, DPI, max_pages=MAX_PAGES)
+
+    with bind_pdf_filename(page_input.filename):
+        logger.info("Tesseract extract started", filename=page_input.filename)
 
         try:
-            # Save upload to temp file
-            with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
-                tmp.write(await file.read())
-                tmp_path = tmp.name
-
             try:
-                # Run OCR
-                ocr_result = ocr_engine.extract(tmp_path)
+                # Run OCR over the resolved pages
+                ocr_result = ocr_engine.extract_images(page_input.images)
 
                 # Parse structured data
                 data, provenance = parse_pcb_text_with_provenance(ocr_result["raw_text"])
@@ -83,7 +82,7 @@ async def extract(file: UploadFile = File(...)) -> dict:
                 return result.model_dump()
 
             finally:
-                os.unlink(tmp_path)
+                page_input.cleanup()
 
         except Exception as e:
             logger.error("Tesseract extraction failed", error=str(e))

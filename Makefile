@@ -1,4 +1,8 @@
-.PHONY: up down test lint format clean health logs
+# Prefer the project-local venv so these targets work without the caller
+# activating it first; falls back to python3 if .venv isn't set up yet.
+PYTHON := $(shell [ -x .venv/bin/python ] && echo .venv/bin/python || echo python3)
+
+.PHONY: up down test test-local lint format clean health logs benchmark
 
 up:
 	bash scripts/start_services.sh
@@ -10,23 +14,23 @@ test:
 	bash scripts/run_tests.sh
 
 test-local:
-	PYTHONPATH=. python scripts/local_test.py
+	PYTHONPATH=. $(PYTHON) scripts/local_test.py
 
 lint:
-	ruff check .
+	$(PYTHON) -m ruff check .
 
 format:
-	ruff format .
+	$(PYTHON) -m ruff format .
 
 clean:
 	docker compose down --rmi all --volumes
 	find . -type d -name __pycache__ -exec rm -rf {} +
 
 health:
-	python scripts/health_check.py
+	$(PYTHON) scripts/health_check.py
 
 logs:
 	docker compose logs -f
 
 benchmark:
-	set -a; [ -f .env ] && . .env; set +a; PYTHONPATH=. python scripts/benchmark.py
+	set -a; [ -f .env ] && . .env; set +a; PYTHONPATH=. $(PYTHON) scripts/benchmark.py

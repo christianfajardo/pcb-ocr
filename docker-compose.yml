@@ -90,6 +90,7 @@ services:
       - ./logs:/logs
     environment:
       - OCR_DPI=${OCR_DPI:-300}
+      - MAX_PAGES=${MAX_PAGES:-5}
       - API_KEY=${API_KEY:-}
     networks:
       - pcb-ocr-net
@@ -112,6 +113,7 @@ services:
       - ./logs:/logs
     environment:
       - OCR_DPI=${OCR_DPI:-300}
+      - MAX_PAGES=${MAX_PAGES:-5}
       - API_KEY=${API_KEY:-}
       - GLM_OCR_VLLM_URL=http://vllm-glm-ocr:8010/v1
       - GLM_OCR_MODEL=zai-org/GLM-OCR
@@ -138,6 +140,7 @@ services:
       - ./logs:/logs
     environment:
       - OCR_DPI=${OCR_DPI:-300}
+      - MAX_PAGES=${MAX_PAGES:-5}
       - API_KEY=${API_KEY:-}
       - QWEN_VL_VLLM_URL=http://vllm-qwen-vl:8011/v1
       - QWEN_VL_MODEL=Qwen/Qwen3-VL-8B-Instruct
@@ -180,6 +183,8 @@ services:
       - ./logs:/logs
     environment:
       - OCR_DPI=${OCR_DPI:-300}
+      - MAX_PAGES=${MAX_PAGES:-5}
+      - ENGINE_TIMEOUT_PER_PAGE_SEC=${ENGINE_TIMEOUT_PER_PAGE_SEC:-300}
       - API_KEY=${API_KEY:-}
       - TESSERACT_URL=http://tesseract-ocr:8001/extract
       - GLM_OCR_URL=http://glm-ocr-api:8002/extract

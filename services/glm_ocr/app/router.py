@@ -13,7 +13,8 @@ from shared.auth import require_api_key
 from shared.confidence import build_confidence_map
 from shared.logging_config import bind_pdf_filename
 from shared.pcb_parser import parse_pcb_text_with_provenance
-from shared.preprocessing import pdf_to_images
+from shared.page_input import load_page_input
+from shared.preprocessing import MAX_PAGES
 from shared.schemas import PCBDataWithConfidence, normalize_units
 
 from .vlm_client import GLMOCRClient
@@ -27,7 +28,10 @@ glm_client = GLMOCRClient()
 
 
 @router.post("", dependencies=[Depends(require_api_key)])
-async def extract(file: UploadFile = File(...)) -> dict:
+async def extract(
+    file: UploadFile | None = File(default=None),
+    pages: list[UploadFile] | None = File(default=None),
+) -> dict:
     """Extract PCB data using GLM-OCR.
 
     GLM-OCR is a document-vision model, not a general reasoning LLM: its raw
@@ -46,22 +50,16 @@ async def extract(file: UploadFile = File(...)) -> dict:
     Returns:
         PCBDataWithConfidence as dict.
     """
-    import os
-    import tempfile
-
     start = time.monotonic()
 
-    with bind_pdf_filename(file.filename):
-        logger.info("GLM-OCR extract started", filename=file.filename)
+    page_input = await load_page_input(file, pages, DPI, max_pages=MAX_PAGES)
+
+    with bind_pdf_filename(page_input.filename):
+        logger.info("GLM-OCR extract started", filename=page_input.filename)
 
         try:
-            with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
-                tmp.write(await file.read())
-                tmp_path = tmp.name
-
             try:
-                # Convert PDF to images
-                images = pdf_to_images(tmp_path, DPI)
+                images = page_input.images
                 page_count = len(images)
 
                 # OCR each page
@@ -109,7 +107,7 @@ async def extract(file: UploadFile = File(...)) -> dict:
                 return result.model_dump()
 
             finally:
-                os.unlink(tmp_path)
+                page_input.cleanup()
 
         except Exception as e:
             logger.error("GLM-OCR extraction failed", error=str(e))

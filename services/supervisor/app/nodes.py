@@ -13,9 +13,11 @@ import httpx
 
 from shared.auth import API_KEY
 from shared.confidence import build_confidence_map, merge_with_attribution
+from shared.cross_checks import run_cross_checks
 from shared.pcb_parser import parse_pcb_text_with_provenance
 from shared.pdf_text import extract_pdf_text_layer, has_substantial_text_layer
-from shared.preprocessing import image_to_bytes, pdf_to_images
+from shared.pdf_text import get_pdf_page_count as pdf_text_page_count
+from shared.preprocessing import get_pdf_page_count, image_to_bytes, pdf_to_images
 from shared.schemas import PCBDataWithConfidence, normalize_units
 
 logger = structlog.get_logger(__name__)
@@ -32,9 +34,19 @@ _AUTH_HEADERS = {"Authorization": f"Bearer {API_KEY}"} if API_KEY else {}
 
 DPI = int(os.environ.get("OCR_DPI", "300"))
 PDF_TEXT_LAYER_MIN_CHARS = int(os.environ.get("PDF_TEXT_LAYER_MIN_CHARS", "200"))
+MAX_PAGES = int(os.environ.get("MAX_PAGES", "5"))
+# Per-page budget for a downstream engine call. Engines process pages
+# sequentially, so a fixed timeout that suits 1 page guarantees failure on
+# N — Qwen-VL alone runs ~90-215s/page on this hardware.
+ENGINE_TIMEOUT_PER_PAGE_SEC = int(os.environ.get("ENGINE_TIMEOUT_PER_PAGE_SEC", "300"))
 
 # Node timestamps are reported in Pacific time (auto-handles PST/PDT), not UTC.
 PACIFIC_TZ = ZoneInfo("America/Los_Angeles")
+
+
+def _capped_page_count(total: int) -> int:
+    """Pages actually processed, given the MAX_PAGES cap (0/neg = uncapped)."""
+    return min(total, MAX_PAGES) if MAX_PAGES > 0 else total
 
 
 async def ingest_pdf_node(state: dict) -> dict:
@@ -50,7 +62,8 @@ async def ingest_pdf_node(state: dict) -> dict:
     logger.info("Ingesting PDF", pdf_path=pdf_path)
 
     start = time.monotonic()
-    images = pdf_to_images(pdf_path, DPI)
+    total_pages = get_pdf_page_count(pdf_path)
+    images = pdf_to_images(pdf_path, DPI, max_pages=MAX_PAGES)
 
     page_images: list[bytes] = []
     for img in images:
@@ -60,10 +73,22 @@ async def ingest_pdf_node(state: dict) -> dict:
     logger.info(
         "PDF ingestion complete",
         pages=len(images),
+        total_pages=total_pages,
         elapsed_ms=round(elapsed, 1),
     )
 
-    return {"page_images": page_images}
+    # Truncation must be visible — otherwise a 20-page PDF silently reports
+    # page_count 5 and the caller has no idea the rest was never looked at.
+    new_errors: list[str] = []
+    if total_pages > len(images):
+        msg = (
+            f"Only first {len(images)} of {total_pages} pages scanned "
+            f"(MAX_PAGES={MAX_PAGES})"
+        )
+        logger.warning("PDF truncated to page cap", pages=len(images), total_pages=total_pages)
+        new_errors.append(msg)
+
+    return {"page_images": page_images, "errors": new_errors}
 
 
 async def tesseract_extract_node(state: dict) -> dict:
@@ -152,7 +177,9 @@ async def pymupdf_extract_node(state: dict) -> dict:
             confidence=confidence,
             ocr_engine="pymupdf",
             processing_time_ms=node_elapsed,
-            page_count=text.count("\f") + 1,  # PyMuPDF separates pages with \f
+            # 'pages processed', not the PDF's true length — matches what
+            # the image engines report under the same MAX_PAGES cap.
+            page_count=_capped_page_count(pdf_text_page_count(pdf_path)),
         )
 
         logger.info(
@@ -207,6 +234,7 @@ async def _call_ocr_node(
     # name — downstream engines use it to group their own logs under the
     # same /logs/{filename}.log as the rest of the pipeline.
     upload_filename = state.get("original_filename") or os.path.basename(pdf_path)
+    page_images: list[bytes] = state.get("page_images") or []
     new_errors: list[str] = []
     node_start = time.monotonic()
     node_start_dt = datetime.now(PACIFIC_TZ)
@@ -214,13 +242,29 @@ async def _call_ocr_node(
     for attempt in range(3):
         try:
             start = time.monotonic()
-            async with httpx.AsyncClient(timeout=300) as client:
-                with open(pdf_path, "rb") as f:
-                    response = await client.post(
-                        url,
-                        files={"file": (upload_filename, f, "application/pdf")},
-                        headers=_AUTH_HEADERS,
-                    )
+            # Scale with page count: 1 page keeps the original 300s.
+            timeout_sec = ENGINE_TIMEOUT_PER_PAGE_SEC * max(1, len(page_images))
+            async with httpx.AsyncClient(timeout=timeout_sec) as client:
+                # Send the pages the supervisor already rasterized in
+                # ingest_pdf_node, rather than the PDF — otherwise every
+                # engine re-rasterizes the same file (4x the work overall).
+                # Falls back to the PDF if ingestion produced nothing.
+                if page_images:
+                    files = [
+                        (
+                            "pages",
+                            (f"{upload_filename}::page-{i + 1}.png", blob, "image/png"),
+                        )
+                        for i, blob in enumerate(page_images)
+                    ]
+                    response = await client.post(url, files=files, headers=_AUTH_HEADERS)
+                else:
+                    with open(pdf_path, "rb") as f:
+                        response = await client.post(
+                            url,
+                            files={"file": (upload_filename, f, "application/pdf")},
+                            headers=_AUTH_HEADERS,
+                        )
                 response.raise_for_status()
 
                 data = response.json()
@@ -340,11 +384,10 @@ async def validate_node(state: dict) -> dict:
                 f"reasonable range (0-1 inches)"
             )
 
-    for row in merged.drill_table:
-        if row.size_mils and (row.size_mils <= 0 or row.size_mils > 500):
-            new_errors.append(
-                f"Drill size {row.size_mils} mils out of range (likely wrong units)"
-            )
+    # Self-consistency checks across fields (drill size/qty ranges included).
+    # These can only run post-reconciliation, which is why they live here and
+    # not in schemas.normalize_units — that runs per-engine, pre-merge.
+    new_errors.extend(run_cross_checks(merged))
 
     logger.info(
         "Validation complete",

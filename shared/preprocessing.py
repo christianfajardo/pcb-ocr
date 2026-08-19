@@ -9,12 +9,16 @@ from io import BytesIO
 
 import cv2
 import numpy as np
-from pdf2image import convert_from_path
+from pdf2image import convert_from_path, pdfinfo_from_path
 from PIL import Image
 
 logger = logging.getLogger(__name__)
 
 DEFAULT_DPI = 300
+
+# Cap on pages rasterized per PDF. Fab drawings put the relevant data on the
+# first few sheets; scanning further is wasted GPU time. 0/negative = no limit.
+MAX_PAGES = int(os.environ.get("MAX_PAGES", "5"))
 
 
 # ── Page Type Detection ──────────────────────────────────────────────────────
@@ -114,15 +118,28 @@ def _optimal_dpi_for_page(page_type: PageType, base_dpi: int = 300) -> int:
     return dpi_map[page_type]
 
 
-def pdf_to_images(pdf_path: str, dpi: int = DEFAULT_DPI) -> list[Image.Image]:
+def get_pdf_page_count(pdf_path: str) -> int:
+    """Total pages in the PDF, without rendering any of them."""
+    return int(pdfinfo_from_path(pdf_path)["Pages"])
+
+
+def pdf_to_images(
+    pdf_path: str,
+    dpi: int = DEFAULT_DPI,
+    max_pages: int | None = None,
+) -> list[Image.Image]:
     """Convert PDF pages to PIL Images at specified DPI.
 
     Args:
         pdf_path: Path to the PDF file.
         dpi: Resolution in dots per inch.
+        max_pages: Stop after this many pages. Defaults to the MAX_PAGES env
+            var (5) — most fab drawings carry the relevant data on the first
+            few sheets, and rendering the rest is wasted GPU time downstream.
+            Pass 0 or a negative number for no limit.
 
     Returns:
-        List of PIL Image objects, one per page.
+        List of PIL Image objects, one per page (at most `max_pages`).
 
     Raises:
         FileNotFoundError: If pdf_path does not exist.
@@ -131,9 +148,30 @@ def pdf_to_images(pdf_path: str, dpi: int = DEFAULT_DPI) -> list[Image.Image]:
     if not os.path.exists(pdf_path):
         raise FileNotFoundError(f"PDF not found: {pdf_path}")
 
-    logger.info("Converting PDF to images", pdf_path=pdf_path, dpi=dpi)
-    images = convert_from_path(pdf_path, dpi=dpi, fmt="png")
+    limit = MAX_PAGES if max_pages is None else max_pages
+
+    logger.info("Converting PDF to images", pdf_path=pdf_path, dpi=dpi, max_pages=limit)
+    # first_page/last_page are passed through to poppler, so pages beyond the
+    # cap are never rendered at all — work avoided, not work discarded.
+    page_range = {"first_page": 1, "last_page": limit} if limit and limit > 0 else {}
+    images = convert_from_path(pdf_path, dpi=dpi, fmt="png", **page_range)
     logger.info("PDF conversion complete", page_count=len(images))
+    return images
+
+
+def bytes_to_images(blobs: list[bytes]) -> list[Image.Image]:
+    """Decode already-rasterized page images (PNG bytes) back to PIL Images.
+
+    Lets the supervisor rasterize a PDF once and hand the same pages to every
+    engine, instead of each engine re-rasterizing the same file. PNG is
+    lossless, so these are pixel-identical to what `pdf_to_images` produced.
+    """
+    images: list[Image.Image] = []
+    for blob in blobs:
+        # .convert() also forces the lazy PIL load, so the caller isn't
+        # holding a file-backed handle to a closed BytesIO.
+        images.append(Image.open(BytesIO(blob)).convert("RGB"))
+    logger.info("Decoded pre-rasterized pages", page_count=len(images))
     return images
 
 

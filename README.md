@@ -136,7 +136,7 @@ curl http://localhost:8080/jobs/a1b2c3... \
 # -> { "job_id": "...", "status": "completed", "result": {...} }    (when done — PCBData + confidence scores)
 ```
 
-Every service's `POST /extract` (and the supervisor's `GET /jobs/{job_id}`) requires this header when `API_KEY` is set (see [Authentication](#authentication) below); `/health` and `/ready` stay open for Docker healthchecks. See [Async jobs](#async-jobs) for the full contract, including the failed-job shape.
+Every service's `POST /extract` (and the supervisor's `GET /jobs` + `GET /jobs/{job_id}`) requires this header when `API_KEY` is set (see [Authentication](#authentication) below); `/health` and `/ready` stay open for Docker healthchecks. See [Async jobs](#async-jobs) for the full contract, including the failed-job shape.
 
 ### Run tests
 
@@ -172,14 +172,44 @@ PYTHONPATH=. pytest tests/ -v
   ```
   Returns in well under a second regardless of how long the pipeline itself takes (~90–600s) — the actual OCR/reconciliation work happens in the background afterward.
 
-**`GET /jobs/{job_id}`**
+**`GET /jobs/{job_id}`** — one job's status and result. Every response also carries `submitted_at` (ISO-8601, Pacific), the time the job was accepted.
 
 | State | HTTP status | Body |
 |---|---|---|
 | Unknown or expired `job_id` | `404` | `{ "detail": "Unknown or expired job_id: ..." }` |
-| Still running | `200` | `{ "job_id": "...", "status": "processing" }` |
-| Succeeded | `200` | `{ "job_id": "...", "status": "completed", "result": { ...full PCBData response, shown below... } }` |
-| Failed | `200` | `{ "job_id": "...", "status": "failed", "error": "<exception message>" }` (the GET itself succeeded — the job's outcome is data, not a transport error) |
+| Still running | `200` | `{ "job_id": "...", "status": "processing", "submitted_at": "..." }` |
+| Succeeded | `200` | `{ "job_id": "...", "status": "completed", "submitted_at": "...", "result": { ...full PCBData response, shown below... } }` |
+| Failed | `200` | `{ "job_id": "...", "status": "failed", "submitted_at": "...", "error": "<exception message>" }` (the GET itself succeeded — the job's outcome is data, not a transport error) |
+
+**`GET /jobs`** — list all unexpired jobs, newest first.
+
+| Query param | Default | Meaning |
+|---|---|---|
+| `status` | *(none)* | Filter to `processing`, `completed`, or `failed`. Anything else → `400`. |
+| `limit` | `100` | Max jobs returned (1–1000). Out of range → `422`. |
+
+```bash
+curl "http://localhost:8080/jobs?status=failed&limit=10" -H "Authorization: Bearer $API_KEY"
+```
+```json
+{
+  "total": 22,
+  "returned": 10,
+  "jobs": [
+    {
+      "job_id": "45049bb84635415c9e1bfa8b2bcf3ff4",
+      "status": "completed",
+      "filename": "sample1.pdf",
+      "submitted_at": "2026-08-18T18:06:44.123456-07:00",
+      "completed_at": "2026-08-18T18:09:42.987654-07:00"
+    }
+  ]
+}
+```
+
+`total` is the count *after* filtering but *before* `limit`; `returned` is how many are in this response. Failed jobs additionally carry `error`.
+
+This returns **per-job metadata only — never the `result` payload**, which runs tens of KB per job (full `attribution` + `ocr_raw_text`) and would make a listing of even a few dozen jobs multiple megabytes. Fetch `GET /jobs/{job_id}` for a specific job's result. Internally it uses Redis `SCAN`, not `KEYS`, so listing never blocks the Redis server.
 
 `result` is the same structured `PCBData` payload the endpoint used to return synchronously:
 
@@ -209,7 +239,9 @@ PYTHONPATH=. pytest tests/ -v
 
 `engine_durations_sec[].start_time`/`end_time` are ISO-8601 timestamps in US Pacific time (`America/Los_Angeles`, so `-08:00`/PST or `-07:00`/PDT depending on the date) — not UTC.
 
-Job state lives in Redis (`services/supervisor/app/jobs.py`), keyed by `job:{job_id}`, and expires after `JOB_TTL_SEC` (default 24h — see [Configuration](#configuration)) so completed/failed jobs don't accumulate forever. Persisted, not in-memory: job status survives a supervisor container restart. Only the supervisor talks to Redis; the other 3 services are unaffected. There's no cancellation endpoint, and no concurrency-limiting queue — submitting many jobs in quick succession still fans each one out into concurrent GPU calls against the same physical GPU (see [Troubleshooting](#troubleshooting)), the same constraint that existed before this endpoint became async, just now easier to trigger by accident since submission no longer blocks.
+Job state lives in Redis (`services/supervisor/app/jobs.py`), keyed by `job:{job_id}`, and expires after `JOB_TTL_SEC` (default 24h — see [Configuration](#configuration)) so completed/failed jobs don't accumulate forever. Persisted, not in-memory: job status survives a supervisor container restart.
+
+**Jobs do not resume across a restart.** The pipeline runs as an in-process background task, so restarting the supervisor kills any in-flight work. To avoid leaving those jobs stuck in `processing` forever, the supervisor reaps them at startup: anything still marked `processing` when the process comes up is marked `failed` with an explanatory `error` telling the caller to resubmit. A client polling such a job therefore gets a prompt, actionable answer instead of waiting out its full timeout. Only the supervisor talks to Redis; the other 3 services are unaffected. There's no cancellation endpoint, and no concurrency-limiting queue — submitting many jobs in quick succession still fans each one out into concurrent GPU calls against the same physical GPU (see [Troubleshooting](#troubleshooting)), the same constraint that existed before this endpoint became async, just now easier to trigger by accident since submission no longer blocks.
 
 ### Per-field attribution
 

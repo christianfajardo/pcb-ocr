@@ -4,20 +4,46 @@ from __future__ import annotations
 
 import structlog
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
 from shared.logging_config import configure_logging
 
+from .jobs import fail_orphaned_jobs
 from .router import jobs_router
 from .router import router as extract_router
 
 configure_logging()
 logger = structlog.get_logger(__name__)
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Reap jobs orphaned by a previous process before serving traffic."""
+    try:
+        orphaned = await fail_orphaned_jobs()
+        if orphaned:
+            logger.info(
+                "Marked orphaned jobs as failed",
+                count=len(orphaned),
+                job_ids=orphaned,
+            )
+    except Exception as e:
+        # Deliberately non-fatal. docker-compose's `depends_on` for redis has
+        # no `condition: service_healthy`, so on a cold `make up` this can run
+        # before Redis accepts connections — crashing here would put the
+        # container into a restart loop over a transient condition. Requests
+        # that actually need Redis still fail loudly on their own.
+        logger.error("Could not reap orphaned jobs at startup", error=str(e))
+    yield
+
+
 app = FastAPI(
     title="PCB OCR Agentic AI Pipeline",
     description="Multi-model OCR pipeline for extracting structured data from PCB fabrication drawings (PDF).",
     version="0.1.0",
+    lifespan=lifespan,
 )
 
 

@@ -9,8 +9,7 @@
     "IPC-A-600",
     "IPC-SM-840",
     "J-STD-609",
-    "IPC-1066",
-    "IPC-7711/7721"
+    "IPC-1066"
   ],
   "layer_count": 10,
   "layer_stackup": [
@@ -65,8 +64,8 @@
   },
   "copper_weights": {
     "signal_layers_oz": 1.0,
-    "plane_layers_oz": 0.5,
-    "external_finished_oz": 1.0
+    "plane_layers_oz": 1.0,
+    "external_finished_oz": 0.5
   },
   "surface_finish": "ENIG",
   "solder_mask": {
@@ -97,13 +96,19 @@
     {
       "size_mils": 10.0,
       "qty": 256,
-      "symbol": "X",
+      "symbol": "+",
       "plated": true
     },
     {
       "size_mils": 12.0,
       "qty": 3229,
       "symbol": "X",
+      "plated": true
+    },
+    {
+      "size_mils": 21.0,
+      "qty": 499,
+      "symbol": "\u25a1",
       "plated": true
     },
     {
@@ -125,28 +130,58 @@
       "plated": true
     },
     {
+      "size_mils": 30.0,
+      "qty": 40,
+      "symbol": "\u25a1",
+      "plated": true
+    },
+    {
       "size_mils": 33.0,
+      "qty": 81,
+      "symbol": "\u25a1",
+      "plated": false
+    },
+    {
+      "size_mils": 35.0,
+      "qty": 127,
+      "symbol": "\u25a1",
+      "plated": true
+    },
+    {
+      "size_mils": 39.0,
+      "qty": 2,
+      "symbol": "\u25a1",
+      "plated": false
+    },
+    {
+      "size_mils": 40.0,
       "qty": 253,
       "symbol": "\u25a1",
       "plated": true
     },
     {
-      "size_mils": 35.0,
+      "size_mils": 50.0,
       "qty": 2,
       "symbol": "\u25a1",
       "plated": true
     },
     {
-      "size_mils": 40.0,
-      "qty": 23,
+      "size_mils": 52.0,
+      "qty": 4,
       "symbol": "\u25a1",
       "plated": true
     },
     {
-      "size_mils": 52.0,
+      "size_mils": 60.0,
       "qty": 13,
       "symbol": "\u25a1",
-      "plated": true
+      "plated": false
+    },
+    {
+      "size_mils": 65.0,
+      "qty": 14,
+      "symbol": "\u25a1",
+      "plated": false
     },
     {
       "size_mils": 65.0,
@@ -164,7 +199,7 @@
       "size_mils": 79.0,
       "qty": 2,
       "symbol": "\u25a1",
-      "plated": true
+      "plated": false
     },
     {
       "size_mils": 100.0,
@@ -180,6 +215,12 @@
     },
     {
       "size_mils": 125.0,
+      "qty": 2,
+      "symbol": "\u25a1",
+      "plated": false
+    },
+    {
+      "size_mils": 125.0,
       "qty": 19,
       "symbol": "\u25a1",
       "plated": true
@@ -188,7 +229,7 @@
       "size_mils": 126.0,
       "qty": 5,
       "symbol": "\u25a1",
-      "plated": true
+      "plated": false
     },
     {
       "size_mils": 137.8,
@@ -210,15 +251,15 @@
     "[layer_stackup] value=[LayerSpec(number=1, function='signal'), LayerSpec(number=2, function='plane'), LayerSpec(number=3, function='trace'), LayerSpec(number=4, function='plane'), LayerSpec(number=5, function='plane'), LayerSpec(number=6, function='plane'), LayerSpec(number=7, function='plane'), LayerSpec(number=8, function='trace'), LayerSpec(number=9, function='plane'), LayerSpec(number=10, function='signal')], conf=0.90, reason=Engines disagree (3 candidates), picked highest confidence (qwen-vl)",
     "[material] value=FR4, conf=0.52, reason=2/3 engines agree",
     "[board_thickness] value=nominal=0.093 plus_tol=None minus_tol=None unit='in' raw='0.093 +/- 10%', conf=0.52, reason=2/3 engines agree",
-    "[copper_weights] value=signal_layers_oz=1.0 plane_layers_oz=0.5 external_finished_oz=1.0, conf=0.87, reason=Engines disagree (3 candidates), picked highest confidence (qwen-vl)",
+    "[copper_weights] value=signal_layers_oz=1.0 plane_layers_oz=1.0 external_finished_oz=0.5, conf=0.87, reason=Engines disagree (3 candidates), picked highest confidence (qwen-vl)",
     "[surface_finish] value=ENIG, conf=0.94, reason=All 3 engines agree, confidence boosted to 0.94",
     "[solder_mask] value=present=True type='LPI' color='green' spec='IPC-SM-840' sides='both', conf=0.85, reason=Engines disagree (3 candidates), picked highest confidence (qwen-vl)",
     "[silkscreen] value=present=True color=None ink=None sides=None, conf=0.48, reason=2/3 engines agree",
     "[impedance_control] value=controlled=True single_ended=ImpedanceRange(min=100.0, max=100.0, unit='ohm', raw=None) trace_width_mils=0.005 layers=[], conf=0.90, reason=Engines disagree (3 candidates), picked highest confidence (qwen-vl)",
-    "[drill_table] value=[DrillRow(size_mils=10.0, qty=256, symbol='X', plated=True), DrillRow(size_mils=12.0, qty=3229, symbol='X', plated=True), DrillRow(size_mils=24.0, qty=132, symbol='\u25c7', plated=True), DrillRow(size_mils=25.0, qty=82, symbol='\u25a1', plated=True), DrillRow(size_mils=28.0, qty=4, symbol='\u25a1', plated=True), DrillRow(size_mils=33.0, qty=253, symbol='\u25a1', plated=True), DrillRow(size_mils=35.0, qty=2, symbol='\u25a1', plated=True), DrillRow(size_mils=40.0, qty=23, symbol='\u25a1', plated=True), DrillRow(size_mils=52.0, qty=13, symbol='\u25a1', plated=True), DrillRow(size_mils=65.0, qty=22, symbol='\u25a1', plated=True), DrillRow(size_mils=70.0, qty=62, symbol='\u25a1', plated=True), DrillRow(size_mils=79.0, qty=2, symbol='\u25a1', plated=True), DrillRow(size_mils=100.0, qty=4, symbol='\u25a1', plated=True), DrillRow(size_mils=118.0, qty=7, symbol='\u25a1', plated=True), DrillRow(size_mils=125.0, qty=19, symbol='\u25a1', plated=True), DrillRow(size_mils=126.0, qty=5, symbol='\u25a1', plated=True), DrillRow(size_mils=137.8, qty=12, symbol='\u25c7', plated=True)], conf=0.72, reason=Only source (qwen-vl), confidence penalized to 0.8x",
+    "[drill_table] value=[DrillRow(size_mils=10.0, qty=256, symbol='+', plated=True), DrillRow(size_mils=12.0, qty=3229, symbol='X', plated=True), DrillRow(size_mils=21.0, qty=499, symbol='\u25a1', plated=True), DrillRow(size_mils=24.0, qty=132, symbol='\u25c7', plated=True), DrillRow(size_mils=25.0, qty=82, symbol='\u25a1', plated=True), DrillRow(size_mils=28.0, qty=4, symbol='\u25a1', plated=True), DrillRow(size_mils=30.0, qty=40, symbol='\u25a1', plated=True), DrillRow(size_mils=33.0, qty=81, symbol='\u25a1', plated=False), DrillRow(size_mils=35.0, qty=127, symbol='\u25a1', plated=True), DrillRow(size_mils=39.0, qty=2, symbol='\u25a1', plated=False), DrillRow(size_mils=40.0, qty=253, symbol='\u25a1', plated=True), DrillRow(size_mils=50.0, qty=2, symbol='\u25a1', plated=True), DrillRow(size_mils=52.0, qty=4, symbol='\u25a1', plated=True), DrillRow(size_mils=60.0, qty=13, symbol='\u25a1', plated=False), DrillRow(size_mils=65.0, qty=14, symbol='\u25a1', plated=False), DrillRow(size_mils=65.0, qty=22, symbol='\u25a1', plated=True), DrillRow(size_mils=70.0, qty=62, symbol='\u25a1', plated=True), DrillRow(size_mils=79.0, qty=2, symbol='\u25a1', plated=False), DrillRow(size_mils=100.0, qty=4, symbol='\u25a1', plated=True), DrillRow(size_mils=118.0, qty=7, symbol='\u25a1', plated=True), DrillRow(size_mils=125.0, qty=2, symbol='\u25a1', plated=False), DrillRow(size_mils=125.0, qty=19, symbol='\u25a1', plated=True), DrillRow(size_mils=126.0, qty=5, symbol='\u25a1', plated=False), DrillRow(size_mils=137.8, qty=12, symbol='\u25c7', plated=True)], conf=0.72, reason=Only source (qwen-vl), confidence penalized to 0.8x",
     "[fabrication_notes] value=NOTES (UNLESS OTHERWISE SPECIFIED)\n\n1. PRIMARY SIDE SHOWN.\n2. TEN LAYER PCB.\n3. FABRICATE PER IPC-6012, CLASS 2, CURRENT REV.\n4. DETERMINE ACCEPTABILITY PER IPC-A-600, CURRENT REV. 25% BREAKOUT PERMITTED ON Vias IF INTERFACE BETWEEN CONDUCTOR AND TERMINAL AREA OF PAD IS 100%. BOARDS TO BE 100% ELECTRICALLY TESTED FOR CONTINUITY (OPENS AND SHORTS).\nCERTIFICATION OF THIS TEST REQUIRED WITH EACH SHIPMENT FOR EACH DATE CODE SUPPLIED. CERTIFICATION TO INCLUDE P.O. #, P/N, AND QUANTITY OF EACH DATE CODE.\n\n5. PCBs SHALL BE RoHS COMPLIANT. MATERIAL TO BE 170 Tg FR4 OR FR406. BOARD TO BE 0.093\" +/- 10%, MEASURED OUTER METAL-TO-METAL THICKNESS. BOARD FINISH TO BE LEAD FREE HASL OR ENIG. PCB SHALL BE MARKED PER J-STD-609 PARA 7.2 (FINAL FINISH DESIGNATOR), OR PER IPC-1066.\n\n6. PLATE TO 1.0 OZ COPPER NOMINAL ON SURFACE LAYERS, 1.0 OZ COPPER NOMINAL IN HOLES AND INTERNAL PLANE LAYERS, 0.5 OZ INTERNAL TRACE LAYERS.\n\n7. TOOLING HOLES OF DIAMETER UP TO 0.126\" ARE NON-PLATED AND MAY OR MAY NOT BE PRESENT IN DESIGN AS PER SUPPLIED ARTWORK. IF PRESENT IN DESIGN THEY SHALL BE MARKED \"IT\". ALL OTHER HOLES SHALL BE PLATED OR NON-PLATED ACCORDING TO HOLE CHART.\n\n8. HOLE SIZES GIVEN ARE FINISHED DIMENSIONS.\n\n9. SOLDERMASK BOTH SIDES OVER BARE COPPER PER IPC-SM-840, CLASS 2, CURRENT REV. AND MANUFACTURERS SPECIFICATIONS. NO BARE COPPER ALLOWED. NO SOLDER MASK. PERMISSIBLE ON COMPONENT PADS AS PER SUPPLIED ARTWORK.\n\n10. DATE CODE, UL RECOGNIZED VENDOR MARK, AND UL94V-0 MARK REQUIRED. DATE CODE SHALL USE FOUR NUMERALS, GIVING WORK WEEK AND YEAR. EG., 2818 STANDS FOR THE 28TH WEEK OF 2018. THESE MARKS SHALL BE MADE IN COPPER AND SHALL BE LOCATED ON THE SECONDARY SIDE OF THE PCB.\n\n11. SCREEN COMPONENT ID WITH NON-CONDUCTING WHITE INK. COMPONENT ID REGISTRATION TO BE WITHIN +/- 0.005\" OF ITS RESPECTIVE COMPONENT LAYER. NO SILKSCREEN INK PERMISSIBLE ON COMPONENT PADS OR IN PADS AS PER SUPPLIED ARTWORK.\n\n12. ETCH TOLERANCE +0.001\" - 0.002\". TOTAL TRACE REDUCTION CANNOT EXCEED 20%.\n\n13. FRONT-TO-BACK REGISTRATION TO BE WITHIN +/-0.003\".\n\n14. BOARD WARP TO BE NO GREATER THAN 1.2%.\n\n15. CONTROLLED IMPEDANCE AT 10% TOLERANCE. TRACE WIDTH MAY BE ADJUSTED TO MEET IMPEDANCE REQUIREMENTS, BUT NOT BELOW 0.0045\" IN WIDTH OR CLEARANCE. 0.005\" TRACES ON ALL LAYERS ARE 100 OHM DIFFERENTIAL.\n\n16. LAYER CONFIGURATION DIAGRAM:\n   PRIMARY SIDE COMPONENT ID.\n   PRIMARY SIDE SOLDER MASK\n   CIRCUIT LAYER #1 (PRIMARY SIDE)\n   CIRCUIT LAYER #2 - PLANE LAYER\n   CIRCUIT LAYER #3 - TRACE LAYER\n   CIRCUIT LAYER #4 - PLANE LAYER\n   CIRCUIT LAYER #5 - PLANE LAYER\n   CIRCUIT LAYER #6 - PLANE LAYER\n   CIRCUIT LAYER #7 - PLANE LAYER\n   CIRCUIT LAYER #8 - TRACE LAYER\n   CIRCUIT LAYER #9 - PLANE LAYER\n   CIRCUIT LAYER #10 (SECONDARY SIDE)\n   SECONDARY SIDE SOLDER MASK\n   SECONDARY SIDE COMPONENT ID.\n\nLayer Stack Up\n\nBoard Origin\n\nTitle Block\n\nPCB Prime Sample Fabrication Drawing\n\nTHIRD ANGLE PROJECTION\n\nADDITIONAL INFORMATION AND SPECIFICATIONS REQUIRED TO MANUFACTURE THIS PART PROVIDED:\n\nUNLESS OTHERWISE SPECIFIED:\nALL DRAFTING PRACTICES BASED ON ANSI DRAFTING STANDARDS ALL DIMENSIONS ARE IN INDEXES.\n\nOFTR Scott Walsh\n10.15.2018\n\nTOLERANCES UNLESS OTHERWISE NOTED\n\nDIG SIZE D\nSCALE SHEET 1 OF 1\n\nPART NO 123456\n\nREV A, conf=0.85, reason=Engines disagree (3 candidates), picked highest confidence (glm-ocr)",
     "[ocr_raw_text] value=PCB FABRICATION NOTES (UNLESS OTHERWISE SPECIFIED)\n\n1. PRIMARY SIDE SHOWN.\n2. TEN LAYER PCB.\n3. FABRICATE PER IPC-6012, CLASS 2, CURRENT REV.\n4. DETERMINE ACCEPTABILITY PER IPC-A-600, CURRENT REV. 25% BREAKOUT PERMITTED ON Vias IF INTERFACE BETWEEN CONDUCTOR AND TERMINAL AREA OF PAD IS 100%. BOARDS TO BE 100% ELECTRICALLY TESTED FOR CONTINUITY (OPENS AND SHORTS).\nCERTIFICATION OF THIS TEST REQUIRED WITH EACH SHIPMENT FOR EACH DATE CODE SUPPLIED. CERTIFICATION TO INCLUDE P.O. #, P/N, AND QUANTITY OF EACH DATE CODE.\n\n5. PCBs SHALL BE RoHS COMPLIANT. MATERIAL TO BE 170 Tg FR4 OR FR406. BOARD TO BE 0.093\" +/- 10%, MEASURED OUTER METAL-TO-METAL THICKNESS. BOARD FINISH TO BE LEAD FREE HASL OR ENIG. PCB SHALL BE MARKED PER J-STD-609 PARA 7.2 (FINAL FINISH DESIGNATOR), OR PER IPC-1066.\n\n6. PLATE TO 1.0 OZ COPPER NOMINAL ON SURFACE LAYERS, 1.0 OZ COPPER NOMINAL IN HOLES AND INTERNAL PLANE LAYERS, 0.5 OZ INTERNAL TRACE LAYERS.\n\n7. TOOLING HOLES OF DIAMETER UP TO 0.126\" ARE NON-PLATED AND MAY OR MAY NOT BE PRESENT IN DESIGN AS PER SUPPLIED ARTWORK. IF PRESENT IN DESIGN THEY SHALL BE MARKED \"IT\". ALL OTHER HOLES SHALL BE PLATED OR NON-PLATED ACCORDING TO HOLE CHART.\n\n8. HOLE SIZES GIVEN ARE FINISHED DIMENSIONS.\n\n9. SOLDERMASK BOTH SIDES OVER BARE COPPER PER IPC-SM-840, CLASS 2, CURRENT REV. AND MANUFACTURERS SPECIFICATIONS. NO BARE COPPER ALLOWED. NO SOLDER MASK. PERMISSIBLE ON COMPONENT PADS AS PER SUPPLIED ARTWORK.\n\n10. DATE CODE, UL RECOGNIZED VENDOR MARK, AND UL94V-0 MARK REQUIRED. DATE CODE SHALL USE FOUR NUMERALS, GIVING WORK WEEK AND YEAR. EG., 2818 STANDS FOR THE 28TH WEEK OF 2018. THESE MARKS SHALL BE MADE IN COPPER AND SHALL BE LOCATED ON THE SECONDARY SIDE OF THE PCB.\n\n11. SCREEN COMPONENT ID WITH NON-CONDUCTING WHITE INK. COMPONENT ID REGISTRATION TO BE WITHIN +/- 0.005\" OF ITS RESPECTIVE COMPONENT LAYER. NO SILKSCREEN INK PERMISSIBLE ON COMPONENT PADS OR IN PADS AS PER SUPPLIED ARTWORK.\n\n12. ETCH TOLERANCE +0.001\" - 0.002\". TOTAL TRACE REDUCTION CANNOT EXCEED 20%.\n\n13. FRONT-TO-BACK REGISTRATION TO BE WITHIN +/-0.003\".\n\n14. BOARD WARP TO BE NO GREATER THAN 1.2%.\n\n15. CONTROLLED IMPEDANCE AT 10% TOLERANCE. TRACE WIDTH MAY BE ADJUSTED TO MEET IMPEDANCE REQUIREMENTS, BUT NOT BELOW 0.0045\" IN WIDTH OR CLEARANCE. 0.005\" TRACES ON ALL LAYERS ARE 100 OHM DIFFERENTIAL.\n\n16. LAYER CONFIGURATION DIAGRAM:\n   PRIMARY SIDE COMPONENT ID.\n   PRIMARY SIDE SOLDER MASK\n   CIRCUIT LAYER #1 (PRIMARY SIDE)\n   CIRCUIT LAYER #2 - PLANE LAYER\n   CIRCUIT LAYER #3 - TRACE LAYER\n   CIRCUIT LAYER #4 - PLANE LAYER\n   CIRCUIT LAYER #5 - PLANE LAYER\n   CIRCUIT LAYER #6 - PLANE LAYER\n   CIRCUIT LAYER #7 - PLANE LAYER\n   CIRCUIT LAYER #8 - TRACE LAYER\n   CIRCUIT LAYER #9 - PLANE LAYER\n   CIRCUIT LAYER #10 (SECONDARY SIDE)\n   SECONDARY SIDE SOLDER MASK\n   SECONDARY SIDE COMPONENT ID.\n\nLayer Stack Up\n\nBoard Origin\n\nTitle Block\n\nPCB Prime Sample Fabrication Drawing\n\nTHIRD ANGLE PROJECTION\n\nADDITIONAL INFORMATION AND SPECIFICATIONS REQUIRED TO MANUFACTURE THIS PART PROVIDED:\n\nUNLESS OTHERWISE SPECIFIED:\nALL DRAFTING PRACTICES BASED ON ANSI DRAFTING STANDARDS ALL DIMENSIONS ARE IN INDEXES.\n\nOFTR Scott Walsh\n10.15.2018\n\nTOLERANCES UNLESS OTHERWISE NOTED\n\nDIG SIZE D\nSCALE SHEET 1 OF 1\n\nPART NO 123456\n\nREV A, conf=0.68, reason=Only source (glm-ocr), confidence penalized to 0.8x",
-    "[ipc_specs] Union of all engines: ['IPC-6012', 'IPC-A-600', 'IPC-SM-840', 'J-STD-609', 'IPC-1066', 'IPC-7711/7721']",
+    "[ipc_specs] Union of all engines: ['IPC-6012', 'IPC-A-600', 'IPC-SM-840', 'J-STD-609', 'IPC-1066']",
     "[fabrication_notes] Used longest value (5774 chars)"
   ],
   "attribution": {
@@ -379,10 +420,8 @@
         {
           "engine": "qwen-vl",
           "value": [
-            "IPC-A-600",
             "IPC-6012",
-            "IPC-SM-840",
-            "IPC-7711/7721"
+            "IPC-A-600"
           ],
           "confidence": 0.85,
           "source_text": null
@@ -671,8 +710,8 @@
           "engine": "qwen-vl",
           "value": {
             "nominal": 0.093,
-            "plus_tol": 0.01,
-            "minus_tol": 0.01,
+            "plus_tol": 0.005,
+            "minus_tol": 0.005,
             "unit": "in",
             "raw": "0.093\" +/- 10%"
           },
@@ -684,8 +723,8 @@
     "copper_weights": {
       "value": {
         "signal_layers_oz": 1.0,
-        "plane_layers_oz": 0.5,
-        "external_finished_oz": 1.0
+        "plane_layers_oz": 1.0,
+        "external_finished_oz": 0.5
       },
       "confidence": 0.87,
       "reason": "Engines disagree (3 candidates), picked highest confidence (qwen-vl)",
@@ -717,8 +756,8 @@
           "engine": "qwen-vl",
           "value": {
             "signal_layers_oz": 1.0,
-            "plane_layers_oz": 0.5,
-            "external_finished_oz": 1.0
+            "plane_layers_oz": 1.0,
+            "external_finished_oz": 0.5
           },
           "confidence": 0.87,
           "source_text": null
@@ -846,7 +885,7 @@
             "present": true,
             "color": "white",
             "ink": "non-conducting",
-            "sides": "primary side"
+            "sides": "component side"
           },
           "confidence": 0.85,
           "source_text": null
@@ -926,13 +965,19 @@
         {
           "size_mils": 10.0,
           "qty": 256,
-          "symbol": "X",
+          "symbol": "+",
           "plated": true
         },
         {
           "size_mils": 12.0,
           "qty": 3229,
           "symbol": "X",
+          "plated": true
+        },
+        {
+          "size_mils": 21.0,
+          "qty": 499,
+          "symbol": "\u25a1",
           "plated": true
         },
         {
@@ -954,28 +999,58 @@
           "plated": true
         },
         {
+          "size_mils": 30.0,
+          "qty": 40,
+          "symbol": "\u25a1",
+          "plated": true
+        },
+        {
           "size_mils": 33.0,
+          "qty": 81,
+          "symbol": "\u25a1",
+          "plated": false
+        },
+        {
+          "size_mils": 35.0,
+          "qty": 127,
+          "symbol": "\u25a1",
+          "plated": true
+        },
+        {
+          "size_mils": 39.0,
+          "qty": 2,
+          "symbol": "\u25a1",
+          "plated": false
+        },
+        {
+          "size_mils": 40.0,
           "qty": 253,
           "symbol": "\u25a1",
           "plated": true
         },
         {
-          "size_mils": 35.0,
+          "size_mils": 50.0,
           "qty": 2,
           "symbol": "\u25a1",
           "plated": true
         },
         {
-          "size_mils": 40.0,
-          "qty": 23,
+          "size_mils": 52.0,
+          "qty": 4,
           "symbol": "\u25a1",
           "plated": true
         },
         {
-          "size_mils": 52.0,
+          "size_mils": 60.0,
           "qty": 13,
           "symbol": "\u25a1",
-          "plated": true
+          "plated": false
+        },
+        {
+          "size_mils": 65.0,
+          "qty": 14,
+          "symbol": "\u25a1",
+          "plated": false
         },
         {
           "size_mils": 65.0,
@@ -993,7 +1068,7 @@
           "size_mils": 79.0,
           "qty": 2,
           "symbol": "\u25a1",
-          "plated": true
+          "plated": false
         },
         {
           "size_mils": 100.0,
@@ -1009,6 +1084,12 @@
         },
         {
           "size_mils": 125.0,
+          "qty": 2,
+          "symbol": "\u25a1",
+          "plated": false
+        },
+        {
+          "size_mils": 125.0,
           "qty": 19,
           "symbol": "\u25a1",
           "plated": true
@@ -1017,7 +1098,7 @@
           "size_mils": 126.0,
           "qty": 5,
           "symbol": "\u25a1",
-          "plated": true
+          "plated": false
         },
         {
           "size_mils": 137.8,
@@ -1038,13 +1119,19 @@
             {
               "size_mils": 10.0,
               "qty": 256,
-              "symbol": "X",
+              "symbol": "+",
               "plated": true
             },
             {
               "size_mils": 12.0,
               "qty": 3229,
               "symbol": "X",
+              "plated": true
+            },
+            {
+              "size_mils": 21.0,
+              "qty": 499,
+              "symbol": "\u25a1",
               "plated": true
             },
             {
@@ -1066,28 +1153,58 @@
               "plated": true
             },
             {
+              "size_mils": 30.0,
+              "qty": 40,
+              "symbol": "\u25a1",
+              "plated": true
+            },
+            {
               "size_mils": 33.0,
+              "qty": 81,
+              "symbol": "\u25a1",
+              "plated": false
+            },
+            {
+              "size_mils": 35.0,
+              "qty": 127,
+              "symbol": "\u25a1",
+              "plated": true
+            },
+            {
+              "size_mils": 39.0,
+              "qty": 2,
+              "symbol": "\u25a1",
+              "plated": false
+            },
+            {
+              "size_mils": 40.0,
               "qty": 253,
               "symbol": "\u25a1",
               "plated": true
             },
             {
-              "size_mils": 35.0,
+              "size_mils": 50.0,
               "qty": 2,
               "symbol": "\u25a1",
               "plated": true
             },
             {
-              "size_mils": 40.0,
-              "qty": 23,
+              "size_mils": 52.0,
+              "qty": 4,
               "symbol": "\u25a1",
               "plated": true
             },
             {
-              "size_mils": 52.0,
+              "size_mils": 60.0,
               "qty": 13,
               "symbol": "\u25a1",
-              "plated": true
+              "plated": false
+            },
+            {
+              "size_mils": 65.0,
+              "qty": 14,
+              "symbol": "\u25a1",
+              "plated": false
             },
             {
               "size_mils": 65.0,
@@ -1105,7 +1222,7 @@
               "size_mils": 79.0,
               "qty": 2,
               "symbol": "\u25a1",
-              "plated": true
+              "plated": false
             },
             {
               "size_mils": 100.0,
@@ -1121,6 +1238,12 @@
             },
             {
               "size_mils": 125.0,
+              "qty": 2,
+              "symbol": "\u25a1",
+              "plated": false
+            },
+            {
+              "size_mils": 125.0,
               "qty": 19,
               "symbol": "\u25a1",
               "plated": true
@@ -1129,7 +1252,7 @@
               "size_mils": 126.0,
               "qty": 5,
               "symbol": "\u25a1",
-              "plated": true
+              "plated": false
             },
             {
               "size_mils": 137.8,
@@ -1165,7 +1288,7 @@
         },
         {
           "engine": "qwen-vl",
-          "value": "1. PRIMARY SIDE SHOWN.\n2. TEN LAYER PCB.\n3. FABRICATE PER IPC-6012, CLASS 2, CURRENT REV.\n4. DETERMINE ACCEPTABILITY PER IPC-A-600, CURRENT REV. 25% BREAKOUT PERMITTED ON VIAS IF INTERFACE BETWEEN CONDUCTOR AND TERMINAL AREA OF PAD IS 100%. BOARDS TO BE 100% ELECTRICALLY TESTED FOR CONTINUITY (OPENS AND SHORTS). CERTIFICATION OF THIS TEST REQUIRED WITH EACH SHIPMENT FOR EACH DATE CODE SUPPLIED. CERTIFICATION TO INCLUDE P.O. #, P/N, AND QUANTITY OF EACH DATE CODE.\n5. PCBs SHALL BE RoHS COMPLIANT. MATERIAL TO BE 170 Tg FR4 OR FR406. BOARD TO BE 0.093\" +/- 10%, MEASURED OUTER METAL-TO-METAL THICKNESS. BOARD FINISH TO BE LEAD FREE HASL OR ENIG. PCB SHALL BE MARKED PER J-STD-609 PARA 7.2 (FINAL FINISH DESIGNATOR), OR PER IPC-1066.\n6. PLATE TO 1.0 OZ COPPER NOMINAL ON SURFACE LAYERS, 1.0 OZ COPPER NOMINAL IN HOLES AND INTERNAL PLANE LAYERS, 0.5 OZ INTERNAL TRACE LAYERS.\n7. TOOLING HOLES OF DIAMETER UP TO 0.126\" ARE NON-PLATED AND MAY OR MAY NOT BE PRESENT IN DESIGN AS PER SUPPLIED ARTWORK. IF PRESENT IN DESIGN THEY SHALL BE MARKED \"T\". ALL OTHER HOLES SHALL BE PLATED OR NON-PLATED ACCORDING TO HOLE CHART.\n8. HOLE SIZES GIVEN ARE FINISHED DIMENSIONS.\n9. SOLDERMASK BOTH SIDES OVER BARE COPPER PER IPC-SM-840, CLASS 2, CURRENT REV, AND MANUFACTURERS SPECIFICATIONS. NO BARE COPPER ALLOWED. NO SOLDER MASK PERMISSIBLE ON COMPONENT PADS AS PER SUPPLIED ARTWORK.\n10. DATE CODE, UL RECOGNIZED VENDOR MARK, AND UL94V-0 MARK REQUIRED. DATE CODE SHALL USE FOUR NUMERALS, GIVING WORK WEEK AND YEAR, EG., 2818 STANDS FOR THE 28TH WEEK OF 2018. THESE MARKS SHALL BE MADE IN COPPER AND SHALL BE LOCATED ON THE SECONDARY SIDE OF THE PCB.\n11. SCREEN COMPONENT ID WITH NON-CONDUCTING WHITE INK. COMPONENT ID REGISTRATION TO BE WITHIN +/- 0.005\" OF ITS RESPECTIVE COMPONENT LAYER. NO SILKSCREEN INK PERMISSIBLE ON COMPONENT PADS OR IN PADS AS PER SUPPLIED ARTWORK.\n12. ETCH TOLERANCE +/-0.001\" - 0.002\". TOTAL TRACE REDUCTION CANNOT EXCEED 20%.\n13. FRONT-TO-BACK REGISTRATION TO BE WITHIN +/-0.003\".\n14. BOARD WARP TO BE NO GREATER THAN 1.2%.\n15. CONTROLLED IMPEDANCE AT 10% TOLERANCE. TRACE WIDTH MAY BE ADJUSTED TO MEET IMPEDANCE REQUIREMENTS, BUT NOT BELOW 0.0045\" IN WIDTH OR CLEARANCE. 0.005\" TRACES ON ALL LAYERS ARE 100 OHM DIFFERENTIAL.\n16. LAYER CONFIGURATION DIAGRAM: PRIMARY SIDE COMPONENT I.D. PRIMARY SIDE SOLDER MASK CIRCUIT LAYER #1 (PRIMARY SIDE) CIRCUIT LAYER #2 - PLANE LAYER CIRCUIT LAYER #3 - TRACE LAYER CIRCUIT LAYER #4 - PLANE LAYER CIRCUIT LAYER #5 - PLANE LAYER CIRCUIT LAYER #6 - PLANE LAYER CIRCUIT LAYER #7 - PLANE LAYER CIRCUIT LAYER #8 - TRACE LAYER CIRCUIT LAYER #9 - PLANE LAYER CIRCUIT LAYER #10 (SECONDARY SIDE) SECONDARY SIDE SOLDER MASK SECONDARY SIDE COMPONENT I.D. MINIMUM INNER LAYER SPACING IS 0.005\" MEASURED BETWEEN ANY TWO COPPER LAYERS.",
+          "value": "1. PRIMARY SIDE SHOWN.\n2. TEN LAYER PCB.\n3. FABRICATE PER IPC-6012, CLASS 2, CURRENT REV.\n4. DETERMINE ACCEPTABILITY PER IPC-A-600, CURRENT REV. 25% BREAKOUT PERMITTED ON VIAS IF INTERFACE BETWEEN CONDUCTOR AND TERMINAL AREA OF PAD IS 100%. BOARDS TO BE 100% ELECTRICALLY TESTED FOR CONTINUITY (OPENS AND SHORTS). CERTIFICATION OF THIS TEST REQUIRED WITH EACH SHIPMENT FOR EACH DATE CODE SUPPLIED. CERTIFICATION TO INCLUDE P.O. #, P/N, AND QUANTITY OF EACH DATE CODE.\n5. PCBs SHALL BE RoHS COMPLIANT. MATERIAL TO BE 170 Tg FR4 OR FR406. BOARD TO BE 0.093\" +/- 10%, MEASURED OUTER METAL-TO-METAL THICKNESS. BOARD FINISH TO BE LEAD FREE HASL OR ENIG. PCB SHALL BE MARKED PER J-STD-609 PARA 7.2 (FINAL FINISH DESIGNATOR), OR PER IPC-1066.\n6. PLATE TO 1.0 OZ COPPER NOMINAL ON SURFACE LAYERS, 1.0 OZ COPPER NOMINAL IN HOLES AND INTERNAL PLANE LAYERS, 0.5 OZ INTERNAL TRACE LAYERS.\n7. TOOLING HOLES OF DIAMETER UP TO 0.126\" ARE NON-PLATED AND MAY OR MAY NOT BE PRESENT IN DESIGN AS PER SUPPLIED ARTWORK. IF PRESENT IN DESIGN THEY SHALL BE MARKED \"T\". ALL OTHER HOLES SHALL BE PLATED OR NON-PLATED ACCORDING TO HOLE CHART.\n8. HOLE SIZES GIVEN ARE FINISHED DIMENSIONS.\n9. SOLDERMASK BOTH SIDES OVER BARE COPPER PER IPC-SM-840, CLASS 2, CURRENT REV, AND MANUFACTURERS SPECIFICATIONS. NO BARE COPPER ALLOWED. NO SOLDER MASK PERMISSIBLE ON COMPONENT PADS AS PER SUPPLIED ARTWORK.\n10. DATE CODE, UL RECOGNIZED VENDOR MARK, AND UL94V-0 MARK REQUIRED. DATE CODE SHALL USE FOUR NUMERALS, GIVING WORK WEEK AND YEAR, EG., 2818 STANDS FOR THE 28TH WEEK OF 2018. THESE MARKS SHALL BE MADE IN COPPER AND SHALL BE LOCATED ON THE SECONDARY SIDE OF THE PCB.\n11. SCREEN COMPONENT ID WITH NON-CONDUCTING WHITE INK. COMPONENT ID REGISTRATION TO BE WITHIN +/- 0.005\" OF ITS RESPECTIVE COMPONENT LAYER. NO SILKSCREEN INK PERMISSIBLE ON COMPONENT PADS OR IN PADS AS PER SUPPLIED ARTWORK.\n12. ETCH TOLERANCE +0.001\" - 0.002\". TOTAL TRACE REDUCTION CANNOT EXCEED 20%.\n13. FRONT-TO-BACK REGISTRATION TO BE WITHIN +/-0.003\".\n14. BOARD WARP TO BE NO GREATER THAN 1.2%.\n15. CONTROLLED IMPEDANCE AT 10% TOLERANCE. TRACE WIDTH MAY BE ADJUSTED TO MEET IMPEDANCE REQUIREMENTS, BUT NOT BELOW 0.0045\" IN WIDTH OR CLEARANCE: 0.005\" TRACES ON ALL LAYERS ARE 100 OHM DIFFERENTIAL.\n16. LAYER CONFIGURATION DIAGRAM: PRIMARY SIDE COMPONENT I.D. PRIMARY SIDE SOLDER MASK CIRCUIT LAYER #1 (PRIMARY SIDE) CIRCUIT LAYER #2 - PLANE LAYER CIRCUIT LAYER #3 - TRACE LAYER CIRCUIT LAYER #4 - PLANE LAYER CIRCUIT LAYER #5 - PLANE LAYER CIRCUIT LAYER #6 - PLANE LAYER CIRCUIT LAYER #7 - PLANE LAYER CIRCUIT LAYER #8 - TRACE LAYER CIRCUIT LAYER #9 - PLANE LAYER CIRCUIT LAYER #10 (SECONDARY SIDE) SECONDARY SIDE SOLDER MASK SECONDARY SIDE COMPONENT I.D.",
           "confidence": 0.75,
           "source_text": null
         }
@@ -1192,28 +1315,28 @@
   "engine_durations_sec": [
     {
       "engine": "tesseract",
-      "duration_sec": 11.073,
-      "start_time": "2026-08-18T15:37:04.624235-07:00",
-      "end_time": "2026-08-18T15:37:15.697245-07:00"
+      "duration_sec": 10.727,
+      "start_time": "2026-08-18T18:06:46.421939-07:00",
+      "end_time": "2026-08-18T18:06:57.149269-07:00"
     },
     {
       "engine": "glm-ocr",
-      "duration_sec": 33.399,
-      "start_time": "2026-08-18T15:37:04.616728-07:00",
-      "end_time": "2026-08-18T15:37:38.015685-07:00"
+      "duration_sec": 32.855,
+      "start_time": "2026-08-18T18:06:46.414487-07:00",
+      "end_time": "2026-08-18T18:07:19.269245-07:00"
     },
     {
       "engine": "qwen-vl",
-      "duration_sec": 190.558,
-      "start_time": "2026-08-18T15:37:04.621220-07:00",
-      "end_time": "2026-08-18T15:40:15.179713-07:00"
+      "duration_sec": 213.332,
+      "start_time": "2026-08-18T18:06:46.419013-07:00",
+      "end_time": "2026-08-18T18:10:19.751334-07:00"
     },
     {
       "engine": "pymupdf",
       "duration_sec": 0.001,
-      "start_time": "2026-08-18T15:37:04.620063-07:00",
-      "end_time": "2026-08-18T15:37:04.621080-07:00"
+      "start_time": "2026-08-18T18:06:46.417965-07:00",
+      "end_time": "2026-08-18T18:06:46.418886-07:00"
     }
   ],
-  "total_duration_sec": 192.255
+  "total_duration_sec": 215.0
 }

@@ -1,7 +1,7 @@
 {
   "part_number": null,
   "manufacturer": "Company Name",
-  "drawing_title": null,
+  "drawing_title": "Drawing Number",
   "is_itar": false,
   "ipc_class": "Class 2",
   "ipc_specs": [
@@ -35,6 +35,10 @@
     },
     {
       "number": 7,
+      "function": "POWER PLANE"
+    },
+    {
+      "number": 8,
       "function": "BOTTOM SIDE"
     }
   ],
@@ -98,8 +102,20 @@
     },
     {
       "size_mils": 36.0,
-      "qty": 4,
+      "qty": 1,
       "symbol": "\uff0b",
+      "plated": false
+    },
+    {
+      "size_mils": 40.0,
+      "qty": 4,
+      "symbol": "\u00d7",
+      "plated": true
+    },
+    {
+      "size_mils": 73.0,
+      "qty": 3,
+      "symbol": "\u00d7",
       "plated": true
     },
     {
@@ -131,13 +147,13 @@
   "ocr_raw_text": "NOTES: UNLESS OTHERWISE SPECIFIED\n\n1. MATERIAL: 370HR OR EQUIVALENT\n2. OVERALL BOARD THICKNESS TO BE .062 +/- .007\n3. APPLY SOLDERMASK OVER BARE COPPER. COLOR: GREEN.\n4. ALL EXPOSED CONDUCTIVE SURFACES TO BE ENIG\n5. SILKSCREEN TOP AND BOTTOM SIDE USING NON-CONDUCTIVE WHITE EPOXY INK.\n6. FABRICATE IN ACCORDANCE WITH IPC-6012 CLASS 2.\n7. COPPER WEIGHT SHALL BE 1 OZ. COPPER\n\nSIZE QTY SYM PLATED TOL\n8 9 YES +/-0.003\n12 40 YES +/-0.003\n15 3 YES +/-0.003\n28 1 NO +/-0.003\n36 1 NO +/-0.003\n40 4 YES +/-0.003\n73 3 YES +/-0.003\n40.16 4 YES +/-0.003\n31.5 5 YES +/-0.003\n94.49 2 YES +/-0.003\n106 4 NO +/-0.003\n\nCOMPANY: Company Name\nTITLE:\nDRAWN: DATED:\nCHECKED: DATED:\nQUALITY CONTROL: DATED:\nRELEASED: DATED:\nCODE: B SIZE: B DRAWING NO: Drawing Number\nSCALE: Scale\nSHEET:",
   "reconciliation_log": [
     "[part_number] value=None, conf=0.00, reason=No engine detected this field",
-    "[manufacturer] value=Company Name, conf=0.72, reason=All 2 engines agree, confidence boosted to 0.72",
-    "[drawing_title] value=None, conf=0.00, reason=No engine detected this field",
+    "[manufacturer] value=Company Name, conf=0.94, reason=All 3 engines agree, confidence boosted to 0.94",
+    "[drawing_title] value=Drawing Number, conf=0.68, reason=Only source (qwen-vl), confidence penalized to 0.8x",
     "[is_itar] value=False, conf=0.99, reason=All 3 engines agree, confidence boosted to 0.99",
     "[ipc_class] value=IPCClass.CLASS_2, conf=0.94, reason=All 3 engines agree, confidence boosted to 0.94",
     "[ipc_specs] value=['IPC-6012'], conf=0.94, reason=All 3 engines agree, confidence boosted to 0.94",
     "[layer_count] value=8, conf=0.68, reason=Only source (qwen-vl), confidence penalized to 0.8x",
-    "[layer_stackup] value=[LayerSpec(number=1, function='TOP SIDE'), LayerSpec(number=2, function='GROUND PLANE'), LayerSpec(number=3, function='SIGNAL LAYER'), LayerSpec(number=4, function='POWER PLANE'), LayerSpec(number=5, function='SIGNAL LAYER'), LayerSpec(number=6, function='POWER PLANE'), LayerSpec(number=7, function='BOTTOM SIDE')], conf=0.72, reason=Only source (qwen-vl), confidence penalized to 0.8x",
+    "[layer_stackup] value=[LayerSpec(number=1, function='TOP SIDE'), LayerSpec(number=2, function='GROUND PLANE'), LayerSpec(number=3, function='SIGNAL LAYER'), LayerSpec(number=4, function='POWER PLANE'), LayerSpec(number=5, function='SIGNAL LAYER'), LayerSpec(number=6, function='POWER PLANE'), LayerSpec(number=7, function='POWER PLANE'), LayerSpec(number=8, function='BOTTOM SIDE')], conf=0.72, reason=Only source (qwen-vl), confidence penalized to 0.8x",
     "[material] value=370HR, conf=0.94, reason=All 3 engines agree, confidence boosted to 0.94",
     "[board_thickness] value=nominal=0.062 plus_tol=0.007 minus_tol=0.007 unit='in' raw='.062 +/- .007', conf=0.96, reason=All 3 engines agree, confidence boosted to 0.96",
     "[copper_weights] value=signal_layers_oz=1.0 plane_layers_oz=None external_finished_oz=None, conf=0.50, reason=2/3 engines agree",
@@ -145,7 +161,7 @@
     "[solder_mask] value=present=True type=None color='Green' spec=None sides='both', conf=0.50, reason=2/3 engines agree",
     "[silkscreen] value=present=True color='White' ink=None sides='both', conf=0.50, reason=2/3 engines agree",
     "[impedance_control] value=controlled=False single_ended=None trace_width_mils=None layers=[], conf=0.47, reason=2/3 engines agree",
-    "[drill_table] value=[DrillRow(size_mils=8.0, qty=9, symbol='\u25c7', plated=True), DrillRow(size_mils=12.0, qty=40, symbol='\u25a1', plated=True), DrillRow(size_mils=15.0, qty=3, symbol='\uff0b', plated=True), DrillRow(size_mils=28.0, qty=1, symbol='\uff0b', plated=False), DrillRow(size_mils=36.0, qty=4, symbol='\uff0b', plated=True), DrillRow(size_mils=40.16, qty=4, symbol='\uff0b', plated=True), DrillRow(size_mils=31.5, qty=5, symbol='\uff0b', plated=True), DrillRow(size_mils=94.49, qty=2, symbol='\uff0b', plated=True), DrillRow(size_mils=106.0, qty=4, symbol='\uff0b', plated=False)], conf=0.72, reason=Only source (qwen-vl), confidence penalized to 0.8x",
+    "[drill_table] value=[DrillRow(size_mils=8.0, qty=9, symbol='\u25c7', plated=True), DrillRow(size_mils=12.0, qty=40, symbol='\u25a1', plated=True), DrillRow(size_mils=15.0, qty=3, symbol='\uff0b', plated=True), DrillRow(size_mils=28.0, qty=1, symbol='\uff0b', plated=False), DrillRow(size_mils=36.0, qty=1, symbol='\uff0b', plated=False), DrillRow(size_mils=40.0, qty=4, symbol='\u00d7', plated=True), DrillRow(size_mils=73.0, qty=3, symbol='\u00d7', plated=True), DrillRow(size_mils=40.16, qty=4, symbol='\uff0b', plated=True), DrillRow(size_mils=31.5, qty=5, symbol='\uff0b', plated=True), DrillRow(size_mils=94.49, qty=2, symbol='\uff0b', plated=True), DrillRow(size_mils=106.0, qty=4, symbol='\uff0b', plated=False)], conf=0.72, reason=Only source (qwen-vl), confidence penalized to 0.8x",
     "[fabrication_notes] value=NOTES: UNLESS OTHERWISE SPECIFIED\n\n1. MATERIAL: 370HR OR EQUIVALENT\n2. OVERALL BOARD THICKNESS TO BE .062 +/- .007\n3. APPLY SOLDERMASK OVER BARE COPPER. COLOR: GREEN.\n4. ALL EXPOSED CONDUCTIVE SURFACES TO BE ENIG\n5. SILKSCREEN TOP AND BOTTOM SIDE USING NON-CONDUCTIVE WHITE EPOXY INK.\n6. FABRICATE IN ACCORDANCE WITH IPC-6012 CLASS 2.\n7. COPPER WEIGHT SHALL BE 1 OZ. COPPER\n\nSIZE QTY SYM PLATED TOL\n8 9 YES +/-0.003\n12 40 YES +/-0.003\n15 3 YES +/-0.003\n28 1 NO +/-0.003\n36 1 NO +/-0.003\n40 4 YES +/-0.003\n73 3 YES +/-0.003\n40.16 4 YES +/-0.003\n31.5 5 YES +/-0.003\n94.49 2 YES +/-0.003\n106 4 NO +/-0.003\n\nCOMPANY: Company Name\nTITLE:\nDRAWN: DATED:\nCHECKED: DATED:\nQUALITY CONTROL: DATED:\nRELEASED: DATED:\nCODE: B SIZE: B DRAWING NO: Drawing Number\nSCALE: Scale\nSHEET:, conf=0.85, reason=Engines disagree (3 candidates), picked highest confidence (glm-ocr)",
     "[ocr_raw_text] value=NOTES: UNLESS OTHERWISE SPECIFIED\n\n1. MATERIAL: 370HR OR EQUIVALENT\n2. OVERALL BOARD THICKNESS TO BE .062 +/- .007\n3. APPLY SOLDERMASK OVER BARE COPPER. COLOR: GREEN.\n4. ALL EXPOSED CONDUCTIVE SURFACES TO BE ENIG\n5. SILKSCREEN TOP AND BOTTOM SIDE USING NON-CONDUCTIVE WHITE EPOXY INK.\n6. FABRICATE IN ACCORDANCE WITH IPC-6012 CLASS 2.\n7. COPPER WEIGHT SHALL BE 1 OZ. COPPER\n\nSIZE QTY SYM PLATED TOL\n8 9 YES +/-0.003\n12 40 YES +/-0.003\n15 3 YES +/-0.003\n28 1 NO +/-0.003\n36 1 NO +/-0.003\n40 4 YES +/-0.003\n73 3 YES +/-0.003\n40.16 4 YES +/-0.003\n31.5 5 YES +/-0.003\n94.49 2 YES +/-0.003\n106 4 NO +/-0.003\n\nCOMPANY: Company Name\nTITLE:\nDRAWN: DATED:\nCHECKED: DATED:\nQUALITY CONTROL: DATED:\nRELEASED: DATED:\nCODE: B SIZE: B DRAWING NO: Drawing Number\nSCALE: Scale\nSHEET:, conf=0.68, reason=Only source (glm-ocr), confidence penalized to 0.8x",
     "[ipc_specs] Union of all engines: ['IPC-6012']",
@@ -163,11 +179,11 @@
     },
     "manufacturer": {
       "value": "Company Name",
-      "confidence": 0.715,
-      "reason": "All 2 engines agree, confidence boosted to 0.72",
-      "engine": "glm-ocr",
-      "source_text": "COMPANY: Company Name TITLE:",
-      "source_text_from": "glm-ocr",
+      "confidence": 0.935,
+      "reason": "All 3 engines agree, confidence boosted to 0.94",
+      "engine": "qwen-vl",
+      "source_text": "+ COMPANY: Company Name 106.00mil}",
+      "source_text_from": "tesseract",
       "contributors": [
         {
           "engine": "tesseract",
@@ -180,17 +196,30 @@
           "value": "Company Name",
           "confidence": 0.65,
           "source_text": "COMPANY: Company Name TITLE:"
+        },
+        {
+          "engine": "qwen-vl",
+          "value": "Company Name",
+          "confidence": 0.85,
+          "source_text": null
         }
       ]
     },
     "drawing_title": {
-      "value": null,
-      "confidence": 0.0,
-      "reason": "No engine detected this field",
-      "engine": null,
+      "value": "Drawing Number",
+      "confidence": 0.68,
+      "reason": "Only source (qwen-vl), confidence penalized to 0.8x",
+      "engine": "qwen-vl",
       "source_text": null,
       "source_text_from": null,
-      "contributors": []
+      "contributors": [
+        {
+          "engine": "qwen-vl",
+          "value": "Drawing Number",
+          "confidence": 0.85,
+          "source_text": null
+        }
+      ]
     },
     "is_itar": {
       "value": false,
@@ -328,6 +357,10 @@
         },
         {
           "number": 7,
+          "function": "POWER PLANE"
+        },
+        {
+          "number": 8,
           "function": "BOTTOM SIDE"
         }
       ],
@@ -366,6 +399,10 @@
             },
             {
               "number": 7,
+              "function": "POWER PLANE"
+            },
+            {
+              "number": 8,
               "function": "BOTTOM SIDE"
             }
           ],
@@ -569,9 +606,9 @@
           "value": {
             "present": true,
             "type": "LPI",
-            "color": "GREEN",
+            "color": "green",
             "spec": "IPC-SM-840",
-            "sides": "TOP AND BOTTOM"
+            "sides": "TOP SIDE, BOTTOM SIDE"
           },
           "confidence": 0.85,
           "source_text": null
@@ -617,9 +654,9 @@
           "engine": "qwen-vl",
           "value": {
             "present": true,
-            "color": "WHITE",
-            "ink": "EPOXY",
-            "sides": "TOP AND BOTTOM"
+            "color": "white",
+            "ink": "non-conductive epoxy ink",
+            "sides": "TOP AND BOTTOM SIDE"
           },
           "confidence": 0.85,
           "source_text": null
@@ -707,8 +744,20 @@
         },
         {
           "size_mils": 36.0,
-          "qty": 4,
+          "qty": 1,
           "symbol": "\uff0b",
+          "plated": false
+        },
+        {
+          "size_mils": 40.0,
+          "qty": 4,
+          "symbol": "\u00d7",
+          "plated": true
+        },
+        {
+          "size_mils": 73.0,
+          "qty": 3,
+          "symbol": "\u00d7",
           "plated": true
         },
         {
@@ -771,8 +820,20 @@
             },
             {
               "size_mils": 36.0,
-              "qty": 4,
+              "qty": 1,
               "symbol": "\uff0b",
+              "plated": false
+            },
+            {
+              "size_mils": 40.0,
+              "qty": 4,
+              "symbol": "\u00d7",
+              "plated": true
+            },
+            {
+              "size_mils": 73.0,
+              "qty": 3,
+              "symbol": "\u00d7",
               "plated": true
             },
             {
@@ -854,28 +915,28 @@
   "engine_durations_sec": [
     {
       "engine": "tesseract",
-      "duration_sec": 3.01,
-      "start_time": "2026-08-18T15:35:41.662014-07:00",
-      "end_time": "2026-08-18T15:35:44.672423-07:00"
+      "duration_sec": 3.109,
+      "start_time": "2026-08-18T18:05:11.462588-07:00",
+      "end_time": "2026-08-18T18:05:14.572014-07:00"
     },
     {
       "engine": "glm-ocr",
-      "duration_sec": 10.086,
-      "start_time": "2026-08-18T15:35:41.646062-07:00",
-      "end_time": "2026-08-18T15:35:51.731906-07:00"
+      "duration_sec": 9.488,
+      "start_time": "2026-08-18T18:05:11.446677-07:00",
+      "end_time": "2026-08-18T18:05:20.934436-07:00"
     },
     {
       "engine": "qwen-vl",
-      "duration_sec": 80.129,
-      "start_time": "2026-08-18T15:35:41.657659-07:00",
-      "end_time": "2026-08-18T15:37:01.786344-07:00"
+      "duration_sec": 91.69,
+      "start_time": "2026-08-18T18:05:11.458321-07:00",
+      "end_time": "2026-08-18T18:06:43.148368-07:00"
     },
     {
       "engine": "pymupdf",
       "duration_sec": 0.008,
-      "start_time": "2026-08-18T15:35:41.649440-07:00",
-      "end_time": "2026-08-18T15:35:41.657521-07:00"
+      "start_time": "2026-08-18T18:05:11.450022-07:00",
+      "end_time": "2026-08-18T18:05:11.458184-07:00"
     }
   ],
-  "total_duration_sec": 80.765
+  "total_duration_sec": 92.292
 }

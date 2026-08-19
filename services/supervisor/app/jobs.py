@@ -58,6 +58,51 @@ async def get_job(job_id: str) -> dict[str, Any] | None:
     return json.loads(raw) if raw else None
 
 
+async def list_jobs() -> list[dict[str, Any]]:
+    """Return every unexpired job record, newest first.
+
+    Uses SCAN rather than KEYS — KEYS blocks the whole Redis server while it
+    walks the keyspace. The set is naturally bounded by JOB_TTL_SEC, so no
+    pagination is needed at the Redis level; the caller caps how many it
+    returns.
+    """
+    jobs: list[dict[str, Any]] = []
+    async for key in _redis.scan_iter(match="job:*", count=100):
+        raw = await _redis.get(key)
+        if raw:
+            jobs.append(json.loads(raw))
+    # created_at is ISO-8601 with a fixed offset, so lexical sort == chronological
+    jobs.sort(key=lambda j: j.get("created_at") or "", reverse=True)
+    return jobs
+
+
+async def fail_orphaned_jobs() -> list[str]:
+    """Mark every job still in `processing` as failed. Returns their ids.
+
+    Called once at supervisor startup. Pipeline jobs run as in-process
+    `asyncio.create_task` background tasks, so a restart kills them outright
+    with no way to resume — any job still marked `processing` when the
+    process comes up is therefore orphaned from a previous life. Without
+    this, such a job sits in `processing` forever (well, until JOB_TTL_SEC),
+    and a client polling it would wait out its full timeout for a result
+    that is never coming.
+
+    ASSUMES A SINGLE SUPERVISOR INSTANCE — true today (one container,
+    uvicorn with no --workers; see the deployment note in the module
+    docstring). If this is ever scaled to multiple replicas against one
+    Redis, a starting instance would wrongly fail another instance's
+    genuinely-in-flight jobs, and this needs an instance/owner tag per job.
+    """
+    orphaned = [j["job_id"] for j in await list_jobs() if j["status"] == STATUS_PROCESSING]
+    for job_id in orphaned:
+        await mark_failed(
+            job_id,
+            "Orphaned: the supervisor restarted while this job was running. "
+            "Jobs do not resume across restarts — resubmit the PDF.",
+        )
+    return orphaned
+
+
 async def mark_completed(job_id: str, result: dict[str, Any]) -> None:
     await _update(job_id, status=STATUS_COMPLETED, result=result)
 

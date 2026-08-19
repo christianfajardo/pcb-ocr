@@ -9,7 +9,7 @@ import time
 
 import structlog
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from fastapi.encoders import jsonable_encoder
 
 from shared.auth import require_api_key
@@ -22,6 +22,7 @@ from .jobs import (
     STATUS_PROCESSING,
     create_job,
     get_job,
+    list_jobs,
     mark_completed,
     mark_failed,
 )
@@ -146,6 +147,48 @@ async def _run_pipeline_job(job_id: str, pdf_path: str, original_filename: str |
             await mark_failed(job_id, str(e))
 
 
+@jobs_router.get("", dependencies=[Depends(require_api_key)])
+async def list_all_jobs(
+    status: str | None = Query(
+        default=None,
+        description="Optional filter: processing | completed | failed",
+    ),
+    limit: int = Query(default=100, ge=1, le=1000),
+) -> dict:
+    """List all unexpired jobs, newest first.
+
+    Returns per-job metadata only — not the full extraction `result`, which
+    runs tens of KB per job and would make this response enormous. Fetch
+    GET /jobs/{job_id} for a specific job's result.
+    """
+    jobs = await list_jobs()
+
+    if status is not None:
+        valid = {STATUS_PROCESSING, STATUS_COMPLETED, STATUS_FAILED}
+        if status not in valid:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid status filter: {status}. Expected one of {sorted(valid)}",
+            )
+        jobs = [j for j in jobs if j["status"] == status]
+
+    total = len(jobs)
+    summaries = []
+    for job in jobs[:limit]:
+        summary = {
+            "job_id": job["job_id"],
+            "status": job["status"],
+            "filename": job.get("filename"),
+            "submitted_at": job.get("created_at"),
+            "completed_at": job.get("completed_at"),
+        }
+        if job["status"] == STATUS_FAILED:
+            summary["error"] = job.get("error")
+        summaries.append(summary)
+
+    return {"total": total, "returned": len(summaries), "jobs": summaries}
+
+
 @jobs_router.get("/{job_id}", dependencies=[Depends(require_api_key)])
 async def get_job_status(job_id: str) -> dict:
     """Poll the status/result of a job created via POST /extract."""
@@ -153,8 +196,19 @@ async def get_job_status(job_id: str) -> dict:
     if job is None:
         raise HTTPException(status_code=404, detail=f"Unknown or expired job_id: {job_id}")
 
+    submitted_at = job["created_at"]
     if job["status"] == STATUS_COMPLETED:
-        return {"job_id": job_id, "status": STATUS_COMPLETED, "result": job["result"]}
+        return {
+            "job_id": job_id,
+            "status": STATUS_COMPLETED,
+            "submitted_at": submitted_at,
+            "result": job["result"],
+        }
     if job["status"] == STATUS_FAILED:
-        return {"job_id": job_id, "status": STATUS_FAILED, "error": job["error"]}
-    return {"job_id": job_id, "status": STATUS_PROCESSING}
+        return {
+            "job_id": job_id,
+            "status": STATUS_FAILED,
+            "submitted_at": submitted_at,
+            "error": job["error"],
+        }
+    return {"job_id": job_id, "status": STATUS_PROCESSING, "submitted_at": submitted_at}

@@ -26,6 +26,12 @@ from .jobs import (
     mark_completed,
     mark_failed,
 )
+from .schemas import (
+    ErrorDetail,
+    JobAccepted,
+    JobList,
+    JobStatus,
+)
 from .state import create_initial_state
 
 logger = structlog.get_logger(__name__)
@@ -48,7 +54,13 @@ _ENGINES = [
 ]
 
 
-@router.post("", status_code=202, dependencies=[Depends(require_api_key)])
+@router.post(
+    "",
+    status_code=202,
+    response_model=JobAccepted,
+    responses={401: {"model": ErrorDetail, "description": "Missing or invalid API key"}},
+    dependencies=[Depends(require_api_key)],
+)
 async def extract(file: UploadFile = File(...)) -> dict:
     """Accept a PDF and start the OCR pipeline as a background job.
 
@@ -147,7 +159,15 @@ async def _run_pipeline_job(job_id: str, pdf_path: str, original_filename: str |
             await mark_failed(job_id, str(e))
 
 
-@jobs_router.get("", dependencies=[Depends(require_api_key)])
+@jobs_router.get(
+    "",
+    response_model=JobList,
+    responses={
+        400: {"model": ErrorDetail, "description": "Invalid `status` filter"},
+        401: {"model": ErrorDetail, "description": "Missing or invalid API key"},
+    },
+    dependencies=[Depends(require_api_key)],
+)
 async def list_all_jobs(
     status: str | None = Query(
         default=None,
@@ -189,7 +209,15 @@ async def list_all_jobs(
     return {"total": total, "returned": len(summaries), "jobs": summaries}
 
 
-@jobs_router.get("/{job_id}", dependencies=[Depends(require_api_key)])
+@jobs_router.get(
+    "/{job_id}",
+    response_model=JobStatus,
+    responses={
+        401: {"model": ErrorDetail, "description": "Missing or invalid API key"},
+        404: {"model": ErrorDetail, "description": "Unknown or expired job_id"},
+    },
+    dependencies=[Depends(require_api_key)],
+)
 async def get_job_status(job_id: str) -> dict:
     """Poll the status/result of a job created via POST /extract."""
     job = await get_job(job_id)

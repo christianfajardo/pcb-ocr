@@ -159,6 +159,8 @@ PYTHONPATH=. pytest tests/ -v
 
 ## API Reference
 
+Interactive docs are served by the supervisor at **http://localhost:8080/docs** (Swagger UI) and **/redoc**, generated from the response models in `services/supervisor/app/schemas.py` — so the schemas shown there reflect the real payloads, including every `PCBData` field inside a completed job's `result`. Click **Authorize** and paste your `API_KEY` to call the gated endpoints from the browser.
+
 ### Async jobs
 
 `POST /extract` accepts a PCB fabrication PDF and starts the pipeline as a background job — it does not wait for extraction to finish. Poll `GET /jobs/{job_id}` for status and, eventually, the result.

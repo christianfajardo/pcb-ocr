@@ -13,6 +13,7 @@ from shared.logging_config import configure_logging
 from .jobs import fail_orphaned_jobs
 from .router import jobs_router
 from .router import router as extract_router
+from .schemas import HealthResponse, ReadyResponse
 
 configure_logging()
 logger = structlog.get_logger(__name__)
@@ -47,13 +48,13 @@ app = FastAPI(
 )
 
 
-@app.get("/health")
+@app.get("/health", response_model=HealthResponse)
 async def health() -> dict:
     """Health check endpoint."""
     return {"status": "healthy", "engine": "supervisor", "version": "0.1.0"}
 
 
-@app.get("/ready")
+@app.get("/ready", response_model=ReadyResponse)
 async def ready() -> dict:
     """Readiness check — all downstream services available."""
     import os

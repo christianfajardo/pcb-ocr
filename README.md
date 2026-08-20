@@ -1,5 +1,12 @@
 # PCB OCR Agentic AI Pipeline
 
+![PCB](https://img.shields.io/badge/PCB-Data-0A66C2)
+![Fab Drawing](https://img.shields.io/badge/Fab%20Drawing-Supported-6F42C1)
+![Agentic AI](https://img.shields.io/badge/Agentic%20AI-Orchestrated-1F6FEB)
+![Multi-Model](https://img.shields.io/badge/Multi--Model-4%20Engines-2EA44F)
+![GPU](https://img.shields.io/badge/GPU-Accelerated-FF8C00)
+![vLLM](https://img.shields.io/badge/vLLM-Powered-8A2BE2)
+
 Multi-model OCR pipeline for extracting structured data from PCB fabrication drawings (PDF).
 
 4 independent OCR/extraction engines run in parallel, then a LangGraph-supervised reconciliation step merges results into a clean `PCBData` Pydantic schema.

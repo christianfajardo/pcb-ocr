@@ -21,6 +21,7 @@ from .jobs import (
     STATUS_FAILED,
     STATUS_PROCESSING,
     create_job,
+    delete_jobs,
     get_job,
     list_jobs,
     mark_completed,
@@ -29,6 +30,7 @@ from .jobs import (
 from .schemas import (
     ErrorDetail,
     JobAccepted,
+    JobFlushResult,
     JobList,
     JobStatus,
 )
@@ -207,6 +209,66 @@ async def list_all_jobs(
         summaries.append(summary)
 
     return {"total": total, "returned": len(summaries), "jobs": summaries}
+
+
+# Declared before /{job_id}. They don't collide today (different methods), but
+# a future POST /jobs/{job_id} would shadow this if the order were reversed.
+@jobs_router.post(
+    "/flush",
+    response_model=JobFlushResult,
+    responses={
+        400: {"model": ErrorDetail, "description": "Invalid `status` filter"},
+        401: {"model": ErrorDetail, "description": "Missing or invalid API key"},
+    },
+    dependencies=[Depends(require_api_key)],
+)
+async def flush_jobs(
+    status: str | None = Query(
+        default=None,
+        description=(
+            "Only flush jobs in this status: processing | completed | failed. "
+            "Omit to flush finished jobs (completed + failed) and leave "
+            "in-flight ones alone."
+        ),
+    ),
+) -> dict:
+    """Delete job records from Redis.
+
+    Defaults to terminal states only. Flushing `processing` doesn't cancel
+    anything — the pipeline keeps running and keeps using the GPU, its result
+    is simply thrown away, and anything polling that id starts getting 404s.
+    That's a deliberate action, so it has to be requested explicitly with
+    `?status=processing` rather than being swept up by a bare flush.
+    """
+    valid = {STATUS_PROCESSING, STATUS_COMPLETED, STATUS_FAILED}
+    if status is not None and status not in valid:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid status filter: {status}. Expected one of {sorted(valid)}",
+        )
+
+    targets = {status} if status else {STATUS_COMPLETED, STATUS_FAILED}
+
+    before = await list_jobs()
+    in_flight = sum(1 for j in before if j["status"] == STATUS_PROCESSING)
+
+    deleted_by_status = await delete_jobs(targets)
+    deleted = sum(deleted_by_status.values())
+
+    logger.info(
+        "Flushed jobs",
+        deleted=deleted,
+        statuses=sorted(targets),
+        by_status=deleted_by_status,
+    )
+
+    return {
+        "deleted": deleted,
+        "deleted_by_status": deleted_by_status,
+        "flushed_statuses": sorted(targets),
+        "skipped_processing": 0 if STATUS_PROCESSING in targets else in_flight,
+        "remaining": len(before) - deleted,
+    }
 
 
 @jobs_router.get(

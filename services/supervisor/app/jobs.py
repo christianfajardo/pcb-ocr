@@ -76,6 +76,34 @@ async def list_jobs() -> list[dict[str, Any]]:
     return jobs
 
 
+async def delete_jobs(statuses: set[str]) -> dict[str, int]:
+    """Delete every job whose status is in `statuses`.
+
+    Returns a per-status count of what was removed. Uses SCAN for the same
+    reason `list_jobs` does — `KEYS` blocks the whole Redis server.
+
+    Deleting a job that is still `processing` does not stop its background
+    task: the pipeline keeps running (and keeps using the GPU), and its
+    eventual `mark_completed`/`mark_failed` becomes a no-op because `_update`
+    skips records that no longer exist. The work is finished but its result is
+    discarded, and anything polling that id gets a 404. Callers should treat
+    that as a deliberate choice, not a default.
+    """
+    deleted: dict[str, int] = {}
+    async for key in _redis.scan_iter(match="job:*", count=100):
+        raw = await _redis.get(key)
+        if not raw:
+            continue
+        try:
+            status = json.loads(raw).get("status")
+        except (TypeError, ValueError):
+            continue  # unparseable record — leave it alone rather than guess
+        if status in statuses:
+            await _redis.delete(key)
+            deleted[status] = deleted.get(status, 0) + 1
+    return deleted
+
+
 async def fail_orphaned_jobs() -> list[str]:
     """Mark every job still in `processing` as failed. Returns their ids.
 

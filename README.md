@@ -140,7 +140,7 @@ curl http://localhost:8080/jobs/a1b2c3... \
 # -> { "job_id": "...", "status": "completed", "result": {...} }    (when done — PCBData + confidence scores)
 ```
 
-Every service's `POST /extract` (and the supervisor's `GET /jobs` + `GET /jobs/{job_id}`) requires this header when `API_KEY` is set (see [Authentication](#authentication) below); `/health` and `/ready` stay open for Docker healthchecks. See [Async jobs](#async-jobs) for the full contract, including the failed-job shape.
+Every service's `POST /extract` (and the supervisor's `GET /jobs`, `GET /jobs/{job_id}`, `POST /jobs/flush`) requires this header when `API_KEY` is set (see [Authentication](#authentication) below); `/health` and `/ready` stay open for Docker healthchecks. See [Async jobs](#async-jobs) for the full contract, including the failed-job shape.
 
 ### Run tests
 
@@ -220,6 +220,29 @@ curl "http://localhost:8080/jobs?status=failed&limit=10" -H "Authorization: Bear
 ```
 
 `total` is the count *after* filtering but *before* `limit`; `returned` is how many are in this response. Failed jobs additionally carry `error`.
+
+**`POST /jobs/flush`** — delete job records from Redis.
+
+| Query param | Default | Meaning |
+|---|---|---|
+| `status` | *(none)* | Flush only this status: `processing`, `completed`, or `failed`. Anything else → `400`. Omit to flush **finished jobs only** (`completed` + `failed`). |
+
+```bash
+curl -X POST "http://localhost:8080/jobs/flush" -H "Authorization: Bearer $API_KEY"
+```
+```json
+{
+  "deleted": 32,
+  "deleted_by_status": { "completed": 32 },
+  "flushed_statuses": ["completed", "failed"],
+  "skipped_processing": 1,
+  "remaining": 1
+}
+```
+
+**A bare flush deliberately leaves in-flight jobs alone.** Deleting a `processing` record does *not* cancel anything — the pipeline keeps running and keeps occupying the GPU, its result is simply discarded when it finishes, and anything polling that id starts getting `404`. Because that's rarely what you want from a routine cleanup, it requires asking for it explicitly with `?status=processing`. `skipped_processing` reports how many were left untouched.
+
+Note `GET /jobs/flush` returns `404` — the route is `POST`, so a GET falls through to `GET /jobs/{job_id}` and looks for a job literally named `flush`.
 
 This returns **per-job metadata only — never the `result` payload**, which runs tens of KB per job (full `attribution` + `ocr_raw_text`) and would make a listing of even a few dozen jobs multiple megabytes. Fetch `GET /jobs/{job_id}` for a specific job's result. Internally it uses Redis `SCAN`, not `KEYS`, so listing never blocks the Redis server.
 

@@ -160,6 +160,27 @@ class JobList(BaseModel):
     jobs: list[JobSummary]
 
 
+class JobFlushResult(BaseModel):
+    """200 response from POST /jobs/flush."""
+
+    deleted: int = Field(description="Total job records removed")
+    deleted_by_status: dict[str, int] = Field(
+        default_factory=dict, description="Breakdown of what was removed, per status"
+    )
+    flushed_statuses: list[str] = Field(
+        description="Which statuses this call actually targeted"
+    )
+    skipped_processing: int = Field(
+        default=0,
+        description=(
+            "In-flight jobs left alone because `processing` wasn't targeted. "
+            "Flushing those does not stop the pipeline — it only discards the "
+            "result — so it requires asking for it explicitly."
+        ),
+    )
+    remaining: int = Field(description="Job records still in Redis afterwards")
+
+
 class HealthResponse(BaseModel):
     status: Literal["healthy"]
     engine: str
